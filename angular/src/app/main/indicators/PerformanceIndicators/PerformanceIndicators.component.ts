@@ -7,10 +7,10 @@ import { PerformanceIndicatorsServiceProxy, OrganizationUnitUserListDto, CreateO
 import { LazyLoadEvent } from 'primeng/api';
 import { finalize } from 'rxjs/operators';
 import { IIndicatorWithOrganizationUnit } from '../IIndicatorWithOrganizationUnit';
-import { CreateEditPerformanceIndicatorModalComponent } from '../createEditPerformanceIndicatorModal/createEditPerformanceIndicatorModal.component';
 import { ViewIndicatorComponent } from '../view-indicator/view-indicator.component';
 import { UpdateIndicatorProgressComponent } from '../update-indicator-progress/update-indicator-progress.component';
 import { EntityTypeHistoryModalComponent } from '@app/shared/common/entityHistory/entity-type-history-modal.component';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-PerformanceIndicators',
@@ -22,7 +22,6 @@ export class PerformanceIndicatorsComponent extends AppComponentBase implements 
     @Output() memberRemoved = new EventEmitter<IIndicatorWithOrganizationUnit>();
     @Output() membersAdded = new EventEmitter<IIndicatorWithOrganizationUnit>();
 
-    @ViewChild('addIndicatorModal', { static: true }) addIndicatorModal: CreateEditPerformanceIndicatorModalComponent;
     @ViewChild('updateIndicatorModal', { static: true }) updateIndicatorModal: UpdateIndicatorProgressComponent;
     @ViewChild('viewIndicatorModal', { static: true }) viewIndicatorModal: ViewIndicatorComponent;
     @ViewChild('entityTypeHistoryModal', { static: true }) entityTypeHistoryModal: EntityTypeHistoryModalComponent;
@@ -35,7 +34,8 @@ export class PerformanceIndicatorsComponent extends AppComponentBase implements 
 
     constructor(
         injector: Injector,
-        private _performanceIndicatorServiceProxy: PerformanceIndicatorsServiceProxy
+        private _performanceIndicatorServiceProxy: PerformanceIndicatorsServiceProxy,
+        private _router: Router
     ) {
         super(injector);
     }
@@ -95,7 +95,7 @@ export class PerformanceIndicatorsComponent extends AppComponentBase implements 
     }
 
     openAddModal(): void {
-        this.addIndicatorModal.show(this._organizationUnit.id);
+        this._router.navigate(['app/main/deliverable/new'], { queryParams: { unitId: this._organizationUnit.id } });
     }
 
     viewIndicator(indicatorId: number): void {
@@ -103,7 +103,7 @@ export class PerformanceIndicatorsComponent extends AppComponentBase implements 
     }
 
     editIndicator(indicatorId: number): void {
-        this.addIndicatorModal.show(this._organizationUnit.id, indicatorId);
+        this._router.navigate(['app/main/deliverable/edit'], { queryParams: { unitId: this._organizationUnit.id, indicatorId: indicatorId } });
     }
 
     updateProgress(indicatorId: number): void {

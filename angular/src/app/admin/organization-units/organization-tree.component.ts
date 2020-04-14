@@ -181,8 +181,6 @@ export class OrganizationTreeComponent extends AppComponentBase implements OnIni
                         }
                     }
                 ]);
-
-            console.log(this.treeData);
         });
     }
 

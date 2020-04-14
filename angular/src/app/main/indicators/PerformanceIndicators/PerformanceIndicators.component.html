@@ -18,7 +18,7 @@
                     <ng-template pTemplate="header">
                         <tr>
                             <th style="width: 35%"
-                                [hidden]="!('Pages.PerformanceIndicator.Create' | permission)">{{'Actions' | localize}}</th>
+                                [hidden]="!('Pages.PerformanceIndicator' | permission)">{{'Actions' | localize}}</th>
                             <th pSortableColumn="name">
                                 {{'Indicator' | localize}}
                                 <p-sortIcon field="name"></p-sortIcon>
@@ -104,7 +104,6 @@
     {{"SelectAnOrganizationUnitToSeeIndicators" | localize}}
 </div>
 
-<app-createEditPerformanceIndicatorModal #addIndicatorModal (modalSave)="reloadPage()"></app-createEditPerformanceIndicatorModal>
 <app-update-indicator-progress #updateIndicatorModal (modalSave)="reloadPage()"></app-update-indicator-progress>
 <app-view-indicator #viewIndicatorModal></app-view-indicator>
 <entityTypeHistoryModal #entityTypeHistoryModal></entityTypeHistoryModal>

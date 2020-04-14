@@ -1,5 +1,5 @@
-import { DataTypeEnum, UnitsEnum, ComparisonMethodEnum, IndicatorYearlyTargetDto, CreateEditIndicatorAndTargetDto } from './../../../../shared/service-proxies/service-proxies';
-import { Component, OnInit, Output, EventEmitter, ViewChild, Injector, ChangeDetectorRef } from '@angular/core';
+import { DataTypeEnum, UnitsEnum, ComparisonMethodEnum, IndicatorYearlyTargetDto, CreateEditIndicatorAndTargetDto } from '../../../../shared/service-proxies/service-proxies';
+import { Component, OnInit, Output, EventEmitter, ViewChild, Injector, ChangeDetectorRef, AfterViewInit, ViewEncapsulation } from '@angular/core';
 import { IIndicatorWithOrganizationUnit } from '../IIndicatorWithOrganizationUnit';
 import { PerformanceIndicatorsServiceProxy, GetPerformanceIndicatorForEditOutput, CreateOrEditPerformanceIndicatorDto } from '@shared/service-proxies/service-proxies';
 import { AppComponentBase } from '@shared/common/app-component-base';
@@ -7,19 +7,21 @@ import { ModalDirective } from 'ngx-bootstrap';
 import { Table } from 'primeng/table';
 import { Paginator } from 'primeng/paginator';
 import { finalize } from 'rxjs/operators';
+import { Location } from '@angular/common';
+import { ActivatedRoute, Router } from '@angular/router';
+import { appModuleAnimation } from '@shared/animations/routerTransition';
 
 @Component({
-    selector: 'app-createEditPerformanceIndicatorModal',
-    templateUrl: './createEditPerformanceIndicatorModal.component.html',
-    styleUrls: ['./createEditPerformanceIndicatorModal.component.css']
+    selector: 'app-createEditPerformanceIndicator',
+    templateUrl: './createEditPerformanceIndicator.component.html',
+    styleUrls: ['./createEditPerformanceIndicator.component.css'],
+    encapsulation: ViewEncapsulation.None,
+    animations: [appModuleAnimation()]
 })
-export class CreateEditPerformanceIndicatorModalComponent extends AppComponentBase {
+export class CreateEditPerformanceIndicatorComponent extends AppComponentBase implements OnInit, AfterViewInit {
 
     organizationUnitId: number;
 
-    @Output() modalSave: EventEmitter<IIndicatorWithOrganizationUnit> = new EventEmitter<IIndicatorWithOrganizationUnit>();
-
-    @ViewChild('createOrEditModal', { static: true }) modal: ModalDirective;
     @ViewChild('dataTable', { static: true }) dataTable: Table;
     @ViewChild('paginator', { static: true }) paginator: Paginator;
 
@@ -41,9 +43,22 @@ export class CreateEditPerformanceIndicatorModalComponent extends AppComponentBa
     constructor(
         injector: Injector,
         private _performanceIndicatorService: PerformanceIndicatorsServiceProxy,
-        private _changeDetector: ChangeDetectorRef
+        private _changeDetector: ChangeDetectorRef,
+        private _activatedRoute: ActivatedRoute,
+        private _router: Router,
+        private _location: Location
     ) {
         super(injector);
+    }
+
+    ngOnInit(): void {
+        let unitId = this._activatedRoute.snapshot.queryParams['unitId'];
+        let indicatorId = this._activatedRoute.snapshot.queryParams['indicatorId'];
+        this.show(unitId, indicatorId);
+    }
+
+    ngAfterViewInit(): void {
+
     }
 
     show(unitId: number, indicatorId?: number): void {
@@ -55,7 +70,6 @@ export class CreateEditPerformanceIndicatorModalComponent extends AppComponentBa
             this.yearlyTargets = new Array();
 
             this.active = true;
-            this.modal.show();
             this._changeDetector.detectChanges();
         } else {
             this._performanceIndicatorService
@@ -65,8 +79,7 @@ export class CreateEditPerformanceIndicatorModalComponent extends AppComponentBa
                     this.yearlyTargets = result.targets.map(x => x.target);
 
                     this.active = true;
-                    this.modal.show();
-                    //this._changeDetector.detectChanges();
+                    this._changeDetector.detectChanges();
                 });
         }
     }
@@ -91,8 +104,7 @@ export class CreateEditPerformanceIndicatorModalComponent extends AppComponentBa
             .pipe(finalize(() => { this.saving = false; }))
             .subscribe(() => {
                 this.notify.info(this.l('SavedSuccessfully'));
-                this.close();
-                this.modalSave.emit(null);
+                this.goBack();
             });
     }
 
@@ -109,9 +121,9 @@ export class CreateEditPerformanceIndicatorModalComponent extends AppComponentBa
         this.yearlyTargets.splice(index, 1);
     }
 
-    close(): void {
+    goBack(): void {
         this.active = false;
-        this.modal.hide();
+        this._location.back();
     }
 
 }

@@ -47,7 +47,6 @@ import { CheckboxInputTypeComponent } from './input-types/checkbox-input-type/ch
 import { CreateEditMdaModalComponent } from '@app/main/mdas/create-edit-mda-modal/create-edit-mda-modal.component';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { PerformanceIndicatorsComponent } from '@app/main/indicators/PerformanceIndicators/PerformanceIndicators.component';
-import { CreateEditPerformanceIndicatorModalComponent } from '@app/main/indicators/createEditPerformanceIndicatorModal/createEditPerformanceIndicatorModal.component';
 import { UpdateIndicatorProgressComponent } from '@app/main/indicators/update-indicator-progress/update-indicator-progress.component';
 import { ViewIndicatorComponent } from '@app/main/indicators/view-indicator/view-indicator.component';
 import { EditorModule } from 'primeng/editor';
@@ -70,6 +69,7 @@ import { TreeModule } from 'primeng/tree';
 import { DragDropModule } from 'primeng/dragdrop';
 import { ContextMenuModule } from 'primeng/contextmenu';
 import { FileUploadModule } from 'primeng/fileupload';
+import { CreateEditPerformanceIndicatorComponent } from '@app/main/indicators/createEditPerformanceIndicator/createEditPerformanceIndicator.component';
 
 @NgModule({
     imports: [
@@ -115,7 +115,7 @@ import { FileUploadModule } from 'primeng/fileupload';
         PerformanceActivityComponent,
         ViewIndicatorComponent,
         UpdateIndicatorProgressComponent,
-        CreateEditPerformanceIndicatorModalComponent,
+        CreateEditPerformanceIndicatorComponent,
         PerformanceIndicatorsComponent,
         CreateEditDeliverableModalComponent,
         CreateEditMdaModalComponent,
@@ -162,7 +162,7 @@ import { FileUploadModule } from 'primeng/fileupload';
         PerformanceActivityComponent,
         UpdateIndicatorProgressComponent,
         ViewIndicatorComponent,
-        CreateEditPerformanceIndicatorModalComponent,
+        CreateEditPerformanceIndicatorComponent,
         PerformanceIndicatorsComponent,
         CreateEditDeliverableModalComponent,
         CreateEditMdaModalComponent,
