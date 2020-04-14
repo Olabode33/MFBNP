@@ -163,9 +163,9 @@ ngx-spinner .loading-text{
 
 /** Custom Styles **/
 body {
-    background-image: url(/assets/common/images/bg/bg-app-3.jpg) !important;
+    /* background-image: url(/assets/common/images/bg/bg-app-3.jpg) !important;
     background-repeat: no-repeat;
-    background-size: contain;
+    background-size: contain; */
 }
 
 .form-group label{

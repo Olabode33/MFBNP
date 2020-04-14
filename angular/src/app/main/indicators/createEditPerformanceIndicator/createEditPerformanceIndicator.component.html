@@ -23,7 +23,7 @@
         </div>
         <div class="kt-container kt-grid__item kt-grid__item--fluid">
             <div class="kt-portlet kt-portlet--mobile">
-                <div class="kt-portlet__body  kt-portlet__body--fit">
+                <div class="kt-portlet__body">
 
                     <form *ngIf="active" #performanceIndicatorForm="ngForm" novalidate (ngSubmit)="save()" autocomplete="off">
 
@@ -38,41 +38,18 @@
                             <textarea id="performanceIndicator_Description" class="form-control" rows="5"
                                 [(ngModel)]="performanceIndicator.description" name="Description"></textarea>
                         </div>
-    
+
                         <div class="form-group row">
                             <div class="col-md-6">
-                                <label for="performanceIndicator_BaselineValue">{{l("BaselineValue")}}</label>
-                                <input type="text" id="performanceIndicator_BaselineValue" class="form-control"
-                                    [(ngModel)]="performanceIndicator.baselineValue" name="BaselineValue" />
-                            </div>
-                            <div class="col-md-6">
-                                <label for="performanceIndicator_BaselineComment">{{l("BaselineComment")}}</label>
-                                <textarea id="performanceIndicator_BaselineComment" class="form-control" rows="3"
-                                    [(ngModel)]="performanceIndicator.baselineComment" name="BaselineComment"></textarea>
-                            </div>
-                        </div>
-    
-                        <div class="form-group row">
-                            <div class="col-md-6">
-                                <label for="performanceIndicator_DataType">{{l("DataType")}}</label>
-                                <select id="performanceIndicator_DataType" class="form-control"
+                                <label for="performanceIndicator_DataType">{{l("DataType")}} <span class="kt-font-danger">*</span></label>
+                                <select id="performanceIndicator_DataType" class="form-control" required
                                     [(ngModel)]="performanceIndicator.dataType" name="DataType">
                                     <option [value]="dataTypeEnum.Number">Number</option>
                                     <option [value]="dataTypeEnum.DateTime">DateTime</option>
                                     <option [value]="dataTypeEnum.Boolean">Boolean</option>
                                 </select>
                             </div>
-                            <div *ngIf="performanceIndicator.dataType !== dataTypeEnum.Boolean" class="col-md-6">
-                                <label for="performanceIndicator_ComparisonMethod">{{l("ComparisonMethod")}}</label>
-                                <select id="performanceIndicator_ComparisonMethod" class="form-control"
-                                    [(ngModel)]="performanceIndicator.comparisonMethod" name="ComparisonMethod">
-                                    <option [value]="comparisonMethodEnum.GreaterThanOrEqual">Greater than or equal</option>
-                                    <option [value]="comparisonMethodEnum.LessThanOrEqual">Less than or equal</option>
-                                </select>
-                            </div>
-                        </div>
-    
-                        <div class="form-group row">
+                            
                             <div *ngIf="performanceIndicator.dataType == dataTypeEnum.Number" class="col-md-6">
                                 <label for="performanceIndicator_Unit">{{l("Unit")}}</label>
                                 <select id="performanceIndicator_Unit" class="form-control"
@@ -83,25 +60,43 @@
                                     <option [value]="unitEnum.Money">Money (NGN)</option>
                                 </select>
                             </div>
-                            <!-- <div class="col-md-6">
-                                <label class="col" for="Blanc">&nbsp;</label>
-                                <label for="performanceIndicator_CanCascade" class="kt-checkbox">
-                                    <input id="performanceIndicator_CanCascade" type="checkbox" name="CanCascade" [(ngModel)]="performanceIndicator.canCascade">
-                                    {{"CanCascade" | localize}}
-                                    <span></span>
-                                </label>
-                            </div> -->
                         </div>
     
-                        
-                        <div class="form-group">
-                            <label for="performanceIndicator_MeansOfVerification">{{l("MeansOfVerification")}}</label>
-                            <textarea id="performanceIndicator_MeansOfVerification" class="form-control" rows="5"
-                                [(ngModel)]="performanceIndicator.meansOfVerification"
-                                name="MeansOfVerification"></textarea>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <label for="performanceIndicator_BaselineValue">{{l("BaselineValue")}}</label>
+                                <p *ngIf="performanceIndicator.dataType === undefined" class="kt-font-danger">Please select a data type</p>
+    
+                                <div *ngIf="performanceIndicator.dataType == dataTypeEnum.Number" class="input-group">
+                                    <div *ngIf="performanceIndicator.unit == unitEnum.Money" class="input-group-prepend">
+                                        <span class="input-group-text">NGN</span>								
+                                    </div>
+                                    <input type="number" id="performanceIndicator_BaselineValue" class="form-control" 
+                                        [(ngModel)]="performanceIndicator.baselineValue" name="BaselineValue" />
+                                    <div *ngIf="performanceIndicator.unit == unitEnum.Percentage" class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-percent"></i></span>
+                                    </div>
+                                </div>
+                                
+                                <input *ngIf="performanceIndicator.dataType == dataTypeEnum.DateTime" type="date" id="performanceIndicator_BaselineValue" class="form-control"
+                                    [(ngModel)]="performanceIndicator.baselineValue" name="BaselineValue" />
+                                <select *ngIf="performanceIndicator.dataType == dataTypeEnum.Boolean" id="performanceIndicator_BaselineValue" class="form-control"
+                                    [(ngModel)]="performanceIndicator.baselineValue" name="BaselineValue">
+                                    <option [value]="true">Yes</option>
+                                    <option [value]="false">No</option>
+                                </select>
+                            </div>
                         </div>
     
-                        <br>
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <label for="performanceIndicator_BaselineComment">{{l("BaselineComment")}}</label>
+                                <textarea id="performanceIndicator_BaselineComment" class="form-control" rows="3"
+                                    [(ngModel)]="performanceIndicator.baselineComment" name="BaselineComment"></textarea>
+                            </div>
+                        </div>
+    
+                        <hr/><br>
     
                         <button type="button" class="btn btn-outline-{{!showYearlyTargetForm ? 'primary' : 'danger'}} mb-2" (click)="showYearlyTargetForm = !showYearlyTargetForm">
                             <i class="fa fa-{{!showYearlyTargetForm ? 'plus' : 'times'}}"></i> 
@@ -116,7 +111,7 @@
                             </div>
                             <div class="col-md-5">
                                 <label for="target_Target">{{l("Target")}}</label>
-                                <p *ngIf="performanceIndicator.dataType === undefined">Please select a data type</p>
+                                <p *ngIf="performanceIndicator.dataType === undefined" class="kt-font-danger">Please select a data type</p>
     
                                 <div *ngIf="performanceIndicator.dataType == dataTypeEnum.Number" class="input-group">
                                     <div *ngIf="performanceIndicator.unit == unitEnum.Money" class="input-group-prepend">
@@ -138,7 +133,7 @@
                             </div>
                             <div class="col-md-2">
                                 <label class="col" for="Blanc">&nbsp;</label>
-                                <button *ngIf="performanceIndicator.dataType" class="btn btn-outline-success btn-icon" type="button" (click)="addTarget()">
+                                <button class="btn btn-outline-success btn-icon" type="button" (click)="addTarget()">
                                     <i class="fa fa-save"></i>
                                 </button>
                             </div>

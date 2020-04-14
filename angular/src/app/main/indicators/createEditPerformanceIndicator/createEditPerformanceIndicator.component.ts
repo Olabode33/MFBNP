@@ -91,12 +91,6 @@ export class CreateEditPerformanceIndicatorComponent extends AppComponentBase im
             this.performanceIndicator.comparisonMethod = ComparisonMethodEnum.GreaterThanOrEqual;
         }
 
-        if (this.yearlyTargets.length <= 0) {
-           this.message.error('No targets defined');
-           this.saving = false;
-           return;
-        }
-
         this.indicator.yearlyTarget = this.yearlyTargets;
         this.indicator.indicator = this.performanceIndicator;
 
