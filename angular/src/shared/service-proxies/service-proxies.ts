@@ -23321,10 +23321,14 @@ export interface ICreateOrEditPerformanceIndicatorDto {
 export class IndicatorYearlyTargetDto implements IIndicatorYearlyTargetDto {
     indicatorId!: number;
     year!: number;
+    description!: string | undefined;
+    comparisonMethod!: ComparisonMethodEnum;
+    meansOfVerification!: string | undefined;
     target!: string | undefined;
     actual!: string | undefined;
     dataSource!: string | undefined;
     note!: string | undefined;
+    lastUpdated!: moment.Moment | undefined;
     id!: number;
 
     constructor(data?: IIndicatorYearlyTargetDto) {
@@ -23340,10 +23344,14 @@ export class IndicatorYearlyTargetDto implements IIndicatorYearlyTargetDto {
         if (data) {
             this.indicatorId = data["indicatorId"];
             this.year = data["year"];
+            this.description = data["description"];
+            this.comparisonMethod = data["comparisonMethod"];
+            this.meansOfVerification = data["meansOfVerification"];
             this.target = data["target"];
             this.actual = data["actual"];
             this.dataSource = data["dataSource"];
             this.note = data["note"];
+            this.lastUpdated = data["lastUpdated"] ? moment(data["lastUpdated"].toString()) : <any>undefined;
             this.id = data["id"];
         }
     }
@@ -23359,10 +23367,14 @@ export class IndicatorYearlyTargetDto implements IIndicatorYearlyTargetDto {
         data = typeof data === 'object' ? data : {};
         data["indicatorId"] = this.indicatorId;
         data["year"] = this.year;
+        data["description"] = this.description;
+        data["comparisonMethod"] = this.comparisonMethod;
+        data["meansOfVerification"] = this.meansOfVerification;
         data["target"] = this.target;
         data["actual"] = this.actual;
         data["dataSource"] = this.dataSource;
         data["note"] = this.note;
+        data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : <any>undefined;
         data["id"] = this.id;
         return data; 
     }
@@ -23371,10 +23383,14 @@ export class IndicatorYearlyTargetDto implements IIndicatorYearlyTargetDto {
 export interface IIndicatorYearlyTargetDto {
     indicatorId: number;
     year: number;
+    description: string | undefined;
+    comparisonMethod: ComparisonMethodEnum;
+    meansOfVerification: string | undefined;
     target: string | undefined;
     actual: string | undefined;
     dataSource: string | undefined;
     note: string | undefined;
+    lastUpdated: moment.Moment | undefined;
     id: number;
 }
 

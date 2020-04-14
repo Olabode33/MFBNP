@@ -25,23 +25,26 @@
             <div class="kt-portlet kt-portlet--mobile">
                 <div class="kt-portlet__body">
 
-                    <form *ngIf="active" #performanceIndicatorForm="ngForm" novalidate (ngSubmit)="save()" autocomplete="off">
+                    <form *ngIf="active" #performanceIndicatorForm="ngForm" novalidate (ngSubmit)="save()"
+                        autocomplete="off">
 
                         <div class="form-group">
-                            <label for="performanceIndicator_Name">{{l("Name")}} <span class="kt-font-danger">*</span></label>
+                            <label for="performanceIndicator_Name">{{l("Name")}} <span
+                                    class="kt-font-danger">*</span></label>
                             <input type="text" id="performanceIndicator_Name" class="form-control"
                                 [(ngModel)]="performanceIndicator.name" name="Name" required />
                         </div>
-    
+
                         <div class="form-group">
                             <label for="performanceIndicator_Description">{{l("Description")}}</label>
-                            <textarea id="performanceIndicator_Description" class="form-control" rows="5"
+                            <textarea id="performanceIndicator_Description" class="form-control" rows="3"
                                 [(ngModel)]="performanceIndicator.description" name="Description"></textarea>
                         </div>
 
                         <div class="form-group row">
                             <div class="col-md-6">
-                                <label for="performanceIndicator_DataType">{{l("DataType")}} <span class="kt-font-danger">*</span></label>
+                                <label for="performanceIndicator_DataType">{{l("DataType")}} <span
+                                        class="kt-font-danger">*</span></label>
                                 <select id="performanceIndicator_DataType" class="form-control" required
                                     [(ngModel)]="performanceIndicator.dataType" name="DataType">
                                     <option [value]="dataTypeEnum.Number">Number</option>
@@ -49,7 +52,7 @@
                                     <option [value]="dataTypeEnum.Boolean">Boolean</option>
                                 </select>
                             </div>
-                            
+
                             <div *ngIf="performanceIndicator.dataType == dataTypeEnum.Number" class="col-md-6">
                                 <label for="performanceIndicator_Unit">{{l("Unit")}}</label>
                                 <select id="performanceIndicator_Unit" class="form-control"
@@ -61,105 +64,165 @@
                                 </select>
                             </div>
                         </div>
-    
+
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <label for="performanceIndicator_BaselineValue">{{l("BaselineValue")}}</label>
-                                <p *ngIf="performanceIndicator.dataType === undefined" class="kt-font-danger">Please select a data type</p>
-    
+                                <p *ngIf="performanceIndicator.dataType === undefined" class="kt-font-danger">Please
+                                    select a data type</p>
+
                                 <div *ngIf="performanceIndicator.dataType == dataTypeEnum.Number" class="input-group">
-                                    <div *ngIf="performanceIndicator.unit == unitEnum.Money" class="input-group-prepend">
-                                        <span class="input-group-text">NGN</span>								
+                                    <div *ngIf="performanceIndicator.unit == unitEnum.Money"
+                                        class="input-group-prepend">
+                                        <span class="input-group-text">NGN</span>
                                     </div>
-                                    <input type="number" id="performanceIndicator_BaselineValue" class="form-control" 
+                                    <input type="number" id="performanceIndicator_BaselineValue" class="form-control"
                                         [(ngModel)]="performanceIndicator.baselineValue" name="BaselineValue" />
-                                    <div *ngIf="performanceIndicator.unit == unitEnum.Percentage" class="input-group-append">
+                                    <div *ngIf="performanceIndicator.unit == unitEnum.Percentage"
+                                        class="input-group-append">
                                         <span class="input-group-text"><i class="fa fa-percent"></i></span>
                                     </div>
                                 </div>
-                                
-                                <input *ngIf="performanceIndicator.dataType == dataTypeEnum.DateTime" type="date" id="performanceIndicator_BaselineValue" class="form-control"
+
+                                <input *ngIf="performanceIndicator.dataType == dataTypeEnum.DateTime" type="date"
+                                    id="performanceIndicator_BaselineValue" class="form-control"
                                     [(ngModel)]="performanceIndicator.baselineValue" name="BaselineValue" />
-                                <select *ngIf="performanceIndicator.dataType == dataTypeEnum.Boolean" id="performanceIndicator_BaselineValue" class="form-control"
+                                <select *ngIf="performanceIndicator.dataType == dataTypeEnum.Boolean"
+                                    id="performanceIndicator_BaselineValue" class="form-control"
                                     [(ngModel)]="performanceIndicator.baselineValue" name="BaselineValue">
                                     <option [value]="true">Yes</option>
                                     <option [value]="false">No</option>
                                 </select>
                             </div>
                         </div>
-    
+
                         <div class="form-group row">
                             <div class="col-md-8">
                                 <label for="performanceIndicator_BaselineComment">{{l("BaselineComment")}}</label>
                                 <textarea id="performanceIndicator_BaselineComment" class="form-control" rows="3"
-                                    [(ngModel)]="performanceIndicator.baselineComment" name="BaselineComment"></textarea>
+                                    [(ngModel)]="performanceIndicator.baselineComment"
+                                    name="BaselineComment"></textarea>
                             </div>
                         </div>
-    
-                        <hr/><br>
-    
-                        <button type="button" class="btn btn-outline-{{!showYearlyTargetForm ? 'primary' : 'danger'}} mb-2" (click)="showYearlyTargetForm = !showYearlyTargetForm">
-                            <i class="fa fa-{{!showYearlyTargetForm ? 'plus' : 'times'}}"></i> 
+
+                        <hr /><br>
+
+                        <button type="button"
+                            class="btn btn-outline-{{!showYearlyTargetForm ? 'primary' : 'danger'}} mb-2"
+                            (click)="showYearlyTargetForm = !showYearlyTargetForm">
+                            <i class="fa fa-{{!showYearlyTargetForm ? 'plus' : 'times'}}"></i>
                             {{!showYearlyTargetForm ? 'Add Target' : 'Cancel'}}
                         </button>
-    
+
+                        <hr />
+
                         <div *ngIf="showYearlyTargetForm" class="form-group row">
-                            <div class="col-md-5">
+
+                            <div class="col-md-4">
                                 <label for="target_Year">{{l("Year")}}</label>
                                 <input type="number" id="target_Year" class="form-control" min="1000" max="9999"
                                     [(ngModel)]="target.year" name="Year" />
                             </div>
-                            <div class="col-md-5">
+                            <div class="col-md-4">
                                 <label for="target_Target">{{l("Target")}}</label>
-                                <p *ngIf="performanceIndicator.dataType === undefined" class="kt-font-danger">Please select a data type</p>
-    
+                                <p *ngIf="performanceIndicator.dataType === undefined" class="kt-font-danger">Please
+                                    select a data type</p>
+
                                 <div *ngIf="performanceIndicator.dataType == dataTypeEnum.Number" class="input-group">
-                                    <div *ngIf="performanceIndicator.unit == unitEnum.Money" class="input-group-prepend">
-                                        <span class="input-group-text">NGN</span>								
+                                    <div *ngIf="performanceIndicator.unit == unitEnum.Money"
+                                        class="input-group-prepend">
+                                        <span class="input-group-text">NGN</span>
                                     </div>
-                                    <input type="number" id="target_Target" class="form-control" [(ngModel)]="target.target" name="target_Target" />
-                                    <div *ngIf="performanceIndicator.unit == unitEnum.Percentage" class="input-group-append">
+                                    <input type="number" id="target_Target" class="form-control"
+                                        [(ngModel)]="target.target" name="target_Target" />
+                                    <div *ngIf="performanceIndicator.unit == unitEnum.Percentage"
+                                        class="input-group-append">
                                         <span class="input-group-text"><i class="fa fa-percent"></i></span>
                                     </div>
                                 </div>
-                                
-                                <input *ngIf="performanceIndicator.dataType == dataTypeEnum.DateTime" type="date" id="target_Target" class="form-control"
-                                    [(ngModel)]="target.target" name="target_Target" />
-                                <select *ngIf="performanceIndicator.dataType == dataTypeEnum.Boolean" id="target_Target" class="form-control"
-                                    [(ngModel)]="target.target" name="target_Target">
+
+                                <input *ngIf="performanceIndicator.dataType == dataTypeEnum.DateTime" type="date"
+                                    id="target_Target" class="form-control" [(ngModel)]="target.target"
+                                    name="target_Target" />
+                                <select *ngIf="performanceIndicator.dataType == dataTypeEnum.Boolean" id="target_Target"
+                                    class="form-control" [(ngModel)]="target.target" name="target_Target">
                                     <option [value]="true">Yes</option>
                                     <option [value]="false">No</option>
                                 </select>
                             </div>
+                            <div class="form-group col-md-4">
+                                <div *ngIf="performanceIndicator.dataType !== dataTypeEnum.Boolean">
+                                    <label for="target_ComparisonMethod">{{l("ComparisonMethod")}}</label>
+                                    <select id="target_ComparisonMethod" class="form-control"
+                                        [(ngModel)]="target.comparisonMethod" name="ComparisonMethod">
+                                        <option [value]="comparisonMethodEnum.GreaterThanOrEqual">Greater than or equal
+                                        </option>
+                                        <option [value]="comparisonMethodEnum.LessThanOrEqual">Less than or equal
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group col-md-6">
+                                <label for="target_MeansOfVerification">{{l("MeansOfVerification")}}</label>
+                                <textarea id="target_MeansOfVerification" class="form-control"
+                                    [(ngModel)]="target.meansOfVerification" name="MeansOfVerification"></textarea>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="target_Description">{{l("AdditionNote")}}</label>
+                                <textarea id="target_Description" class="form-control" [(ngModel)]="target.description"
+                                    name="Description"></textarea>
+                            </div>
                             <div class="col-md-2">
                                 <label class="col" for="Blanc">&nbsp;</label>
-                                <button class="btn btn-outline-success btn-icon" type="button" (click)="addTarget()">
-                                    <i class="fa fa-save"></i>
+                                <button class="btn btn-outline-success" type="button" (click)="addTarget()">
+                                    <i class="fa fa-save"></i> Save Target
                                 </button>
                             </div>
                         </div>
-    
+
                         <div class="table-responsive">
                             <hr>
-                            <h3>Targets</h3>
+                            <p class="lead">Targets</p>
                             <table class="table">
                                 <thead>
                                     <tr class="d-flex">
                                         <th class="col-md">Year</th>
                                         <th class="col-md">Target</th>
-                                        <th class="col-md"></th>
+                                        <th class="col-md">Comparison Method</th>
+                                        <th class="col-md">Last updated</th>
+                                        <th class="col-md-1"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr class="d-flex" *ngFor="let item of yearlyTargets; let i = index;">
                                         <td class="col-md">{{item.year}}</td>
                                         <td class="col-md">
-                                            {{performanceIndicator.unit == unitEnum.Money ? 'NGN ' : ''}}
-                                            {{item.target | number: '1.0-2'}}
-                                            {{performanceIndicator.unit == unitEnum.Percentage ? '%' : ''}}
+                                            <span *ngIf="performanceIndicator.dataType == dataTypeEnum.Number">
+                                                {{performanceIndicator.unit == unitEnum.Money ? 'NGN ' : ''}}
+                                                {{item.target | number: '1.0-2'}}
+                                                {{performanceIndicator.unit == unitEnum.Percentage ? '%' : ''}}
+                                            </span>
+                                            <span *ngIf="performanceIndicator.dataType == dataTypeEnum.DateTime">
+                                                {{item.target | momentFormat:'DD-MMM-YYYY'}}
+                                            </span>
+                                            <span *ngIf="performanceIndicator.dataType == dataTypeEnum.Boolean">
+                                                {{item.target}}
+                                            </span>
                                         </td>
                                         <td class="col-md">
-                                            <button class="btn btn-sm btn-outline-danger btn-icon" type="button" (click)="removeTarget(i)">
+                                            {{item.comparisonMethod == comparisonMethodEnum.LessThanOrEqual ? 'Less than or equal to' : 'Greater than or equal to'}}
+                                        </td>
+                                        <td class="col-md">
+                                            <span *ngIf="item.lastUpdated">
+                                                {{item.lastUpdated | momentFormat:'DD-MMM-YYYY'}}
+                                            </span>
+                                            <span *ngIf="!item.lastUpdated">-</span>
+                                        </td>
+                                        <td class="col-md-1">
+                                            <button class="btn btn-sm btn-outline-danger btn-icon" type="button"
+                                                (click)="removeTarget(i)">
                                                 <i class="fa fa-times"></i>
                                             </button>
                                         </td>
@@ -172,11 +235,14 @@
                         </div>
 
                         <div class="kt-margin-t-40">
-                            <button [disabled]="saving" type="button" class="btn btn-default"
-                                (click)="goBack()">{{l("Cancel")}}</button>
-                            <button type="submit" class="btn btn-primary blue" [disabled]="!performanceIndicatorForm.form.valid"
-                                [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i>
-                                <span>{{l("Save")}}</span></button>
+                            <div class="pull-right">
+                                <button [disabled]="saving" type="button" class="btn btn-default"
+                                    (click)="goBack()">{{l("Cancel")}}</button>
+                                <button type="submit" class="btn btn-primary blue"
+                                    [disabled]="!performanceIndicatorForm.form.valid" [buttonBusy]="saving"
+                                    [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i>
+                                    <span>{{l("Save")}}</span></button>
+                            </div>
                         </div>
                     </form>
                 </div>

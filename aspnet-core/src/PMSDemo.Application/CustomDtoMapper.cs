@@ -61,7 +61,8 @@ namespace PMSDemo
             configuration.CreateMap<ActivityAttachmentDto, ActivityAttachment>().ReverseMap();
             configuration.CreateMap<PerformanceReviewDto, PerformanceReview>().ReverseMap();
             configuration.CreateMap<CreateOrEditPerformanceReviewDto, PerformanceReview>().ReverseMap();
-            configuration.CreateMap<IndicatorYearlyTargetDto, IndicatorYearlyTarget>().ReverseMap();
+            configuration.CreateMap<IndicatorYearlyTargetDto, IndicatorYearlyTarget>().ReverseMap()
+                .ForMember(dto => dto.LastUpdated, opt => opt.Ignore());
             configuration.CreateMap<CreateOrEditPerformanceActivityDto, PerformanceActivity>().ReverseMap();
             configuration.CreateMap<PerformanceActivityDto, PerformanceActivity>().ReverseMap();
             configuration.CreateMap<CreateOrEditPerformanceIndicatorDto, PerformanceIndicator>().ReverseMap();

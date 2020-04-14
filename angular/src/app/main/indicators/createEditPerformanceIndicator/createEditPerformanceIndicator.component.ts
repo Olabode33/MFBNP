@@ -103,11 +103,16 @@ export class CreateEditPerformanceIndicatorComponent extends AppComponentBase im
     }
 
     addTarget(): void {
+        if (this.target.year < 1000 || this.target.year > 9999) {
+            this.notify.error('The entered year format is not correct!');
+            return;
+        }
         this.target.indicatorId = this.performanceIndicator.id;
         this.yearlyTargets.push(this.target);
-        console.log(this.target);
+        //console.log(this.target);
 
         this.target = new IndicatorYearlyTargetDto();
+        this.showYearlyTargetForm = false;
     }
 
     removeTarget(index: number): void {

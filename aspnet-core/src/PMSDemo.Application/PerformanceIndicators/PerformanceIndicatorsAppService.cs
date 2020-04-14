@@ -135,7 +135,20 @@ namespace PMSDemo.PerformanceIndicators
 
             var targets = await _indicatorYearlyTargetRepository.GetAll()
                                                     .Where(x => x.IndicatorId == input.Id)
-                                                    .Select(x => ObjectMapper.Map<IndicatorYearlyTargetDto>(x))
+                                                    .Select(x => new IndicatorYearlyTargetDto
+                                                    {
+                                                        Actual = x.Actual,
+                                                        ComparisonMethod = x.ComparisonMethod,
+                                                        DataSource = x.DataSource,
+                                                        Description = x.Description,
+                                                        Id = x.Id,
+                                                        IndicatorId = x.IndicatorId,
+                                                        LastUpdated = x.LastModificationTime,
+                                                        MeansOfVerification = x.MeansOfVerification,
+                                                        Note = x.Note,
+                                                        Target = x.Target,
+                                                        Year = x.Year
+                                                    })
                                                     .ToListAsync();
             foreach (var target in targets)
             {
@@ -212,6 +225,7 @@ namespace PMSDemo.PerformanceIndicators
                 else
                 {
                     var newIndicator = ObjectMapper.Map<IndicatorYearlyTarget>(item);
+                    newIndicator.IndicatorId = indicatorId;
                     await _indicatorYearlyTargetRepository.InsertAsync(newIndicator);
                 }
             }
