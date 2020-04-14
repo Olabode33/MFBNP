@@ -29,9 +29,9 @@
     <text name="Completed">Completed</text>
     
     
-    <text name="SelectAnOrganizationUnitToSeeIndicators">Select a unit to see indicators.</text>
-    <text name="SelectAnOrganizationUnitToSeeActivities">Select a unit to see activities.</text>
-    <text name="SelectAnOrganizationUnitToSeeReviews">Select a unit to see reviews.</text>
+    <text name="SelectAnOrganizationUnitToSeeIndicators">Select a deliverable to see indicators.</text>
+    <text name="SelectAnOrganizationUnitToSeeActivities">Select a deliverable to see activities.</text>
+    <text name="SelectAnOrganizationUnitToSeeReviews">Select a deliverable to see other informations.</text>
     
     <text name="DeliverablesAddedToMDAsOnlyError">Deliverables can only be added to MDAs</text>
     <text name="AddIndicator">Add Indicator</text>
@@ -75,8 +75,8 @@
     <text name="DeletePerformanceIndicator">Delete indicator</text>
     <text name="UpdatePerformanceIndicator">Update indicator</text>
     
-    <text name="PriorityAreas">Priority areas</text>
-    <text name="PriorityArea">Priority area</text>
+    <text name="PriorityAreas">Priority Areas</text>
+    <text name="PriorityArea">Priority Area</text>
     <text name="PMSDemo.PriorityAreas.PriorityArea">PriorityArea</text>
     <text name="Description">Description</text>
     <text name="PriorityAreasHeaderInfo">Manage priority areas</text>
@@ -371,10 +371,10 @@
     <text name="LookingForMpaVersion">Looking for Multi-Page Application Version?</text>
     <text name="LookingForSpaVersion">Looking for Single-Page Application Version?</text>
     <text name="ThisLanguageAlreadyExists">This language already exists!</text>
-    <text name="OrganizationUnitsHeaderInfo">Use units to organize indicators, activities and users</text>
+    <text name="OrganizationUnitsHeaderInfo">Organize indicators, activities and users</text>
     <text name="OrganizationTree">Deliverables</text>
     <text name="Members">Members</text>
-    <text name="SelectAnOrganizationUnitToSeeMembers">Select a unit to see members.</text>
+    <text name="SelectAnOrganizationUnitToSeeMembers">Select a deliverable or MDA to see members.</text>
     <text name="OrganizationUnitDeleteWarningMessage">Are you sure to delete unit {0}?</text>
     <text name="AddSubUnit">Add sub-unit</text>
     <text name="AddMember">Add member</text>

@@ -44,6 +44,12 @@ namespace PMSDemo.Agencies
 
             var output = new GetMdaForEditOutput { Mda = ObjectMapper.Map<CreateOrEditMdaDto>(mda) };
 
+            if (mda.ResponsiblePersonId != null)
+            {
+                var responsiblePerson = await _lookup_userRepository.FirstOrDefaultAsync((long)mda.ResponsiblePersonId);
+                output.ResponsiblePersonName = responsiblePerson.FullName;
+            }
+
             return output;
         }
 
@@ -73,6 +79,9 @@ namespace PMSDemo.Agencies
         {
             var mda = await _mdaRepository.FirstOrDefaultAsync((int)input.Id);
             mda.DisplayName = input.DisplayName;
+            mda.ResponsiblePersonId = input.ResponsiblePersonId;
+            mda.Role = input.Role;
+
             await _organizationUnitManager.UpdateAsync(mda);
         }
 

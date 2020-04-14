@@ -9,5 +9,7 @@ namespace PMSDemo.Agencies
     [Table("Mdas")]
     public class Mda: OrganizationUnit
     {
+        public virtual long? ResponsiblePersonId { get; set; }
+        public virtual string Role { get; set; } 
     }
 }

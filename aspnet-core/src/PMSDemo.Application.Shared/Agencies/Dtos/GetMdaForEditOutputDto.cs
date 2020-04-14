@@ -7,5 +7,6 @@ namespace PMSDemo.Agencies.Dtos
     public class GetMdaForEditOutput
     {
 		public CreateOrEditMdaDto Mda { get; set; }
+        public string ResponsiblePersonName { get; set; }
     }
 }

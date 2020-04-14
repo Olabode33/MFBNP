@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChild, Output, EventEmitter, Injector, ChangeDetectorRef } from '@angular/core';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { ModalDirective } from 'ngx-bootstrap';
-import { MdasServiceProxy, CreateOrEditMdaDto } from '@shared/service-proxies/service-proxies';
+import { MdasServiceProxy, CreateOrEditMdaDto, CommonLookupServiceProxy, FindUsersInput, NameValueDto } from '@shared/service-proxies/service-proxies';
 import { finalize } from 'rxjs/operators';
+import { CommonLookupModalComponent } from '@app/shared/common/lookup/common-lookup-modal.component';
 
 export interface IMdaOnEdit {
     id?: number;
@@ -18,22 +19,38 @@ export interface IMdaOnEdit {
 export class CreateEditMdaModalComponent extends AppComponentBase implements OnInit {
 
     @ViewChild('createOrEditModal', { static: true }) modal: ModalDirective;
+    @ViewChild('userLookupModal', {static: true}) userLookupModal: CommonLookupModalComponent;
     @Output() modalSave: EventEmitter<any> = new EventEmitter<any>();
 
     active = false;
     saving = false;
 
     mda: IMdaOnEdit = {};
+    responsibleUserName = '';
+    role = '';
+    responsiblePersonId = -1;
 
     constructor(
         injector: Injector,
         private _mdaServiceProxy: MdasServiceProxy,
-        private _changeDetector: ChangeDetectorRef
+        private _changeDetector: ChangeDetectorRef,
+        private _commonLookupService: CommonLookupServiceProxy,
     ) {
         super(injector);
     }
 
     ngOnInit() {
+        this.userLookupModal.configure({
+            title: this.l('SelectAUser'),
+            dataSource: (skipCount: number, maxResultCount: number, filter: string, tenantId?: number) => {
+                let input = new FindUsersInput();
+                input.filter = filter;
+                input.maxResultCount = maxResultCount;
+                input.skipCount = skipCount;
+                input.tenantId = null;
+                return this._commonLookupService.findUsers(input);
+            }
+        });
     }
 
     onShown(): void {
@@ -42,9 +59,20 @@ export class CreateEditMdaModalComponent extends AppComponentBase implements OnI
 
     show(mdaUnit: IMdaOnEdit): void {
         this.mda = mdaUnit;
-        this.active = true;
-        this.modal.show();
-        this._changeDetector.detectChanges();
+        if (mdaUnit.id) {
+            this._mdaServiceProxy.getMdaForEdit(mdaUnit.id).subscribe(result => {
+                this.responsiblePersonId = result.mda.responsiblePersonId;
+                this.responsibleUserName = result.responsiblePersonName;
+                this.role = result.mda.role;
+                this.active = true;
+                this.modal.show();
+                this._changeDetector.detectChanges();
+            });
+        } else {
+            this.active = true;
+            this.modal.show();
+            this._changeDetector.detectChanges();
+        }
 
     }
 
@@ -52,6 +80,7 @@ export class CreateEditMdaModalComponent extends AppComponentBase implements OnI
         const createEditInput = new CreateOrEditMdaDto();
         createEditInput.id = this.mda.id;
         createEditInput.displayName = this.mda.displayName;
+        createEditInput.responsiblePersonId = this.responsiblePersonId;
 
         this.saving = true;
         this._mdaServiceProxy
@@ -67,6 +96,15 @@ export class CreateEditMdaModalComponent extends AppComponentBase implements OnI
     close(): void {
         this.active = false;
         this.modal.hide();
+    }
+
+    showUserLookUpModal(): void {
+        this.userLookupModal.show();
+    }
+
+    selectUser(item: NameValueDto): void {
+        this.responsiblePersonId = parseInt(item.value);
+        this.responsibleUserName = item.name;
     }
 
 }

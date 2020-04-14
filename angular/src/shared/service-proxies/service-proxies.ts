@@ -21144,6 +21144,8 @@ export interface IUpdateLanguageTextInput {
 
 export class CreateOrEditMdaDto implements ICreateOrEditMdaDto {
     displayName!: string | undefined;
+    responsiblePersonId!: number | undefined;
+    role!: string | undefined;
     id!: number | undefined;
 
     constructor(data?: ICreateOrEditMdaDto) {
@@ -21158,6 +21160,8 @@ export class CreateOrEditMdaDto implements ICreateOrEditMdaDto {
     init(data?: any) {
         if (data) {
             this.displayName = data["displayName"];
+            this.responsiblePersonId = data["responsiblePersonId"];
+            this.role = data["role"];
             this.id = data["id"];
         }
     }
@@ -21172,6 +21176,8 @@ export class CreateOrEditMdaDto implements ICreateOrEditMdaDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["displayName"] = this.displayName;
+        data["responsiblePersonId"] = this.responsiblePersonId;
+        data["role"] = this.role;
         data["id"] = this.id;
         return data; 
     }
@@ -21179,11 +21185,14 @@ export class CreateOrEditMdaDto implements ICreateOrEditMdaDto {
 
 export interface ICreateOrEditMdaDto {
     displayName: string | undefined;
+    responsiblePersonId: number | undefined;
+    role: string | undefined;
     id: number | undefined;
 }
 
 export class GetMdaForEditOutput implements IGetMdaForEditOutput {
     mda!: CreateOrEditMdaDto;
+    responsiblePersonName!: string | undefined;
 
     constructor(data?: IGetMdaForEditOutput) {
         if (data) {
@@ -21197,6 +21206,7 @@ export class GetMdaForEditOutput implements IGetMdaForEditOutput {
     init(data?: any) {
         if (data) {
             this.mda = data["mda"] ? CreateOrEditMdaDto.fromJS(data["mda"]) : <any>undefined;
+            this.responsiblePersonName = data["responsiblePersonName"];
         }
     }
 
@@ -21210,12 +21220,14 @@ export class GetMdaForEditOutput implements IGetMdaForEditOutput {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["mda"] = this.mda ? this.mda.toJSON() : <any>undefined;
+        data["responsiblePersonName"] = this.responsiblePersonName;
         return data; 
     }
 }
 
 export interface IGetMdaForEditOutput {
     mda: CreateOrEditMdaDto;
+    responsiblePersonName: string | undefined;
 }
 
 export enum UserNotificationState {

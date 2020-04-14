@@ -31,4 +31,11 @@ namespace PMSDemo.Enums
         InProgress,
         Completed
     }
+
+    public enum OrganizationUnitTypeEnum
+    {
+        OrganizationUnit,
+        MDA,
+        Deliverable
+    }
 }
