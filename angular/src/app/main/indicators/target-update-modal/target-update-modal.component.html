@@ -1,0 +1,114 @@
+<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #indicatorTargetForm="ngForm" novalidate (ngSubmit)="save()" autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span>Update Target Progress</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" aria-label="Close" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="performanceIndicator_Name">{{l("Name")}}</label>
+                        <input type="text" id="performanceIndicator_Name" class="form-control"
+                            [(ngModel)]="performanceIndicator.name" name="Name" disabled readonly />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="performanceIndicator_Description">{{l("Description")}}</label>
+                        <textarea id="performanceIndicator_Description" class="form-control" rows="5" readonly disabled
+                            [(ngModel)]="performanceIndicator.description" name="Description"></textarea>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label for="performanceIndicator_Year">{{l("Year")}}</label>
+                            <input type="number" id="performanceIndicator_Year" class="form-control" min="1000" max="9999" readonly disabled
+                                [(ngModel)]="indicatorTarget.year" name="Year" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="performanceIndicator_Target">{{l("Target")}}</label>
+                            <input type="text" id="performanceIndicator_Target" class="form-control"
+                                [(ngModel)]="indicatorTarget.target" name="Target" readonly disabled />
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label for="performanceIndicator_Actual">{{l("Actual")}}</label>
+                            <div *ngIf="performanceIndicator.dataType == dataTypeEnum.Number" class="input-group">
+                                <div *ngIf="performanceIndicator.unit === unitEnum.Money" class="input-group-prepend">
+                                    <span class="input-group-text">NGN</span>								
+                                </div>
+                                <input type="number" id="performanceIndicator_Actual" class="form-control" [(ngModel)]="indicatorTarget.actual" name="Actual" />
+                                <div *ngIf="performanceIndicator.unit === unitEnum.Percentage" class="input-group-append">
+                                    <span class="input-group-text"><i class="fa fa-percent"></i></span>
+                                </div>
+                            </div>
+                            <input *ngIf="performanceIndicator.dataType == dataTypeEnum.DateTime" type="date" id="performanceIndicator_Actual" class="form-control"
+                                [(ngModel)]="indicatorTarget.actual" name="Actual" />
+                            <select *ngIf="performanceIndicator.dataType == dataTypeEnum.Boolean" id="performanceIndicator_Actual" class="form-control"
+                                [(ngModel)]="indicatorTarget.actual" name="Actual">
+                                <option [value]="true">Yes</option>
+                                <option [value]="false">No</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="performanceIndicator_DataSource">{{l("DataSource")}}</label>
+                            <input type="text" id="performanceIndicator_DataSource" class="form-control"
+                                [(ngModel)]="indicatorTarget.dataSource" name="DataSource"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="PerformanceIndicator_Comment">{{l("Comment")}}</label>
+                        <p-editor [(ngModel)]="indicatorTarget.note" name="Comment" [style]="{'height':'150px'}" required></p-editor>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="SignedTORFileUploadFileInput" class="control-label">Attachments</label>
+                        <p-fileUpload multiple="multiple"
+                                    id="DefaultFileUploadFileInput"
+                                    name="DefaultFileUploadFileInput[]"
+                                    [url]="uploadUrl"
+                                    accept="image/*,.pdf,.xlsx,.docx"
+                                    maxFileSize="1000000"
+                                    (onUpload)="onUpload($event)"
+                                    (onBeforeSend)="onBeforeSend($event)">
+
+                            <ng-template pTemplate="content">
+                                <ul *ngIf="uploadedFiles.length">
+                                    <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
+                                </ul>
+                            </ng-template>
+                        </p-fileUpload>
+                        <ul *ngIf="attachments.length > 0">
+                            <li *ngFor="let file of attachments">
+                                <a href="{{downloadResourceFile(file)}}" class="text-info" target="_blank"
+                                    title="{{l('DownloadFile')}}">
+                                    <span>
+                                        <i class="fa fa-download"></i>&nbsp;<span>{{file.fileName}}</span>
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                        <p *ngIf="attachments.length == 0">No attachments found</p>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default"
+                        (click)="close()">{{l("Cancel")}}</button>
+                    <button type="submit" class="btn btn-primary blue" [disabled]="!indicatorTargetForm.form.valid"
+                        [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i>
+                        <span>{{l("Save")}}</span></button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>

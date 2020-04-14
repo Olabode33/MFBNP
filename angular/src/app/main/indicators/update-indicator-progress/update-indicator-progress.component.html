@@ -1,0 +1,71 @@
+<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #performanceIndicatorForm="ngForm" novalidate (ngSubmit)="save()" autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span>Update Progress</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" aria-label="Close" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="performanceIndicator_Name">{{l("Name")}}</label>
+                        <input type="text" id="performanceIndicator_Name" class="form-control"
+                            [(ngModel)]="performanceIndicator.name" name="Name" disabled readonly />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="performanceIndicator_Description">{{l("Description")}}</label>
+                        <textarea id="performanceIndicator_Description" class="form-control" rows="5" readonly disabled
+                            [(ngModel)]="performanceIndicator.description" name="Description"></textarea>
+                    </div>
+
+                    <div class="table-responsive">
+                        <hr>
+                        <table class="table">
+                            <thead>
+                                <tr class="d-flex">
+                                    <th class="col-md">Year</th>
+                                    <th class="col-md">Target</th>
+                                    <th class="col-md">Actual</th>
+                                    <th class="col-md"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="d-flex" *ngFor="let item of yearlyTargets; let i = index;">
+                                    <td class="col-md">{{item.target.year}}</td>
+                                    <td class="col-md">{{item.target.target}}</td>
+                                    <td class="col-md">{{item.target.actual}}</td>
+                                    <td class="col-md">
+                                        <button class="btn btn-sm btn-outline-danger btn-icon" type="button" (click)="updateTarget(item)">
+                                            <i class="fa fa-pencil"></i>
+                                            Update Progress
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="yearlyTargets.length <= 0">
+                                    <td colspan="3">No targets added</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default"
+                        (click)="close()">{{l("Cancel")}}</button>
+                    <button type="submit" class="btn btn-primary blue" [disabled]="!performanceIndicatorForm.form.valid"
+                        [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i>
+                        <span>{{l("Save")}}</span></button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<app-target-update-modal #updateTargetModal (modalSave)="reload()"></app-target-update-modal>

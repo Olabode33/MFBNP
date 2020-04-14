@@ -1,0 +1,87 @@
+<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #performanceActivityForm="ngForm" novalidate (ngSubmit)="save()" autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span>Update Progress</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" aria-label="Close" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="performanceActivity_Name">{{l("Name")}}</label>
+                        <input type="text" id="performanceActivity_Name" class="form-control" readonly disabled
+                            [(ngModel)]="performanceActivity.name" name="Name" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="performanceActivity_Description">{{l("Description")}}</label>
+                        <textarea id="performanceActivity_Description" class="form-control" rows="5" readonly disabled
+                            [(ngModel)]="performanceActivity.description" name="Description"></textarea>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label for="performanceActivity_completionLevel">{{l("Progress Level")}} <span class="kt-font-danger">*</span></label>
+                            <input type="number" id="performanceActivity_completionLevel" class="form-control" required min="0" max="100"
+                                [(ngModel)]="performanceActivity.completionLevel" name="completionLevel" />
+                        </div>
+                        <div class="col-md-6">
+                            <label for="performanceActivity_dataSource">{{l("DataSource")}} <span class="kt-font-danger">*</span></label>
+                            <input type="text" id="performanceActivity_dataSource" class="form-control"
+                                [(ngModel)]="performanceActivity.dataSource" name="dataSource" required />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="performanceActivity_Comment">{{l("Comment")}} <span class="kt-font-danger">*</span></label>
+                        <p-editor [(ngModel)]="performanceActivity.note" name="Comment" [style]="{'height':'150px'}" required></p-editor>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="SignedTORFileUploadFileInput" class="control-label">Attachments</label>
+                        <p-fileUpload multiple="multiple"
+                                    id="DefaultFileUploadFileInput"
+                                    name="DefaultFileUploadFileInput[]"
+                                    [url]="uploadUrl"
+                                    accept="image/*,.pdf,.xlsx,.docx"
+                                    maxFileSize="1000000"
+                                    (onUpload)="onUpload($event)"
+                                    (onBeforeSend)="onBeforeSend($event)">
+
+                            <ng-template pTemplate="content">
+                                <ul *ngIf="uploadedFiles.length">
+                                    <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
+                                </ul>
+                            </ng-template>
+                        </p-fileUpload>
+                        <ul *ngIf="attachments.length > 0">
+                            <li *ngFor="let file of attachments">
+                                <a href="{{downloadResourceFile(file)}}" class="text-info" target="_blank"
+                                    title="{{l('DownloadFile')}}">
+                                    <span>
+                                        <i class="fa fa-download"></i>&nbsp;<span>{{file.fileName}}</span>
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                        <p *ngIf="attachments.length == 0">No attachments found</p>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default"
+                        (click)="close()">{{l("Cancel")}}</button>
+                    <button type="submit" class="btn btn-primary blue" [disabled]="!performanceActivityForm.form.valid"
+                        [buttonBusy]="saving" [busyText]="l('SavingWithThreeDot')"><i class="fa fa-save"></i>
+                        <span>{{l("Save")}}</span></button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>

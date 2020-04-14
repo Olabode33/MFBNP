@@ -1,0 +1,112 @@
+<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form *ngIf="active" #performanceActivityForm="ngForm" novalidate autocomplete="off">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <span>View Progress</span>
+                    </h4>
+                    <button type="button" class="close" (click)="close()" aria-label="Close" [disabled]="saving">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="performanceActivity_Name">{{l("Name")}} *</label>
+                        <input type="text" id="performanceActivity_Name" class="form-control" readonly disabled
+                            [(ngModel)]="performanceActivity.name" name="Name"  />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="performanceActivity_Description">{{l("Description")}}</label>
+                        <textarea id="performanceActivity_Description" class="form-control" rows="5" readonly disabled
+                            [(ngModel)]="performanceActivity.description" name="Description"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="performanceActivity_MilestoneAchieved">{{l("MilestonesAchieved")}}</label>
+                        <textarea id="performanceActivity_MilestoneAchieved" class="form-control" rows="5" readonly disabled
+                            [(ngModel)]="performanceActivity.milestoneAchieved" name="MilestoneAchieved"></textarea>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label for="performanceActivity_PlannedStartDate">{{l("PlannedStartDate")}}</label>
+                            <input required class="form-control m-input" type="datetime" readonly disabled
+                                [value]="performanceActivity.plannedStartDate | momentFormat:'L'" id="performanceActivity_PlannedStartDate"
+                                name="performanceActivity_PlannedStartDate">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="performanceActivity_PlannedCompletionDate">{{l("PlannedCompletionDate")}}</label>
+                            <input required class="form-control m-input" type="text" readonly disabled
+                                [value]="performanceActivity.plannedCompletionDate | momentFormat:'LL'" id="performanceActivity_PlannedCompletionDate"
+                                name="performanceActivity_PlannedCompletionDate">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label class="" for="Blanc">Status</label>
+                            <span class="btn btn-bold btn-sm btn-font-sm btn-block
+                                    btn-label-{{performanceActivity.completionStatus === completionStatusEnum.Completed ? 'success' : 
+                                                (performanceActivity.completionStatus === completionStatusEnum.InProgress ? 'warning' : 'danger')}}">
+                                {{ completionStatusEnum[performanceActivity.completionStatus]}}
+                            </span>
+                        </div>      
+                        <div class="col-md-6">
+                            <label class="" for="Blanc">Completion Level</label>
+                            <div class="progress progress-lg">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{performanceActivity.completionLevel === 100 ? 'success' : 'warning'}}" 
+                                    role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" [style.width]="performanceActivity.completionLevel">
+                                    {{performanceActivity.completionLevel}}%
+                                </div>
+                            </div>
+                        </div>                  
+                    </div>
+
+                    <div class="form-group row">
+                        <div *ngIf="performanceActivity.completionStatus !== completionStatusEnum.NotStarted" class="col-md-6">
+                            <label for="performanceActivity_actualStartDate">{{l("ActualStartDate")}}</label>
+                            <input required class="form-control m-input" type="datetime" readonly disabled
+                                [value]="performanceActivity.actualStartDate | momentFormat:'L'" id="performanceActivity_actualStartDate"
+                                name="performanceActivity_actualStartDate">
+                        </div>
+                        <div *ngIf="performanceActivity.completionStatus === completionStatusEnum.Completed" class="col-md-6">
+                            <label for="performanceActivity_actualCompletionDate">{{l("ActualCompletionDate")}}</label>
+                            <input required class="form-control m-input" type="datetime" readonly disabled
+                                [value]="performanceActivity.actualCompletionDate | momentFormat:'L'" id="performanceActivity_actualCompletionDate"
+                                name="performanceActivity_actualCompletionDate">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="performanceActivity_Comment">{{l("Comment")}}</label>
+                        <p-editor [(ngModel)]="performanceActivity.note" name="Comment" [style]="{'height':'150px'}" [readonly]="true" [disabled]="true"></p-editor>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="SignedTORFileUploadFileInput" class="control-label">Attachments</label>
+                        <ul *ngIf="attachments.length > 0">
+                            <li *ngFor="let file of attachments">
+                                <a href="{{downloadResourceFile(file)}}" class="text-info" target="_blank"
+                                    title="{{l('DownloadFile')}}">
+                                    <span>
+                                        <i class="fa fa-download"></i>&nbsp;<span>{{file.fileName}}</span>
+                                    </span>
+                                </a>
+                            </li>
+                        </ul>
+                        <p *ngIf="attachments.length == 0">No attachments found</p>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button [disabled]="saving" type="button" class="btn btn-default"
+                        (click)="close()">{{l("Cancel")}}</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
