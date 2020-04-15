@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild, Injector, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild, Injector, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { IIndicatorWithOrganizationUnit } from '../IIndicatorWithOrganizationUnit';
 import { ModalDirective } from 'ngx-bootstrap';
@@ -8,21 +8,27 @@ import { CreateOrEditPerformanceIndicatorDto, DataTypeEnum, UnitsEnum, Compariso
 import { finalize } from 'rxjs/operators';
 import { TargetUpdateModalComponent } from '../target-update-modal/target-update-modal.component';
 import { EntityTypeHistoryModalComponent } from '@app/shared/common/entityHistory/entity-type-history-modal.component';
+import { Location } from '@angular/common';
+import { ActivatedRoute, Router, Params } from '@angular/router';
+import { appModuleAnimation } from '@shared/animations/routerTransition';
+import { ViewTargetProgressLogModalComponent } from '../view-target-progress-log-modal/view-target-progress-log-modal.component';
 
 @Component({
   selector: 'app-view-indicator',
   templateUrl: './view-indicator.component.html',
-  styleUrls: ['./view-indicator.component.css']
+  styleUrls: ['./view-indicator.component.css'],
+  encapsulation: ViewEncapsulation.None,
+  animations: [appModuleAnimation()]
 })
-export class ViewIndicatorComponent extends AppComponentBase {
+export class ViewIndicatorComponent extends AppComponentBase implements OnInit {
 
     organizationUnitId: number;
 
     @Output() modalSave: EventEmitter<IIndicatorWithOrganizationUnit> = new EventEmitter<IIndicatorWithOrganizationUnit>();
 
     @ViewChild('entityTypeHistoryModal', { static: true }) entityTypeHistoryModal: EntityTypeHistoryModalComponent;
+    @ViewChild('progressUpdateLogModal', { static: true}) progressUpdateLogModal: ViewTargetProgressLogModalComponent;
     @ViewChild('updateTargetModal', { static: true }) updateTargetModal: TargetUpdateModalComponent;
-    @ViewChild('createOrEditModal', { static: true }) modal: ModalDirective;
     @ViewChild('dataTable', { static: true }) dataTable: Table;
     @ViewChild('paginator', { static: true }) paginator: Paginator;
 
@@ -33,6 +39,8 @@ export class ViewIndicatorComponent extends AppComponentBase {
 
     performanceIndicator: CreateOrEditPerformanceIndicatorDto = new CreateOrEditPerformanceIndicatorDto();
     yearlyTargets: UpdateTargetDto[] = new Array();
+    mdaName = '';
+    deliverableName = '';
 
     dataTypeEnum = DataTypeEnum;
     unitEnum = UnitsEnum;
@@ -43,9 +51,24 @@ export class ViewIndicatorComponent extends AppComponentBase {
     constructor(
         injector: Injector,
         private _performanceIndicatorService: PerformanceIndicatorsServiceProxy,
-        private _changeDetector: ChangeDetectorRef
+        private _changeDetector: ChangeDetectorRef,
+        private _activatedRoute: ActivatedRoute,
+        private _router: Router,
+        private _location: Location
     ) {
         super(injector);
+    }
+
+    ngOnInit(): void {
+        this._activatedRoute.params.subscribe((params: Params) => {
+            let indicatorId: number;
+
+            if (params.indicatorId) {
+                indicatorId = +params['indicatorId'];
+            }
+
+            this.show(indicatorId);
+        });
     }
 
     show(indicatorId: number): void {
@@ -54,10 +77,10 @@ export class ViewIndicatorComponent extends AppComponentBase {
             .subscribe(result => {
                 this.performanceIndicator = result.performanceIndicator;
                 this.yearlyTargets = result.targets;
-                console.log(result);
+                this.mdaName = result.mdaName;
+                this.deliverableName = result.deliverableName;
 
                 this.active = true;
-                this.modal.show();
                 this._changeDetector.detectChanges();
             });
     }
@@ -69,6 +92,9 @@ export class ViewIndicatorComponent extends AppComponentBase {
                 .subscribe(result => {
                     this.performanceIndicator = result.performanceIndicator;
                     this.yearlyTargets = result.targets;
+
+                    this.mdaName = result.mdaName;
+                    this.deliverableName = result.deliverableName;
                 });
         }
     }
@@ -77,17 +103,18 @@ export class ViewIndicatorComponent extends AppComponentBase {
         this.updateTargetModal.show(target, this.performanceIndicator);
     }
 
-    close(): void {
+    goBack(): void {
         this.active = false;
-        this.modal.hide();
+        this._location.back();
     }
 
     showHistory(target: IndicatorYearlyTargetDto): void {
-        this.entityTypeHistoryModal.show({
-            entityId: target.id.toString(),
-            entityTypeFullName: this._entityTypeFullName,
-            entityTypeDescription: this.performanceIndicator.name + '- <br /> Target Year: ' + target.year.toString()
-        });
+        this.progressUpdateLogModal.show(target.id);
+        // this.entityTypeHistoryModal.show({
+        //     entityId: target.id.toString(),
+        //     entityTypeFullName: this._entityTypeFullName,
+        //     entityTypeDescription: this.performanceIndicator.name + '- <br /> Target Year: ' + target.year.toString()
+        // });
     }
 
 }

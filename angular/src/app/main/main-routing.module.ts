@@ -4,6 +4,7 @@ import { PriorityAreasComponent } from './priorityAreas/priorityAreas/priorityAr
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { OrganizationUnitsComponent } from '@app/admin/organization-units/organization-units.component';
 import { CreateEditPerformanceIndicatorComponent } from './indicators/createEditPerformanceIndicator/createEditPerformanceIndicator.component';
+import { ViewIndicatorComponent } from './indicators/view-indicator/view-indicator.component';
 
 @NgModule({
     imports: [
@@ -12,8 +13,9 @@ import { CreateEditPerformanceIndicatorComponent } from './indicators/createEdit
                 path: '',
                 children: [
                     { path: 'deliverables', component: OrganizationUnitsComponent, data: { permission: 'Pages.Deliverable' }  },
-                    { path: 'deliverable/new', component: CreateEditPerformanceIndicatorComponent, data: { permission: 'Pages.PerformanceIndicator.Create'}},
-                    { path: 'deliverable/edit', component: CreateEditPerformanceIndicatorComponent, data: { permission: 'Pages.PerformanceIndicator.Edit'}},
+                    { path: 'deliverable/new/:unitId', component: CreateEditPerformanceIndicatorComponent, data: { permission: 'Pages.PerformanceIndicator.Create'}},
+                    { path: 'deliverable/edit/:unitId/:indicatorId', component: CreateEditPerformanceIndicatorComponent, data: { permission: 'Pages.PerformanceIndicator.Edit'}},
+                    { path: 'deliverable/view/:indicatorId', component: ViewIndicatorComponent, data: { permission: 'Pages.PerformanceIndicator'}},
                     { path: 'priority-areas', component: PriorityAreasComponent, data: { permission: 'Pages.PriorityAreas' }  },
                     { path: 'dashboard', component: DashboardComponent, data: { permission: 'Pages.Tenant.Dashboard' } },
                     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },

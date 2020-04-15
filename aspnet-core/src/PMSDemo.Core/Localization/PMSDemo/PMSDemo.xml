@@ -1,6 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <localizationDictionary culture="en">
   <texts>
+    <text name="IndicatorTargetYear">Target Year</text>
+    <text name="IndicatorTargetValue">Target value</text>
+    <text name="IndicatorActualValue">Actual value</text>
+    <text name="AdditionalNote">Additional note</text>
     
     <text name="LoginPageTitle">Performance Management System</text>
     <text name="LoginPageSubHeader">

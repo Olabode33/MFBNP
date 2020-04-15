@@ -1,140 +1,168 @@
-<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
-    aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form *ngIf="active" #performanceIndicatorForm="ngForm" novalidate  autocomplete="off">
-                <div class="modal-header">
-                    <h4 class="modal-title">
-                        <span>View Performance Indicator</span>
-                    </h4>
-                    <button type="button" class="close" (click)="close()" aria-label="Close" [disabled]="saving">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+<div [@routerTransition]>
+    <div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+        <div class="kt-subheader kt-grid__item">
+            <div class="kt-container ">
+                <div class="kt-subheader__main">
+                    <h3 class="kt-subheader__title">
+                        <span>Performance Indicator</span>
+                    </h3>
+                    <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                    <span class="kt-subheader__desc">
+                    </span>
                 </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="performanceIndicator_Name">{{l("Name")}} *</label>
-                        <input type="text" id="performanceIndicator_Name" class="form-control"
-                            [(ngModel)]="performanceIndicator.name" name="Name" readonly disabled />
+                <div class="kt-subheader__toolbar">
+                    <div class="kt-subheader__wrapper">
+                        <button (click)="goBack()" class="btn btn-outline-primary blue">
+                            <i class="fa fa-reply"></i>
+                            {{l("Back")}}
+                        </button>
                     </div>
-
-                    <div class="form-group">
-                        <label for="performanceIndicator_Description">{{l("Description")}}</label>
-                        <textarea id="performanceIndicator_Description" class="form-control" rows="5" readonly disabled
-                            [(ngModel)]="performanceIndicator.description" name="Description"></textarea>
-                    </div>
-
-                    <div class="form-group row">
-                        <div class="col-md-6">
-                            <label for="performanceIndicator_BaselineValue">{{l("BaselineValue")}}</label>
-                            <input type="text" id="performanceIndicator_BaselineValue" class="form-control" readonly disabled
-                                [(ngModel)]="performanceIndicator.baselineValue" name="BaselineValue" />
-                        </div>
-                        <div class="col-md-6">
-                            <label for="performanceIndicator_BaselineComment">{{l("BaselineComment")}}</label>
-                            <textarea id="performanceIndicator_BaselineComment" class="form-control" rows="3" readonly disabled
-                                [(ngModel)]="performanceIndicator.baselineComment" name="BaselineComment"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- <div class="form-group row">
-                        <div class="col-md-6">
-                            <label for="performanceIndicator_Year">{{l("Year")}}</label>
-                            <input type="number" id="performanceIndicator_Year" class="form-control" min="1000" max="9999" readonly disabled
-                                [(ngModel)]="performanceIndicator.year" name="Year" />
-                        </div>
-                        <div class="col-md-6">
-                            <label for="performanceIndicator_DataType">{{l("DataType")}}</label>
-                            <select id="performanceIndicator_DataType" class="form-control" readonly disabled
-                                [(ngModel)]="performanceIndicator.dataType" name="DataType">
-                                <option [value]="dataTypeEnum.Number">Number</option>
-                                <option [value]="dataTypeEnum.DateTime">DateTime</option>
-                                <option [value]="dataTypeEnum.Boolean">Boolean</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <div class="col-md-6">
-                            <label for="performanceIndicator_Target">{{l("Target")}}</label>
-                            <input type="text" id="performanceIndicator_Target" class="form-control" readonly disabled
-                                [(ngModel)]="performanceIndicator.target" name="Target" />
-                        </div>
-                        <div class="col-md-6">
-                            <label for="performanceIndicator_Actual">{{l("Actual")}}</label>
-                            <input type="text" id="performanceIndicator_Actual" class="form-control" readonly disabled
-                                [(ngModel)]="performanceIndicator.actual" name="Actual" />
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="PerformanceIndicator_Comment">{{l("Comment")}}</label>
-                        <p-editor [(ngModel)]="performanceIndicator.note" name="Comment" [style]="{'height':'150px'}" [readonly]="true" [disabled]="true"></p-editor>
-                    </div> -->
-
-                    <div class="form-group">
-                        <label for="performanceIndicator_MeansOfVerification">{{l("MeansOfVerification")}}</label>
-                        <textarea id="performanceIndicator_MeansOfVerification" class="form-control" rows="5" readonly disabled
-                            [(ngModel)]="performanceIndicator.meansOfVerification"
-                            name="MeansOfVerification"></textarea>
-                    </div>
-
-                    <div class="table-responsive">
-                        <hr>
-                        <table class="table">
-                            <thead>
-                                <tr class="d-flex">
-                                    <th class="col-md">Year</th>
-                                    <th class="col-md">Target</th>
-                                    <th class="col-md">Actual</th>
-                                    <th class="col-md"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="d-flex" *ngFor="let item of yearlyTargets; let i = index;">
-                                    <td class="col-md">{{item.target.year}}</td>
-                                    <td class="col-md">
-                                        {{performanceIndicator.unit === unitEnum.Money ? 'NGN ' : ''}}
-                                        {{item.target.target | number: '1.0-2'}}
-                                        {{performanceIndicator.unit === unitEnum.Percentage ? '%' : ''}}
-                                    </td>
-                                    <td class="col-md">
-                                        {{performanceIndicator.unit === unitEnum.Money ? 'NGN ' : ''}}
-                                        {{item.target.actual | number: '1.0-2'}}
-                                        {{performanceIndicator.unit === unitEnum.Percentage ? '%' : ''}}
-                                    </td>
-                                    <td class="col-md">
-                                        <div class="btn-group" role="group" aria-label="First group">
-                                            <button *ngIf="isGranted('Pages.PerformanceIndicator.Update')"
-                                                data-toggle="tooltip" title="Update target's progress" data-placement="top"
-                                                class="btn btn-sm btn-outline-primary" type="button" (click)="updateTarget(item)">
-                                                <i class="fa fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-primary" 
-                                                data-toggle="tooltip" title="View audit log" data-placement="top"
-                                                type="button" (click)="showHistory(item.target)">
-                                                <i class="fa fa-list-ul"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr *ngIf="yearlyTargets.length <= 0">
-                                    <td colspan="3">No targets added</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
                 </div>
-                <div class="modal-footer">
-                    <button [disabled]="saving" type="button" class="btn btn-default"
-                        (click)="close()">{{l("Close")}}</button>
-                </div>
-            </form>
+            </div>
         </div>
+        <div class="kt-container kt-grid__item kt-grid__item--fluid">
+            <div class="kt-portlet kt-portlet--mobile">
+                <div class="kt-portlet__body  ">
+                    <form *ngIf="active" #performanceIndicatorForm="ngForm" novalidate  autocomplete="off">
+                        <div class="form-group">
+                            <label for="performanceIndicator_MDA">{{l("MDA")}}</label>
+                            <input type="text" id="performanceIndicator_MDA" class="form-control"
+                                [(ngModel)]="mdaName" name="MDA" readonly disabled />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="performanceIndicator_Deliverable">{{l("Deliverable")}}</label>
+                            <input type="text" id="performanceIndicator_Deliverable" class="form-control"
+                                [(ngModel)]="deliverableName" name="Deliverable" readonly disabled />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="performanceIndicator_Name">{{l("Indicator")}}</label>
+                            <input type="text" id="performanceIndicator_Name" class="form-control"
+                                [(ngModel)]="performanceIndicator.name" name="Name" readonly disabled />
+                        </div>
+    
+                        <div class="form-group">
+                            <label for="performanceIndicator_Description">{{l("Description")}}</label>
+                            <textarea id="performanceIndicator_Description" class="form-control" rows="5" readonly disabled
+                                [(ngModel)]="performanceIndicator.description" name="Description"></textarea>
+                        </div>
+    
+                        <div class="form-group row">
+                            <div class="col-lg-4 col-md-6">
+                                <label for="performanceIndicator_BaselineValue">{{l("BaselineValue")}}</label>    
+                                <div *ngIf="performanceIndicator.dataType == dataTypeEnum.Number" class="input-group">
+                                    <div *ngIf="performanceIndicator.unit == unitEnum.Money"
+                                        class="input-group-prepend">
+                                        <span class="input-group-text">NGN</span>
+                                    </div>
+                                    <input type="number" id="performanceIndicator_BaselineValue" class="form-control" readonly disabled
+                                        [(ngModel)]="performanceIndicator.baselineValue" name="BaselineValue" />
+                                    <div *ngIf="performanceIndicator.unit == unitEnum.Percentage"
+                                        class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-percent"></i></span>
+                                    </div>
+                                </div>
+
+                                <input *ngIf="performanceIndicator.dataType == dataTypeEnum.DateTime" type="text"
+                                    id="performanceIndicator_BaselineValue" class="form-control" disabled readonly
+                                    [value]="performanceIndicator.baselineValue | momentFormat:'DD-MMM-YYYY'" name="BaselineValue" />
+                                <input type="text" *ngIf="performanceIndicator.dataType == dataTypeEnum.Boolean"
+                                    id="performanceIndicator_BaselineValue" class="form-control" disabled readonly
+                                    [(ngModel)]="performanceIndicator.baselineValue" name="BaselineValue" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <label for="performanceIndicator_BaselineComment">{{l("BaselineComment")}}</label>
+                                <textarea id="performanceIndicator_BaselineComment" class="form-control" rows="3"
+                                    [(ngModel)]="performanceIndicator.baselineComment" readonly disabled
+                                    name="BaselineComment"></textarea>
+                            </div>
+                        </div>
+    
+                        <div class="table-responsive">
+                            <hr>
+                            <table class="table">
+                                <thead>
+                                    <tr class="d-flex">
+                                        <th class="col-md">{{l('IndicatorTargetYear')}}</th>
+                                        <th class="col-md">Comparison Method</th>
+                                        <th class="col-md">{{l('IndicatorTargetValue')}}</th>
+                                        <th class="col-md">{{l('IndicatorActualValue')}}</th>
+                                        <th class="col-md">Last updated</th>
+                                        <th class="col-md-1"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="d-flex" *ngFor="let item of yearlyTargets; let i = index;">
+                                        <td class="col-md">{{item.target.year}}</td>
+                                        <td class="col-md">
+                                            {{item.target.comparisonMethod == comparisonMethodEnum.LessThanOrEqual ? 'Less than or equal to' : 'Greater than or equal to'}}
+                                        </td>
+                                        <td class="col-md">
+                                            <span *ngIf="performanceIndicator.dataType == dataTypeEnum.Number">
+                                                {{performanceIndicator.unit == unitEnum.Money ? 'NGN ' : ''}}
+                                                {{item.target.target | number: '1.0-2'}}
+                                                {{performanceIndicator.unit == unitEnum.Percentage ? '%' : ''}}
+                                            </span>
+                                            <span *ngIf="performanceIndicator.dataType == dataTypeEnum.DateTime">
+                                                {{item.target.target | momentFormat:'DD-MMM-YYYY'}}
+                                            </span>
+                                            <span *ngIf="performanceIndicator.dataType == dataTypeEnum.Boolean">
+                                                {{item.target.target}}
+                                            </span>
+                                        </td>
+                                        <td class="col-md">
+                                            <span *ngIf="performanceIndicator.dataType == dataTypeEnum.Number && item.target.actual">
+                                                {{performanceIndicator.unit == unitEnum.Money ? 'NGN ' : ''}}
+                                                {{item.target.actual | number: '1.0-2'}}
+                                                {{performanceIndicator.unit == unitEnum.Percentage ? '%' : ''}}
+                                            </span>
+                                            <span *ngIf="performanceIndicator.dataType == dataTypeEnum.DateTime && item.target.actual">
+                                                {{item.target | momentFormat:'DD-MMM-YYYY'}}
+                                            </span>
+                                            <span *ngIf="performanceIndicator.dataType == dataTypeEnum.Boolean && item.target.actual">
+                                                {{item.target}}
+                                            </span>
+                                        </td>
+                                        <td class="col-md">
+                                            <span *ngIf="item.target.lastUpdated">
+                                                {{item.target.lastUpdated | momentFormat:'DD-MMM-YYYY hh:mm:ss'}}
+                                            </span>
+                                            <span *ngIf="!item.target.lastUpdated">-</span>
+                                        </td>
+                                        <td class="col-md-1">
+                                            <div class="btn-group" role="group" aria-label="First group">
+                                                <button *ngIf="isGranted('Pages.PerformanceIndicator.Update')"
+                                                    data-toggle="tooltip" title="Update target's progress" data-placement="top"
+                                                    class="btn btn-sm btn-outline-primary" type="button" (click)="updateTarget(item)">
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-primary" 
+                                                    data-toggle="tooltip" title="View audit log" data-placement="top"
+                                                    type="button" (click)="showHistory(item.target)">
+                                                    <i class="fa fa-list-ul"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr *ngIf="yearlyTargets.length <= 0">
+                                        <td colspan="3">No targets added</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        
+        <app-target-update-modal #updateTargetModal (modalSave)="reload()"></app-target-update-modal>
+        <entityTypeHistoryModal #entityTypeHistoryModal></entityTypeHistoryModal>
+        <app-view-target-progress-log-modal #progressUpdateLogModal></app-view-target-progress-log-modal>
 
     </div>
 </div>
-
-<app-target-update-modal #updateTargetModal (modalSave)="reload()"></app-target-update-modal>
-<entityTypeHistoryModal #entityTypeHistoryModal></entityTypeHistoryModal>

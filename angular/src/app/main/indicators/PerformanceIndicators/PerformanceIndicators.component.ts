@@ -95,15 +95,15 @@ export class PerformanceIndicatorsComponent extends AppComponentBase implements 
     }
 
     openAddModal(): void {
-        this._router.navigate(['app/main/deliverable/new'], { queryParams: { unitId: this._organizationUnit.id } });
+        this._router.navigate(['app/main/deliverable/new', this._organizationUnit.id]);
     }
 
     viewIndicator(indicatorId: number): void {
-        this.viewIndicatorModal.show(indicatorId);
+        this._router.navigate(['app/main/deliverable/view', indicatorId]);
     }
 
     editIndicator(indicatorId: number): void {
-        this._router.navigate(['app/main/deliverable/edit'], { queryParams: { unitId: this._organizationUnit.id, indicatorId: indicatorId } });
+        this._router.navigate(['app/main/deliverable/edit', this._organizationUnit.id, indicatorId ]);
     }
 
     updateProgress(indicatorId: number): void {

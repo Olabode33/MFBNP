@@ -9072,6 +9072,66 @@ export class PerformanceIndicatorsServiceProxy {
         }
         return _observableOf<void>(<any>null);
     }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getTargetUpdateLog(id: number | undefined): Observable<TargetProgressLogDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/PerformanceIndicators/GetTargetUpdateLog?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetTargetUpdateLog(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetTargetUpdateLog(<any>response_);
+                } catch (e) {
+                    return <Observable<TargetProgressLogDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<TargetProgressLogDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetTargetUpdateLog(response: HttpResponseBase): Observable<TargetProgressLogDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(TargetProgressLogDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<TargetProgressLogDto[]>(<any>null);
+    }
 }
 
 @Injectable()
@@ -23648,6 +23708,86 @@ export class CreateEditIndicatorAndTargetDto implements ICreateEditIndicatorAndT
 export interface ICreateEditIndicatorAndTargetDto {
     indicator: CreateOrEditPerformanceIndicatorDto;
     yearlyTarget: IndicatorYearlyTargetDto[] | undefined;
+}
+
+export class TargetProgressLogDto implements ITargetProgressLogDto {
+    targetId!: number;
+    indicatorId!: number;
+    year!: number;
+    description!: string | undefined;
+    comparisonMethod!: ComparisonMethodEnum;
+    meansOfVerification!: string | undefined;
+    target!: string | undefined;
+    actual!: string | undefined;
+    dataSource!: string | undefined;
+    note!: string | undefined;
+    lastUpdated!: moment.Moment | undefined;
+    lastUpdatedBy!: string | undefined;
+
+    constructor(data?: ITargetProgressLogDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.targetId = data["targetId"];
+            this.indicatorId = data["indicatorId"];
+            this.year = data["year"];
+            this.description = data["description"];
+            this.comparisonMethod = data["comparisonMethod"];
+            this.meansOfVerification = data["meansOfVerification"];
+            this.target = data["target"];
+            this.actual = data["actual"];
+            this.dataSource = data["dataSource"];
+            this.note = data["note"];
+            this.lastUpdated = data["lastUpdated"] ? moment(data["lastUpdated"].toString()) : <any>undefined;
+            this.lastUpdatedBy = data["lastUpdatedBy"];
+        }
+    }
+
+    static fromJS(data: any): TargetProgressLogDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TargetProgressLogDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["targetId"] = this.targetId;
+        data["indicatorId"] = this.indicatorId;
+        data["year"] = this.year;
+        data["description"] = this.description;
+        data["comparisonMethod"] = this.comparisonMethod;
+        data["meansOfVerification"] = this.meansOfVerification;
+        data["target"] = this.target;
+        data["actual"] = this.actual;
+        data["dataSource"] = this.dataSource;
+        data["note"] = this.note;
+        data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : <any>undefined;
+        data["lastUpdatedBy"] = this.lastUpdatedBy;
+        return data; 
+    }
+}
+
+export interface ITargetProgressLogDto {
+    targetId: number;
+    indicatorId: number;
+    year: number;
+    description: string | undefined;
+    comparisonMethod: ComparisonMethodEnum;
+    meansOfVerification: string | undefined;
+    target: string | undefined;
+    actual: string | undefined;
+    dataSource: string | undefined;
+    note: string | undefined;
+    lastUpdated: moment.Moment | undefined;
+    lastUpdatedBy: string | undefined;
 }
 
 export class CreateOrEditPerformanceReviewDto implements ICreateOrEditPerformanceReviewDto {

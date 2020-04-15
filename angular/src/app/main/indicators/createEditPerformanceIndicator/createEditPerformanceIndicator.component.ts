@@ -8,7 +8,7 @@ import { Table } from 'primeng/table';
 import { Paginator } from 'primeng/paginator';
 import { finalize } from 'rxjs/operators';
 import { Location } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, Params } from '@angular/router';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 
 @Component({
@@ -52,9 +52,19 @@ export class CreateEditPerformanceIndicatorComponent extends AppComponentBase im
     }
 
     ngOnInit(): void {
-        let unitId = this._activatedRoute.snapshot.queryParams['unitId'];
-        let indicatorId = this._activatedRoute.snapshot.queryParams['indicatorId'];
-        this.show(unitId, indicatorId);
+        this._activatedRoute.params.subscribe((params: Params) => {
+            let unitId: number;
+            let indicatorId: number;
+
+            if (params.unitId) {
+                unitId = +params['unitId'];
+            }
+            if (params.indicatorId) {
+                indicatorId = +params['indicatorId'];
+            }
+
+            this.show(unitId, indicatorId);
+        });
     }
 
     ngAfterViewInit(): void {

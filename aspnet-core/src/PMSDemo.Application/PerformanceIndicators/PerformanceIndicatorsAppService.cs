@@ -27,6 +27,7 @@ namespace PMSDemo.PerformanceIndicators
         private readonly IRepository<OrganizationUnit, long> _lookup_organizationUnitRepository; 
         private readonly IRepository<PriorityArea> _lookup_priorityAreaRepository; 
         private readonly IRepository<IndicatorYearlyTarget> _indicatorYearlyTargetRepository; 
+        private readonly IRepository<IndicatorUpdateLog> _indicatorUpdateLogRepository; 
         private readonly OrganizationUnitManager _organizationUnitManager;
 
         public PerformanceIndicatorsAppService(
@@ -36,6 +37,7 @@ namespace PMSDemo.PerformanceIndicators
             IRepository<OrganizationUnit, long> lookup_organizationUnitRepository,
             IRepository<PriorityArea> lookup_priorityAreaRepository,
             IRepository<IndicatorYearlyTarget> indicatorYearlyTargetRepository,
+            IRepository<IndicatorUpdateLog> indicatorUpdateLogRepository,
             OrganizationUnitManager organizationUnitManager)
         {
             _performanceIndicatorRepository = performanceIndicatorRepository;
@@ -45,6 +47,7 @@ namespace PMSDemo.PerformanceIndicators
             _lookup_priorityAreaRepository = lookup_priorityAreaRepository;
             _organizationUnitManager = organizationUnitManager;
             _indicatorYearlyTargetRepository = indicatorYearlyTargetRepository;
+            _indicatorUpdateLogRepository = indicatorUpdateLogRepository;
         }
 
         public async Task<PagedResultDto<GetPerformanceIndicatorForEditOutput>> GetAllForUnit(GetAllPerformanceIndicatorsInput input)
@@ -211,6 +214,7 @@ namespace PMSDemo.PerformanceIndicators
 
             await _indicatorYearlyTargetRepository.UpdateAsync(indicator);
             await SaveAttachment(indicator.Id, input.Attachments);
+            await SaveProgressLog(input.Target);
         }
 
         protected async Task SaveYearlyTargets(int indicatorId, List<IndicatorYearlyTargetDto> input)
@@ -269,5 +273,48 @@ namespace PMSDemo.PerformanceIndicators
             return attachments;
         }
 
+        protected async Task SaveProgressLog(IndicatorYearlyTargetDto input)
+        {
+            await _indicatorUpdateLogRepository.InsertAsync(new IndicatorUpdateLog
+            {
+                Actual = input.Actual,
+                ComparisonMethod = input.ComparisonMethod,
+                DataSource = input.DataSource,
+                Description = input.Description,
+                TargetId = input.Id,
+                IndicatorId = input.IndicatorId,
+                MeansOfVerification = input.MeansOfVerification,
+                Note = input.Note,
+                Target = input.Target,
+                Year = input.Year
+            });
+        }
+
+        public async Task<List<TargetProgressLogDto>> GetTargetUpdateLog(EntityDto input)
+        {
+            var filteredLog = _indicatorUpdateLogRepository.GetAll().Where(x => x.TargetId == input.Id);
+
+            var logs = from o in filteredLog
+                       join u in _lookup_userRepository.GetAll() on o.CreatorUserId equals u.Id into u1
+                       from u2 in u1.DefaultIfEmpty()
+
+                       select new TargetProgressLogDto()
+                       {
+                           Actual = o.Actual,
+                           ComparisonMethod = o.ComparisonMethod,
+                           DataSource = o.DataSource,
+                           Description = o.Description,
+                           TargetId = o.Id,
+                           IndicatorId = o.IndicatorId,
+                           MeansOfVerification = o.MeansOfVerification,
+                           Note = o.Note,
+                           Target = o.Target,
+                           Year = o.Year,
+                           LastUpdated = o.CreationTime,
+                           LastUpdatedBy = u2 != null ? u2.FullName : ""
+                       };
+
+            return await logs.OrderByDescending(x => x.LastUpdated).ToListAsync();
+        }
     }
 }
