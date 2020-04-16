@@ -26,20 +26,30 @@
 
                     <div class="form-group row">
                         <div class="col-md-6">
-                            <label for="performanceIndicator_Year">{{l("Year")}}</label>
+                            <label for="performanceIndicator_Year">{{l("IndicatorTargetYear")}}</label>
                             <input type="number" id="performanceIndicator_Year" class="form-control" min="1000" max="9999" readonly disabled
                                 [(ngModel)]="indicatorTarget.year" name="Year" />
                         </div>
                         <div class="col-md-6">
-                            <label for="performanceIndicator_Target">{{l("Target")}}</label>
-                            <input type="text" id="performanceIndicator_Target" class="form-control"
-                                [(ngModel)]="indicatorTarget.target" name="Target" readonly disabled />
+                            <label for="performanceIndicator_Target">{{l("IndicatorTargetValue")}}</label>
+                            <div class="input-group">
+                                <div *ngIf="performanceIndicator.unit === unitEnum.Money" class="input-group-prepend">
+                                    <span class="input-group-text">NGN</span>								
+                                </div>
+                                <input type="text" id="performanceIndicator_Target" class="form-control"
+                                        [(ngModel)]="indicatorTarget.target" name="Target" readonly disabled />
+                                <div *ngIf="performanceIndicator.unit === unitEnum.Percentage" class="input-group-append">
+                                    <span class="input-group-text"><i class="fa fa-percent"></i></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                    
+                    <hr><br>
 
                     <div class="form-group row">
                         <div class="col-md-6">
-                            <label for="performanceIndicator_Actual">{{l("Actual")}}</label>
+                            <label for="performanceIndicator_Actual">Enter current value</label>
                             <div *ngIf="performanceIndicator.dataType == dataTypeEnum.Number" class="input-group">
                                 <div *ngIf="performanceIndicator.unit === unitEnum.Money" class="input-group-prepend">
                                     <span class="input-group-text">NGN</span>								
@@ -53,20 +63,38 @@
                                 [(ngModel)]="indicatorTarget.actual" name="Actual" />
                             <select *ngIf="performanceIndicator.dataType == dataTypeEnum.Boolean" id="performanceIndicator_Actual" class="form-control"
                                 [(ngModel)]="indicatorTarget.actual" name="Actual">
-                                <option [value]="true">Yes</option>
-                                <option [value]="false">No</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
                             </select>
+                            <span *ngIf="performanceIndicator.dataType == dataTypeEnum.Number" class="form-text text-muted">{{l('EnterCurrentValueNote')}}</span>
                         </div>
-                        <div class="col-md-6">
-                            <label for="performanceIndicator_DataSource">{{l("DataSource")}}</label>
-                            <input type="text" id="performanceIndicator_DataSource" class="form-control"
-                                [(ngModel)]="indicatorTarget.dataSource" name="DataSource"/>
+
+                        <!-- <div class="col-md-6">
+                            <label for="performanceIndicator_PreActual">{{l('IndicatorActualValue')}}</label>
+                            <div class="input-group">
+                                <div *ngIf="performanceIndicator.unit === unitEnum.Money" class="input-group-prepend">
+                                    <span class="input-group-text">NGN</span>								
+                                </div>
+                                <input type="text" id="performanceIndicator_PreActual" class="form-control"
+                                        [(ngModel)]="preActual" name="PreActual" readonly disabled />
+                                <div *ngIf="performanceIndicator.unit === unitEnum.Percentage" class="input-group-append">
+                                    <span class="input-group-text"><i class="fa fa-percent"></i></span>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-8">
+                            <label for="performanceIndicator_DataSource">Enter the source the value was gotten from</label>
+                            <textarea id="performanceIndicator_DataSource" class="form-control" rows="3"
+                                [(ngModel)]="indicatorTarget.dataSource" name="DataSource"></textarea>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="PerformanceIndicator_Comment">{{l("Comment")}}</label>
-                        <p-editor [(ngModel)]="indicatorTarget.note" name="Comment" [style]="{'height':'150px'}" required></p-editor>
+                        <label for="PerformanceIndicator_Comment">Additional Information</label>
+                        <p-editor [(ngModel)]="indicatorTarget.note" name="Comment" [style]="{'height':'150px'}"></p-editor>
                     </div>
 
                     <div class="form-group">

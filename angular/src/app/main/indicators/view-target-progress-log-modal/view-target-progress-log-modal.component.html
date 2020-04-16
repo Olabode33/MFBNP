@@ -20,11 +20,11 @@
                                 <th>{{"IndicatorTargetValue" | localize}}</th>
                                 <th>{{"IndicatorActualValue" | localize}}</th>
                                 <th>{{"DataSource" | localize}}</th>
-                                <th>{{"Note" | localize}}</th>
+                                <th>{{"AdditionalNote" | localize}}</th>
                             </tr>
                         </thead>
-                        <tbody *ngFor="let log of targetLog;">
-                            <tr>
+                        <tbody>
+                            <tr *ngFor="let log of targetLog;">
                                 <td><strong>{{log.lastUpdated | momentFormat: 'DD-MMM-YYYY hh:mm:ss'}}</strong></td>
                                 <td>{{log.year}}</td>
                                 <td>{{log.target}}</td>

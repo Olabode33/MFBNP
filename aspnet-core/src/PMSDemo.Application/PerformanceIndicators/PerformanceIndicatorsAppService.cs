@@ -207,13 +207,22 @@ namespace PMSDemo.PerformanceIndicators
         [AbpAuthorize(AppPermissions.Pages_PerformanceIndicator_Update)]
         public async Task UpdateYearTargetProgress(UpdateTargetDto input)
         {
-            var indicator = await _indicatorYearlyTargetRepository.FirstOrDefaultAsync((int)input.Target.Id);
-            indicator.Actual = input.Target.Actual;
-            indicator.Note = input.Target.Note;
-            indicator.DataSource = input.Target.DataSource;
+            var indicator = await _performanceIndicatorRepository.FirstOrDefaultAsync((int)input.Target.IndicatorId);
 
-            await _indicatorYearlyTargetRepository.UpdateAsync(indicator);
-            await SaveAttachment(indicator.Id, input.Attachments);
+            var target = await _indicatorYearlyTargetRepository.FirstOrDefaultAsync((int)input.Target.Id);
+            if (indicator.DataType == Enums.DataTypeEnum.Number)
+            {
+                target.Actual = (Convert.ToDouble(target.Actual) + Convert.ToDouble(input.Target.Actual)).ToString();
+            }
+            else
+            {
+                target.Actual = input.Target.Actual;
+            }
+            target.Note = input.Target.Note;
+            target.DataSource = input.Target.DataSource;
+
+            await _indicatorYearlyTargetRepository.UpdateAsync(target);
+            await SaveAttachment(target.Id, input.Attachments);
             await SaveProgressLog(input.Target);
         }
 

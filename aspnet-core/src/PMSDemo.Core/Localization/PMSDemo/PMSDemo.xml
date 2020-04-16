@@ -5,6 +5,7 @@
     <text name="IndicatorTargetValue">Target value</text>
     <text name="IndicatorActualValue">Actual value</text>
     <text name="AdditionalNote">Additional note</text>
+    <text name="EnterCurrentValueNote">This value would be added to the previous value</text>
     
     <text name="LoginPageTitle">Performance Management System</text>
     <text name="LoginPageSubHeader">

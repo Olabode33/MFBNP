@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PMSDemo.EntityFrameworkCore;
 
 namespace PMSDemo.Migrations
 {
     [DbContext(typeof(PMSDemoDbContext))]
-    partial class PMSDemoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200416023129_Update_Activity_DateTime_to_nullable")]
+    partial class Update_Activity_DateTime_to_nullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

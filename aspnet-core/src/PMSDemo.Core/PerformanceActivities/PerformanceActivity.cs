@@ -15,10 +15,10 @@ namespace PMSDemo.PerformanceActivities
         public virtual string Name { get; set; }
         public virtual string Description { get; set; }
         public virtual string MilestoneAchieved { get; set; }
-        public virtual DateTime PlannedStartDate { get; set; }
-        public virtual DateTime ActualStartDate { get; set; }
-        public virtual DateTime PlannedCompletionDate { get; set; }
-        public virtual DateTime ActualCompletionDate { get; set; }
+        public virtual DateTime? PlannedStartDate { get; set; }
+        public virtual DateTime? ActualStartDate { get; set; }
+        public virtual DateTime? PlannedCompletionDate { get; set; }
+        public virtual DateTime? ActualCompletionDate { get; set; }
         public virtual CompletionStatusEnum CompletionStatus { get; set; }
         public virtual string Note { get; set; }
         public virtual bool CanCascade { get; set; }

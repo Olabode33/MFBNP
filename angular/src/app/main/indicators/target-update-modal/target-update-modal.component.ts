@@ -31,6 +31,7 @@ export class TargetUpdateModalComponent extends AppComponentBase {
     attachments: IndicatorAttachmentDto[] = new Array();
     attachment: IndicatorAttachmentDto = new IndicatorAttachmentDto();
     performanceIndicator: CreateOrEditPerformanceIndicatorDto = new CreateOrEditPerformanceIndicatorDto();
+    preActual = '';
 
     dataTypeEnum = DataTypeEnum;
     unitEnum = UnitsEnum;
@@ -53,6 +54,7 @@ export class TargetUpdateModalComponent extends AppComponentBase {
         this.indicatorTarget = target.target;
         this.attachments = target.attachments;
         this.performanceIndicator = indicator;
+        this.preActual = target.target.actual;
 
         this.active = true;
         this.modal.show();

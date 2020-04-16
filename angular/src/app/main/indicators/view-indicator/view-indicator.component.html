@@ -92,7 +92,7 @@
                                         <th class="col-md">{{l('IndicatorTargetValue')}}</th>
                                         <th class="col-md">{{l('IndicatorActualValue')}}</th>
                                         <th class="col-md">Last updated</th>
-                                        <th class="col-md-1"></th>
+                                        <th class="col-md"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -121,10 +121,10 @@
                                                 {{performanceIndicator.unit == unitEnum.Percentage ? '%' : ''}}
                                             </span>
                                             <span *ngIf="performanceIndicator.dataType == dataTypeEnum.DateTime && item.target.actual">
-                                                {{item.target | momentFormat:'DD-MMM-YYYY'}}
+                                                {{item.target.actual | momentFormat:'DD-MMM-YYYY'}}
                                             </span>
                                             <span *ngIf="performanceIndicator.dataType == dataTypeEnum.Boolean && item.target.actual">
-                                                {{item.target}}
+                                                {{item.target.actual }}
                                             </span>
                                         </td>
                                         <td class="col-md">
@@ -133,7 +133,7 @@
                                             </span>
                                             <span *ngIf="!item.target.lastUpdated">-</span>
                                         </td>
-                                        <td class="col-md-1">
+                                        <td class="col-md">
                                             <div class="btn-group" role="group" aria-label="First group">
                                                 <button *ngIf="isGranted('Pages.PerformanceIndicator.Update')"
                                                     data-toggle="tooltip" title="Update target's progress" data-placement="top"
