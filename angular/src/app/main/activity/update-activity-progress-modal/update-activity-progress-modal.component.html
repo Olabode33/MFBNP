@@ -26,20 +26,40 @@
 
                     <div class="form-group row">
                         <div class="col-md-6">
-                            <label for="performanceActivity_completionLevel">{{l("Progress Level")}} <span class="kt-font-danger">*</span></label>
-                            <input type="number" id="performanceActivity_completionLevel" class="form-control" required min="0" max="100"
-                                [(ngModel)]="performanceActivity.completionLevel" name="completionLevel" />
+                            <label for="performanceActivity_completionLevel">{{l("EnterProgressLevel")}} <span class="kt-font-danger">*</span></label>
+                            <div class="input-group">
+                                <input type="number" id="performanceActivity_completionLevel" class="form-control" required min="0" max="100"
+                                    [(ngModel)]="performanceActivity.completionLevel" name="completionLevel" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="fa fa-percent"></i></span>
+                                </div>
+                            </div>
+                            <span class="form-text text-muted">{{l('EnterCurrentValueNote')}}</span>
                         </div>
+
                         <div class="col-md-6">
-                            <label for="performanceActivity_dataSource">{{l("DataSource")}} <span class="kt-font-danger">*</span></label>
-                            <input type="text" id="performanceActivity_dataSource" class="form-control"
-                                [(ngModel)]="performanceActivity.dataSource" name="dataSource" required />
+                            <label for="performanceActivity_prevLevel">{{l("Last progress level")}}</label>
+                            <div class="input-group">
+                                <input type="number" id="performanceActivity_prevLevel" class="form-control" required min="0" max="100" readonly disabled
+                                    [(ngModel)]="preCompletionLevel" name="prevLevel" />
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="fa fa-percent"></i></span>
+                                </div>
+                            </div>
+                            <span class="form-text text-muted">Progress level as at the last update</span>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-8">
+                            <label for="performanceActivity_dataSource">{{l("EnterDataSource")}} <span class="kt-font-danger">*</span></label>
+                            <textarea id="performanceActivity_dataSource" class="form-control" rows="3"
+                                [(ngModel)]="performanceActivity.dataSource" name="dataSource" required></textarea>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="performanceActivity_Comment">{{l("Comment")}} <span class="kt-font-danger">*</span></label>
-                        <p-editor [(ngModel)]="performanceActivity.note" name="Comment" [style]="{'height':'150px'}" required></p-editor>
+                        <label for="performanceActivity_Comment">Additional Information</label>
+                        <p-editor [(ngModel)]="performanceActivity.note" name="Comment" [style]="{'height':'150px'}"></p-editor>
                     </div>
 
                     <div class="form-group">

@@ -148,7 +148,7 @@ namespace PMSDemo.PerformanceActivities
                 activity.ActualCompletionDate = DateTime.Now;
             }
 
-            activity.CompletionLevel = input.Activity.CompletionLevel;
+            activity.CompletionLevel = (activity.CompletionLevel + input.Activity.CompletionLevel) > 100 ? 100 : activity.CompletionLevel + input.Activity.CompletionLevel;
             activity.Note = input.Activity.Note;
             activity.DataSource = input.Activity.DataSource;
             await _performanceActivityRepository.UpdateAsync(activity);

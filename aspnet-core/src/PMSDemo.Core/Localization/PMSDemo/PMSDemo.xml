@@ -6,6 +6,8 @@
     <text name="IndicatorActualValue">Actual value</text>
     <text name="AdditionalNote">Additional note</text>
     <text name="EnterCurrentValueNote">This value would be added to the previous value</text>
+    <text name="EnterDataSource">Enter the source the value was gotten from</text>
+    <text name="EnterProgressLevel">Enter the current progress level</text>
     
     <text name="LoginPageTitle">Performance Management System</text>
     <text name="LoginPageSubHeader">

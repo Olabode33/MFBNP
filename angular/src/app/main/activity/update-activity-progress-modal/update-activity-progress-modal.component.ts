@@ -32,6 +32,7 @@ export class UpdateActivityProgressModalComponent extends AppComponentBase {
     performanceActivity: CreateOrEditPerformanceActivityDto = new CreateOrEditPerformanceActivityDto();
     attachments: ActivityAttachmentDto[] = new Array();
     activityAttachment: ActivityAttachmentDto = new ActivityAttachmentDto();
+    preCompletionLevel = 0;
 
     dataTypeEnum = DataTypeEnum;
     unitEnum = UnitsEnum;
@@ -40,7 +41,6 @@ export class UpdateActivityProgressModalComponent extends AppComponentBase {
 
     uploadUrl: string;
     uploadedFiles: any[] = [];
-
     constructor(
         injector: Injector,
         private _performanceActivityService: PerformanceActivitiesServiceProxy,
@@ -56,6 +56,7 @@ export class UpdateActivityProgressModalComponent extends AppComponentBase {
             .subscribe(result => {
                 this.performanceActivity = result.performanceActivity;
                 this.attachments = result.attachments;
+                this.preCompletionLevel = result.performanceActivity.completionLevel;
 
                 this.active = true;
                 this.modal.show();
@@ -66,8 +67,9 @@ export class UpdateActivityProgressModalComponent extends AppComponentBase {
     save(): void {
         this.saving = true;
 
-        if (this.attachments.length <= 0) {
-            this.message.info('Please attach a document before saving!');
+        let levelUpdate = this.preCompletionLevel + this.performanceActivity.completionLevel;
+        if (levelUpdate < 0 || levelUpdate > 100) {
+            this.notify.info('Progress level should be between 0% to 100%!');
             this.saving = false;
             return;
         }

@@ -29,6 +29,8 @@ export class ViewActivityModalComponent extends AppComponentBase {
 
     performanceActivity: CreateOrEditPerformanceActivityDto = new CreateOrEditPerformanceActivityDto();
     attachments: ActivityAttachmentDto[] = new Array();
+    mdaName = '';
+    deliverableName = '';
 
     dataTypeEnum = DataTypeEnum;
     unitEnum = UnitsEnum;
@@ -49,6 +51,8 @@ export class ViewActivityModalComponent extends AppComponentBase {
             .subscribe(result => {
                 this.performanceActivity = result.performanceActivity;
                 this.attachments = result.attachments;
+                this.mdaName = result.mdaName;
+                this.deliverableName = result.deliverableName;
 
                 this.active = true;
                 this.modal.show();
