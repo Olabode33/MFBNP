@@ -53,8 +53,6 @@ import { EditorModule } from 'primeng/editor';
 import { PerformanceActivityComponent } from '@app/main/activity/performanceActivity/performanceActivity.component';
 import { CreateEditActivityModalComponent } from '@app/main/activity/create-edit-activity-modal/create-edit-activity-modal.component';
 import { UpdateActivityProgressModalComponent } from '@app/main/activity/update-activity-progress-modal/update-activity-progress-modal.component';
-import { ViewActivityModalComponent } from '@app/main/activity/view-activity-modal/view-activity-modal.component';
-import { PerformanceReviewComponent } from '@app/main/deliverables/reviews/performance-review/performance-review.component';
 import { ViewReviewModalComponent } from '@app/main/deliverables/reviews/view-review-modal/view-review-modal.component';
 import { CreateEditReviewModalComponent } from '@app/main/deliverables/reviews/create-edit-review-modal/create-edit-review-modal.component';
 import { TargetUpdateModalComponent } from '@app/main/indicators/target-update-modal/target-update-modal.component';
@@ -72,6 +70,8 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { CreateEditPerformanceIndicatorComponent } from '@app/main/indicators/createEditPerformanceIndicator/createEditPerformanceIndicator.component';
 import { ViewTargetProgressLogModalComponent } from '@app/main/indicators/view-target-progress-log-modal/view-target-progress-log-modal.component';
 import { ViewActivityProgressLogModalComponent } from '@app/main/activity/view-activity-progress-log-modal/view-activity-progress-log-modal.component';
+import { ViewActivityComponent } from '@app/main/activity/view-activity/view-activity.component';
+import { PerformanceReviewComponent } from '@app/main/deliverables/reviews/performance-review/performance-review.component';
 
 @NgModule({
     imports: [
@@ -113,7 +113,7 @@ import { ViewActivityProgressLogModalComponent } from '@app/main/activity/view-a
         CreateEditReviewModalComponent,
         PerformanceReviewComponent,
         TargetUpdateModalComponent,
-        ViewActivityModalComponent,
+        ViewActivityComponent,
         UpdateActivityProgressModalComponent,
         CreateEditActivityModalComponent,
         PerformanceActivityComponent,
@@ -162,7 +162,7 @@ import { ViewActivityProgressLogModalComponent } from '@app/main/activity/view-a
         ViewReviewModalComponent,
         CreateEditReviewModalComponent,
         PerformanceReviewComponent,
-        ViewActivityModalComponent,
+        ViewActivityComponent,
         UpdateActivityProgressModalComponent,
         CreateEditActivityModalComponent,
         PerformanceActivityComponent,

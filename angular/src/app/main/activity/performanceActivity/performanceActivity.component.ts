@@ -3,7 +3,6 @@ import { CreateEditActivityModalComponent } from './../create-edit-activity-moda
 import { Component, OnInit, Output, EventEmitter, ViewChild, Injector } from '@angular/core';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { IActivityWithOrganizationUnit } from '../IActivityWithOrganizationUnit';
-import { ViewActivityModalComponent } from '../view-activity-modal/view-activity-modal.component';
 import { PerformanceActivitiesServiceProxy, CreateOrEditPerformanceIndicatorDto, CreateOrEditPerformanceActivityDto } from '@shared/service-proxies/service-proxies';
 import { Table } from 'primeng/table';
 import { Paginator } from 'primeng/paginator';
@@ -12,6 +11,7 @@ import { LazyLoadEvent } from 'primeng/api';
 import { finalize } from 'rxjs/operators';
 import { EntityTypeHistoryModalComponent } from '@app/shared/common/entityHistory/entity-type-history-modal.component';
 import { ViewActivityProgressLogModalComponent } from '../view-activity-progress-log-modal/view-activity-progress-log-modal.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-performanceActivity',
@@ -25,7 +25,6 @@ export class PerformanceActivityComponent extends AppComponentBase implements On
 
     @ViewChild('addActivityModal', { static: true }) addActivityModal: CreateEditActivityModalComponent;
     @ViewChild('updateActivityModal', { static: true }) updateActivityModal: UpdateActivityProgressModalComponent;
-    @ViewChild('viewActivityModal', { static: true }) viewActivityModal: ViewActivityModalComponent;
     @ViewChild('entityTypeHistoryModal', { static: true }) entityTypeHistoryModal: EntityTypeHistoryModalComponent;
     @ViewChild('progressUpdateLogModal', {static: true}) progressUpdateLogModal: ViewActivityProgressLogModalComponent;
     @ViewChild('dataTable', { static: true }) dataTable: Table;
@@ -37,7 +36,8 @@ export class PerformanceActivityComponent extends AppComponentBase implements On
 
     constructor(
         injector: Injector,
-        private _performanceActivityServiceProxy: PerformanceActivitiesServiceProxy
+        private _performanceActivityServiceProxy: PerformanceActivitiesServiceProxy,
+        private _router: Router
     ) {
         super(injector);
     }
@@ -100,7 +100,7 @@ export class PerformanceActivityComponent extends AppComponentBase implements On
     }
 
     viewActivity(activityId: number): void {
-        this.viewActivityModal.show(activityId);
+        this._router.navigate(['app/main/activity/view', activityId]);
     }
 
     editActivity(activityId: number): void {

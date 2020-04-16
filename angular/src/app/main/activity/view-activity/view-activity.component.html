@@ -1,17 +1,28 @@
-<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
-    aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form *ngIf="active" #performanceActivityForm="ngForm" novalidate autocomplete="off">
-                <div class="modal-header">
-                    <h4 class="modal-title">
-                        <span>View Progress</span>
-                    </h4>
-                    <button type="button" class="close" (click)="close()" aria-label="Close" [disabled]="saving">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+<div [@routerTransition]>
+    <div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+        <div class="kt-subheader kt-grid__item">
+            <div class="kt-container ">
+                <div class="kt-subheader__main">
+                    <h3 class="kt-subheader__title">
+                        <span>Activity Details</span>
+                    </h3>
+                    <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                    <span class="kt-subheader__desc">
+                    </span>
                 </div>
-                <div class="modal-body">
+                <div class="kt-subheader__toolbar">
+                    <div class="kt-subheader__wrapper">
+                        <button (click)="goBack()" class="btn btn-outline-primary blue">
+                            <i class="fa fa-reply"></i>
+                            {{l("Back")}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="kt-container kt-grid__item kt-grid__item--fluid">
+            <div class="kt-portlet kt-portlet--mobile">
+                <div class="kt-portlet__body">
                     <div class="form-group">
                         <label for="performanceIndicator_MDA">{{l("MDA")}}</label>
                         <input type="text" id="performanceIndicator_MDA" class="form-control"
@@ -128,7 +139,7 @@
                             </div>
                             <div id="auditBody" class="collapse" [ngClass]="{ show: showAuditInfoAccordion }">
                                 <div class="card-body pt-3">
-                                    <div class="form-group row">
+                                    <div class="form-group row pt-3">
                                         <div class="col-md-6">
                                             <label for="auditInfo_dateCreated">Date Created</label>    
                                             <input type="text" id="auditInfo_dateCreated" class="form-control" readonly disabled
@@ -156,14 +167,8 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
-                <div class="modal-footer">
-                    <button [disabled]="saving" type="button" class="btn btn-default"
-                        (click)="close()">{{l("Cancel")}}</button>
-                </div>
-            </form>
+            </div>
         </div>
-
     </div>
 </div>
