@@ -16,6 +16,7 @@ using Abp.Organizations;
 using PMSDemo.PerformanceActivities.Dtos;
 using PMSDemo.PriorityAreas;
 using PMSDemo.Enums;
+using PMSDemo.Common.Dto;
 
 namespace PMSDemo.PerformanceActivities
 {
@@ -98,6 +99,21 @@ namespace PMSDemo.PerformanceActivities
                 output.MdaName = mda.DisplayName;
             }
             output.Attachments = await GetActivityAttachments(activity.Id);
+
+            AuditInfoDto auditInfo = new AuditInfoDto();
+            auditInfo.CreatedDate = activity.CreationTime;
+            auditInfo.LastUpdatedDate = activity.LastModificationTime;
+            if (activity.CreatorUserId != null)
+            {
+                var user = await _lookup_userRepository.FirstOrDefaultAsync((long)activity.CreatorUserId);
+                auditInfo.CreatedBy = user.FullName;
+            }
+            if (activity.LastModifierUserId != null)
+            {
+                var user = await _lookup_userRepository.FirstOrDefaultAsync((long)activity.LastModifierUserId);
+                auditInfo.LastUpdatedBy = user.FullName;
+            }
+            output.AuditInfo = auditInfo;
 
             return output;
         }

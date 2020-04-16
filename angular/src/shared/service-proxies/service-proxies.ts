@@ -23176,11 +23176,60 @@ export interface IActivityAttachmentDto {
     id: number;
 }
 
+export class AuditInfoDto implements IAuditInfoDto {
+    createdBy!: string | undefined;
+    createdDate!: moment.Moment;
+    lastUpdatedBy!: string | undefined;
+    lastUpdatedDate!: moment.Moment | undefined;
+
+    constructor(data?: IAuditInfoDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.createdBy = data["createdBy"];
+            this.createdDate = data["createdDate"] ? moment(data["createdDate"].toString()) : <any>undefined;
+            this.lastUpdatedBy = data["lastUpdatedBy"];
+            this.lastUpdatedDate = data["lastUpdatedDate"] ? moment(data["lastUpdatedDate"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): AuditInfoDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AuditInfoDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["createdBy"] = this.createdBy;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+        data["lastUpdatedBy"] = this.lastUpdatedBy;
+        data["lastUpdatedDate"] = this.lastUpdatedDate ? this.lastUpdatedDate.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IAuditInfoDto {
+    createdBy: string | undefined;
+    createdDate: moment.Moment;
+    lastUpdatedBy: string | undefined;
+    lastUpdatedDate: moment.Moment | undefined;
+}
+
 export class GetPerformanceActivityForEditOutput implements IGetPerformanceActivityForEditOutput {
     performanceActivity!: CreateOrEditPerformanceActivityDto;
     deliverableName!: string | undefined;
     mdaName!: string | undefined;
     attachments!: ActivityAttachmentDto[] | undefined;
+    auditInfo!: AuditInfoDto;
 
     constructor(data?: IGetPerformanceActivityForEditOutput) {
         if (data) {
@@ -23201,6 +23250,7 @@ export class GetPerformanceActivityForEditOutput implements IGetPerformanceActiv
                 for (let item of data["attachments"])
                     this.attachments!.push(ActivityAttachmentDto.fromJS(item));
             }
+            this.auditInfo = data["auditInfo"] ? AuditInfoDto.fromJS(data["auditInfo"]) : <any>undefined;
         }
     }
 
@@ -23221,6 +23271,7 @@ export class GetPerformanceActivityForEditOutput implements IGetPerformanceActiv
             for (let item of this.attachments)
                 data["attachments"].push(item.toJSON());
         }
+        data["auditInfo"] = this.auditInfo ? this.auditInfo.toJSON() : <any>undefined;
         return data; 
     }
 }
@@ -23230,6 +23281,7 @@ export interface IGetPerformanceActivityForEditOutput {
     deliverableName: string | undefined;
     mdaName: string | undefined;
     attachments: ActivityAttachmentDto[] | undefined;
+    auditInfo: AuditInfoDto;
 }
 
 export class PagedResultDtoOfGetPerformanceActivityForEditOutput implements IPagedResultDtoOfGetPerformanceActivityForEditOutput {
@@ -23680,6 +23732,7 @@ export class GetPerformanceIndicatorForEditOutput implements IGetPerformanceIndi
     mdaName!: string | undefined;
     inherited!: boolean;
     targets!: UpdateTargetDto[] | undefined;
+    auditInfo!: AuditInfoDto;
 
     constructor(data?: IGetPerformanceIndicatorForEditOutput) {
         if (data) {
@@ -23701,6 +23754,7 @@ export class GetPerformanceIndicatorForEditOutput implements IGetPerformanceIndi
                 for (let item of data["targets"])
                     this.targets!.push(UpdateTargetDto.fromJS(item));
             }
+            this.auditInfo = data["auditInfo"] ? AuditInfoDto.fromJS(data["auditInfo"]) : <any>undefined;
         }
     }
 
@@ -23722,6 +23776,7 @@ export class GetPerformanceIndicatorForEditOutput implements IGetPerformanceIndi
             for (let item of this.targets)
                 data["targets"].push(item.toJSON());
         }
+        data["auditInfo"] = this.auditInfo ? this.auditInfo.toJSON() : <any>undefined;
         return data; 
     }
 }
@@ -23732,6 +23787,7 @@ export interface IGetPerformanceIndicatorForEditOutput {
     mdaName: string | undefined;
     inherited: boolean;
     targets: UpdateTargetDto[] | undefined;
+    auditInfo: AuditInfoDto;
 }
 
 export class PagedResultDtoOfGetPerformanceIndicatorForEditOutput implements IPagedResultDtoOfGetPerformanceIndicatorForEditOutput {

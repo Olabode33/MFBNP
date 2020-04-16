@@ -89,19 +89,72 @@
                         <p-editor [(ngModel)]="performanceActivity.note" name="Comment" [style]="{'height':'150px'}" [readonly]="true" [disabled]="true"></p-editor>
                     </div>
 
-                    <div class="form-group">
-                        <label for="SignedTORFileUploadFileInput" class="control-label">Attachments</label>
-                        <ul *ngIf="attachments.length > 0">
-                            <li *ngFor="let file of attachments">
-                                <a href="{{downloadResourceFile(file)}}" class="text-info" target="_blank"
-                                    title="{{l('DownloadFile')}}">
-                                    <span>
-                                        <i class="fa fa-download"></i>&nbsp;<span>{{file.fileName}}</span>
-                                    </span>
-                                </a>
-                            </li>
-                        </ul>
-                        <p *ngIf="attachments.length == 0">No attachments found</p>
+                    <!--begin::Accordion-->
+                    <div class="accordion accordion-light  accordion-toggle-arrow" id="accordionAttachment">
+                        <div class="card">
+                            <div class="card-header" id="auditHeading">
+                                <div class="card-title" (click)="showAttachmentAccordion = !showAttachmentAccordion"
+                                    [ngClass]="{collapsed: !showAttachmentAccordion}">
+                                    <i class="fa fa-paperclip font-primary"></i>
+                                    <span>Attachments</span>
+                                </div>
+                            </div>
+                            <div id="auditBody" class="collapse" [ngClass]="{ show: showAttachmentAccordion }">
+                                <div class="card-body pt-3">
+                                    <div class="form-group">
+                                        <ul *ngIf="attachments.length > 0">
+                                            <li *ngFor="let file of attachments">
+                                                <a href="{{downloadResourceFile(file)}}" class="text-info" target="_blank"
+                                                    title="{{l('DownloadFile')}}">
+                                                    <span>
+                                                        <i class="fa fa-download"></i>&nbsp;<span>{{file.fileName}}</span>
+                                                    </span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                        <p *ngIf="attachments.length == 0">No attachments found</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header" id="auditHeading">
+                                <div class="card-title pr-2" (click)="showAuditInfoAccordion = !showAuditInfoAccordion"
+                                    [ngClass]="{collapsed: !showAuditInfoAccordion}">
+                                    <i class="fa fa-th-list font-primary"></i>
+                                    <span>Audit Info</span>
+                                </div>
+                            </div>
+                            <div id="auditBody" class="collapse" [ngClass]="{ show: showAuditInfoAccordion }">
+                                <div class="card-body pt-3">
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <label for="auditInfo_dateCreated">Date Created</label>    
+                                            <input type="text" id="auditInfo_dateCreated" class="form-control" readonly disabled
+                                                    [value]="auditInfo.createdDate | momentFormat:'DD-MMM-YYYY hh:mm:ss'" name="auditInfo_dateCreated" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="auditInfo_createdBy">Created By</label>    
+                                            <input type="text" id="auditInfo_createdBy" class="form-control" readonly disabled
+                                                    [(ngModel)]="auditInfo.createdBy" name="auditInfo_createdBy" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-6">
+                                            <label for="auditInfo_updateDate">Date Last Updated</label>    
+                                            <input type="text" id="auditInfo_updateDate" class="form-control" readonly disabled
+                                                    [value]="auditInfo.lastUpdatedDate | momentFormat:'DD-MMM-YYYY hh:mm:ss'" name="auditInfo_updateDate" />
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="auditInfo_updateBy">Lasted Updated By</label>    
+                                            <input type="text" id="auditInfo_updateBy" class="form-control" readonly disabled
+                                                    [(ngModel)]="auditInfo.lastUpdatedBy" name="auditInfo_updateBy" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                 </div>

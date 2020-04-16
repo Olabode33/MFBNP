@@ -371,6 +371,43 @@ body .ui-tree .ui-tree-container .ui-treenode .ui-treenode-content .ui-treenode-
     color: var(--primary-color) !important;
 }
 
+.accordion > .card .active {
+    border-bottom: 1px solid var(--primary-color) !important;
+}
+.accordion.accordion-light .card .card-header { 
+    padding-left: 10px;
+    border: 1px solid #e2e5ec !important;
+    background-color: #f4f4f4 !important;
+    border-radius: 4px;
+}
+.accordion.accordion-light .card .card-header :hover { 
+    padding-left: 10px;
+    background: rgba(26, 150, 60, 0.075) !important;
+    border: 1px solid var(--primary-color) !important;
+    border-radius: 4px;
+}
+
+.accordion.accordion-toggle-arrow .card .card-header .card-title.collapsed {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    color: #74788d;
+}
+
+.accordion.accordion-toggle-arrow .card .card-header .card-title {
+    padding-left: 10px !important;
+}
+
+.accordion .card .card-body {
+    padding: 10px !important;
+    border-left: 1px solid #e2e5ec !important;
+    border-right: 1px solid #e2e5ec !important;
+    border-bottom: 1px solid #e2e5ec !important;
+}
+
+.font-primary {
+    color: var(--primary-color) !important;
+}
+
 @media (max-width: 1024px) {
     .kt-header__brand {
         display: none !important;

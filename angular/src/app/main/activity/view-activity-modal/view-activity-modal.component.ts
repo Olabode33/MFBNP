@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, ViewChild, Injector, ChangeDetectorRef } from '@angular/core';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { IActivityWithOrganizationUnit } from '../IActivityWithOrganizationUnit';
-import { CreateOrEditPerformanceActivityDto, PerformanceActivitiesServiceProxy, DataTypeEnum, UnitsEnum, ComparisonMethodEnum, CompletionStatusEnum, ActivityAttachmentDto } from '@shared/service-proxies/service-proxies';
+import { CreateOrEditPerformanceActivityDto, PerformanceActivitiesServiceProxy, DataTypeEnum, UnitsEnum, ComparisonMethodEnum, CompletionStatusEnum, ActivityAttachmentDto, AuditInfoDto } from '@shared/service-proxies/service-proxies';
 import { ModalDirective } from 'ngx-bootstrap';
 import { Table } from 'primeng/table';
 import { Paginator } from 'primeng/paginator';
@@ -31,11 +31,15 @@ export class ViewActivityModalComponent extends AppComponentBase {
     attachments: ActivityAttachmentDto[] = new Array();
     mdaName = '';
     deliverableName = '';
+    auditInfo: AuditInfoDto = new AuditInfoDto();
 
     dataTypeEnum = DataTypeEnum;
     unitEnum = UnitsEnum;
     comparisonMethodEnum = ComparisonMethodEnum;
     completionStatusEnum = CompletionStatusEnum;
+
+    showAttachmentAccordion = false;
+    showAuditInfoAccordion = false;
 
     constructor(
         injector: Injector,
@@ -53,6 +57,7 @@ export class ViewActivityModalComponent extends AppComponentBase {
                 this.attachments = result.attachments;
                 this.mdaName = result.mdaName;
                 this.deliverableName = result.deliverableName;
+                this.auditInfo = result.auditInfo;
 
                 this.active = true;
                 this.modal.show();

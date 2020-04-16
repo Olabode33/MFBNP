@@ -15,6 +15,7 @@ using PMSDemo.Authorization.Users;
 using Abp.Organizations;
 using PMSDemo.PerformanceIndicators.Dtos;
 using PMSDemo.PriorityAreas;
+using PMSDemo.Common.Dto;
 
 namespace PMSDemo.PerformanceIndicators
 {
@@ -127,6 +128,21 @@ namespace PMSDemo.PerformanceIndicators
             }
 
             output.Targets = await GetIndicatorTargets(input);
+
+            AuditInfoDto auditInfo = new AuditInfoDto();
+            auditInfo.CreatedDate = indicator.CreationTime;
+            auditInfo.LastUpdatedDate = indicator.LastModificationTime;
+            if (indicator.CreatorUserId != null)
+            {
+                var user = await _lookup_userRepository.FirstOrDefaultAsync((long)indicator.CreatorUserId);
+                auditInfo.CreatedBy = user.FullName;
+            }
+            if (indicator.LastModifierUserId != null)
+            {
+                var user = await _lookup_userRepository.FirstOrDefaultAsync((long)indicator.LastModifierUserId);
+                auditInfo.LastUpdatedBy = user.FullName;
+            }
+            output.AuditInfo = auditInfo;
 
 
             return output;

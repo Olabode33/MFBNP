@@ -2,6 +2,7 @@
 using Abp.Application.Services.Dto;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
+using PMSDemo.Common.Dto;
 
 namespace PMSDemo.PerformanceIndicators.Dtos
 {
@@ -12,5 +13,6 @@ namespace PMSDemo.PerformanceIndicators.Dtos
 		public string MdaName { get; set; }
         public bool Inherited { get; set; }
         public List<UpdateTargetDto> Targets { get; set; }
+        public AuditInfoDto AuditInfo { get; set; }
     }
 }

@@ -1,3 +1,4 @@
+import { AuditInfoDto } from './../../../../shared/service-proxies/service-proxies';
 import { Component, OnInit, Output, EventEmitter, ViewChild, Injector, ChangeDetectorRef, ViewEncapsulation } from '@angular/core';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { IIndicatorWithOrganizationUnit } from '../IIndicatorWithOrganizationUnit';
@@ -41,6 +42,7 @@ export class ViewIndicatorComponent extends AppComponentBase implements OnInit {
     yearlyTargets: UpdateTargetDto[] = new Array();
     mdaName = '';
     deliverableName = '';
+    auditInfo: AuditInfoDto = new AuditInfoDto();
 
     dataTypeEnum = DataTypeEnum;
     unitEnum = UnitsEnum;
@@ -80,8 +82,10 @@ export class ViewIndicatorComponent extends AppComponentBase implements OnInit {
             .subscribe(result => {
                 this.performanceIndicator = result.performanceIndicator;
                 this.yearlyTargets = result.targets;
+                this.auditInfo = result.auditInfo;
                 this.mdaName = result.mdaName;
                 this.deliverableName = result.deliverableName;
+                console.log(this.auditInfo);
 
                 this.active = true;
                 this._changeDetector.detectChanges();
