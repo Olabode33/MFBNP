@@ -33,15 +33,15 @@
 
                     <div class="form-group row">
                         <div class="col-md-6">
-                            <label for="performanceActivity_PlannedStartDate">{{l("PlannedStartDate")}} <span class="kt-font-danger">*</span></label>
-                            <input required class="form-control m-input" type="datetime" bsDatepicker
-                                [(ngModel)]="performanceActivity.plannedStartDate._d" id="performanceActivity_PlannedStartDate"
+                            <label for="performanceActivity_PlannedStartDate">{{l("PlannedStartDate")}}</label>
+                            <input class="form-control m-input" type="datetime" bsDatepicker
+                                [(ngModel)]="plannedStartDate" id="performanceActivity_PlannedStartDate"
                                 name="performanceActivity_PlannedStartDate">
                         </div>
                         <div class="col-md-6">
-                            <label for="performanceActivity_PlannedCompletionDate">{{l("PlannedCompletionDate")}} <span class="kt-font-danger">*</span></label>
-                            <input required class="form-control m-input" type="datetime" bsDatepicker
-                                [(ngModel)]="performanceActivity.plannedCompletionDate._d" id="performanceActivity_PlannedCompletionDate"
+                            <label for="performanceActivity_PlannedCompletionDate">{{l("PlannedCompletionDate")}}</label>
+                            <input class="form-control m-input" type="datetime" bsDatepicker
+                                [(ngModel)]="plannedCompletionDate" id="performanceActivity_PlannedCompletionDate"
                                 name="performanceActivity_PlannedCompletionDate">
                         </div>
                     </div>

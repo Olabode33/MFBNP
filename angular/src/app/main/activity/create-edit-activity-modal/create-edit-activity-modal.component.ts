@@ -29,6 +29,8 @@ export class CreateEditActivityModalComponent extends AppComponentBase {
     isShown = false;
 
     performanceActivity: CreateOrEditPerformanceActivityDto = new CreateOrEditPerformanceActivityDto();
+    plannedStartDate: Date;
+    plannedCompletionDate: Date;
 
     dataTypeEnum = DataTypeEnum;
     unitEnum = UnitsEnum;
@@ -47,8 +49,6 @@ export class CreateEditActivityModalComponent extends AppComponentBase {
             this.performanceActivity = new CreateOrEditPerformanceActivityDto();
             this.performanceActivity.organizationUnitId = unitId;
             this.performanceActivity.id = indicatorId;
-            this.performanceActivity.plannedStartDate = moment();
-            this.performanceActivity.plannedCompletionDate = moment();
 
             this.active = true;
             this.modal.show();
@@ -58,7 +58,12 @@ export class CreateEditActivityModalComponent extends AppComponentBase {
                 .getPerformanceActivityForEdit(indicatorId)
                 .subscribe(result => {
                     this.performanceActivity = result.performanceActivity;
-
+                    if (result.performanceActivity.plannedStartDate) {
+                        this.plannedStartDate = result.performanceActivity.plannedStartDate.toDate();
+                    }
+                    if (result.performanceActivity.plannedCompletionDate) {
+                        this.plannedCompletionDate = result.performanceActivity.plannedCompletionDate.toDate();
+                    }
                     this.active = true;
                     this.modal.show();
                     this._changeDetector.detectChanges();
@@ -68,6 +73,18 @@ export class CreateEditActivityModalComponent extends AppComponentBase {
 
     save(): void {
         this.saving = true;
+
+        if (this.plannedStartDate) {
+            this.performanceActivity.plannedStartDate = moment(this.plannedStartDate);
+        } else {
+            this.performanceActivity.plannedStartDate = null;
+        }
+
+        if (this.plannedCompletionDate) {
+            this.performanceActivity.plannedCompletionDate = moment(this.plannedCompletionDate);
+        } else {
+            this.performanceActivity.plannedCompletionDate = null;
+        }
 
         this._performanceActivityService.createOrEdit(this.performanceActivity)
             .pipe(finalize(() => { this.saving = false; }))
