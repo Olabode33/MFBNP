@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { AuditLogsComponent } from './audit-logs/audit-logs.component';
 import { HostDashboardComponent } from './dashboard/host-dashboard.component';
-import { DemoUiComponentsComponent } from './demo-ui-components/demo-ui-components.component';
 import { EditionsComponent } from './editions/editions.component';
 import { InstallComponent } from './install/install.component';
 import { LanguageTextsComponent } from './languages/language-texts.component';
@@ -12,8 +11,6 @@ import { OrganizationUnitsComponent } from './organization-units/organization-un
 import { RolesComponent } from './roles/roles.component';
 import { HostSettingsComponent } from './settings/host-settings.component';
 import { TenantSettingsComponent } from './settings/tenant-settings.component';
-import { InvoiceComponent } from './subscription-management/invoice/invoice.component';
-import { SubscriptionManagementComponent } from './subscription-management/subscription-management.component';
 import { TenantsComponent } from './tenants/tenants.component';
 import { UiCustomizationComponent } from './ui-customization/ui-customization.component';
 import { UsersComponent } from './users/users.component';
@@ -42,11 +39,8 @@ import { EntityDynamicParameterValueComponent } from './dynamic-entity-parameter
                     { path: 'languages/:name/texts', component: LanguageTextsComponent, data: { permission: 'Pages.Administration.Languages.ChangeTexts' } },
                     { path: 'tenants', component: TenantsComponent, data: { permission: 'Pages.Tenants' } },
                     { path: 'organization-units', component: OrganizationUnitsComponent, data: { permission: 'Pages.Administration.OrganizationUnits' } },
-                    { path: 'subscription-management', component: SubscriptionManagementComponent, data: { permission: 'Pages.Administration.Tenant.SubscriptionManagement' } },
-                    { path: 'invoice/:paymentId', component: InvoiceComponent, data: { permission: 'Pages.Administration.Tenant.SubscriptionManagement' } },
                     { path: 'tenantSettings', component: TenantSettingsComponent, data: { permission: 'Pages.Administration.Tenant.Settings' } },
                     { path: 'hostDashboard', component: HostDashboardComponent, data: { permission: 'Pages.Administration.Host.Dashboard' } },
-                    { path: 'demo-ui-components', component: DemoUiComponentsComponent, data: { permission: 'Pages.DemoUiComponents' } },
                     { path: 'install', component: InstallComponent },
                     { path: 'ui-customization', component: UiCustomizationComponent },
                     { path: 'webhook-subscriptions', component: WebhookSubscriptionComponent, data: { permission: 'Pages.Administration.WebhookSubscription' } },
