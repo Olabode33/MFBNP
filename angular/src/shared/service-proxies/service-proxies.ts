@@ -8724,6 +8724,66 @@ export class PerformanceActivitiesServiceProxy {
         }
         return _observableOf<void>(<any>null);
     }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
+    getTargetUpdateLog(id: number | undefined): Observable<ActivityProgressLogDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/PerformanceActivities/GetTargetUpdateLog?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetTargetUpdateLog(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetTargetUpdateLog(<any>response_);
+                } catch (e) {
+                    return <Observable<ActivityProgressLogDto[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ActivityProgressLogDto[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetTargetUpdateLog(response: HttpResponseBase): Observable<ActivityProgressLogDto[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(ActivityProgressLogDto.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ActivityProgressLogDto[]>(<any>null);
+    }
 }
 
 @Injectable()
@@ -23266,6 +23326,66 @@ export class UpdateActivityProgressDto implements IUpdateActivityProgressDto {
 export interface IUpdateActivityProgressDto {
     activity: CreateOrEditPerformanceActivityDto;
     attachments: ActivityAttachmentDto[] | undefined;
+}
+
+export class ActivityProgressLogDto implements IActivityProgressLogDto {
+    performanceActivityId!: number;
+    notes!: string | undefined;
+    dataSource!: string | undefined;
+    originalValue!: number;
+    completionLevel!: number | undefined;
+    lastUpdated!: moment.Moment | undefined;
+    lastUpdatedBy!: string | undefined;
+
+    constructor(data?: IActivityProgressLogDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.performanceActivityId = data["performanceActivityId"];
+            this.notes = data["notes"];
+            this.dataSource = data["dataSource"];
+            this.originalValue = data["originalValue"];
+            this.completionLevel = data["completionLevel"];
+            this.lastUpdated = data["lastUpdated"] ? moment(data["lastUpdated"].toString()) : <any>undefined;
+            this.lastUpdatedBy = data["lastUpdatedBy"];
+        }
+    }
+
+    static fromJS(data: any): ActivityProgressLogDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ActivityProgressLogDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["performanceActivityId"] = this.performanceActivityId;
+        data["notes"] = this.notes;
+        data["dataSource"] = this.dataSource;
+        data["originalValue"] = this.originalValue;
+        data["completionLevel"] = this.completionLevel;
+        data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : <any>undefined;
+        data["lastUpdatedBy"] = this.lastUpdatedBy;
+        return data; 
+    }
+}
+
+export interface IActivityProgressLogDto {
+    performanceActivityId: number;
+    notes: string | undefined;
+    dataSource: string | undefined;
+    originalValue: number;
+    completionLevel: number | undefined;
+    lastUpdated: moment.Moment | undefined;
+    lastUpdatedBy: string | undefined;
 }
 
 export enum DataTypeEnum {

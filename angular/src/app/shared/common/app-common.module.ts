@@ -71,6 +71,7 @@ import { ContextMenuModule } from 'primeng/contextmenu';
 import { FileUploadModule } from 'primeng/fileupload';
 import { CreateEditPerformanceIndicatorComponent } from '@app/main/indicators/createEditPerformanceIndicator/createEditPerformanceIndicator.component';
 import { ViewTargetProgressLogModalComponent } from '@app/main/indicators/view-target-progress-log-modal/view-target-progress-log-modal.component';
+import { ViewActivityProgressLogModalComponent } from '@app/main/activity/view-activity-progress-log-modal/view-activity-progress-log-modal.component';
 
 @NgModule({
     imports: [
@@ -99,6 +100,7 @@ import { ViewTargetProgressLogModalComponent } from '@app/main/indicators/view-t
         FileUploadModule
     ],
     declarations: [
+        ViewActivityProgressLogModalComponent,
         ViewTargetProgressLogModalComponent,
         AddMemberModalComponent,
         AddRoleModalComponent,
@@ -147,6 +149,7 @@ import { ViewTargetProgressLogModalComponent } from '@app/main/indicators/view-t
         CheckboxInputTypeComponent
     ],
     exports: [
+        ViewActivityProgressLogModalComponent,
         ViewTargetProgressLogModalComponent,
         AddMemberModalComponent,
         AddRoleModalComponent,

@@ -3,7 +3,7 @@
         <div class="kt-header-mobile__logo">
             <a routerLink="/" target="_blank">
                 <img *ngIf="!appSession.tenant || !appSession.tenant.logoId" src="/assets/common/images/app-logo-on-dark.svg" alt="logo" height="28" />
-                <img *ngIf="appSession.tenant && appSession.tenant.logoId" [src]="remoteServiceBaseUrl + '/TenantCustomization/GetTenantLogo?skin=' + currentTheme.baseSettings.menu.asideSkin + '&tenantId=' + appSession.tenant.id + '&id=' + appSession.tenant.logoId" alt="logo" height="28" />
+                <img *ngIf="appSession.tenant && appSession.tenant.logoId" [src]="remoteServiceBaseUrl + '/TenantCustomization/GetTenantLogo?skin=' + currentTheme.baseSettings.menu.asideSkin + '&tenantId=' + appSession.tenant.id + '&id=' + appSession.tenant.logoId" alt="logo" height="38" style="border-radius: 10px;" />
             </a>
         </div>
         <div class="kt-header-mobile__toolbar">

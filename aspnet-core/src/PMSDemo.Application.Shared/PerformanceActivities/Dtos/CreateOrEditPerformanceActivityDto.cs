@@ -6,7 +6,7 @@ using PMSDemo.Enums;
 
 namespace PMSDemo.PerformanceActivities.Dtos
 {
-    public class CreateOrEditPerformanceActivityDto : EntityDto<long?>
+    public class CreateOrEditPerformanceActivityDto : EntityDto<int?>
     {
         [Required]
         public long OrganizationUnitId { get; set; }

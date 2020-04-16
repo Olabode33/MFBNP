@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PMSDemo.EntityFrameworkCore;
 
 namespace PMSDemo.Migrations
 {
     [DbContext(typeof(PMSDemoDbContext))]
-    partial class PMSDemoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200416062758_Update_ActivityUpdateLog_entity")]
+    partial class Update_ActivityUpdateLog_entity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2082,9 +2084,6 @@ namespace PMSDemo.Migrations
 
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("OriginalValue")
-                        .HasColumnType("int");
 
                     b.Property<int>("PerformanceActivityId")
                         .HasColumnType("int");

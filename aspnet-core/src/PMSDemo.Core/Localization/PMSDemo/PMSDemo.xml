@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <localizationDictionary culture="en">
   <texts>
+    <text name="PMSDemo.PerformanceIndicators.IndicatorYearlyTarget">Targets</text>
     <text name="IndicatorTargetYear">Target Year</text>
     <text name="IndicatorTargetValue">Target value</text>
     <text name="IndicatorActualValue">Actual value</text>

@@ -16,5 +16,8 @@ namespace PMSDemo.PerformanceActivities
         public virtual PerformanceActivity PerformanceIndicatorFk { get; set; }
         public virtual CompletionStatusEnum Status { get; set; }
         public virtual string Notes { get; set; }
+        public virtual string DataSource { get; set; }
+        public virtual int OriginalValue { get; set; }
+        public virtual int? CompletionLevel { get; set; }
     }
 }

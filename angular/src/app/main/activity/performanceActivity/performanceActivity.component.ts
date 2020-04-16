@@ -11,6 +11,7 @@ import { IBasicOrganizationUnitInfo } from '@app/admin/organization-units/basic-
 import { LazyLoadEvent } from 'primeng/api';
 import { finalize } from 'rxjs/operators';
 import { EntityTypeHistoryModalComponent } from '@app/shared/common/entityHistory/entity-type-history-modal.component';
+import { ViewActivityProgressLogModalComponent } from '../view-activity-progress-log-modal/view-activity-progress-log-modal.component';
 
 @Component({
   selector: 'app-performanceActivity',
@@ -26,6 +27,7 @@ export class PerformanceActivityComponent extends AppComponentBase implements On
     @ViewChild('updateActivityModal', { static: true }) updateActivityModal: UpdateActivityProgressModalComponent;
     @ViewChild('viewActivityModal', { static: true }) viewActivityModal: ViewActivityModalComponent;
     @ViewChild('entityTypeHistoryModal', { static: true }) entityTypeHistoryModal: EntityTypeHistoryModalComponent;
+    @ViewChild('progressUpdateLogModal', {static: true}) progressUpdateLogModal: ViewActivityProgressLogModalComponent;
     @ViewChild('dataTable', { static: true }) dataTable: Table;
     @ViewChild('paginator', { static: true }) paginator: Paginator;
 
@@ -128,11 +130,12 @@ export class PerformanceActivityComponent extends AppComponentBase implements On
     }
 
     showHistory(activity: CreateOrEditPerformanceActivityDto): void {
-        this.entityTypeHistoryModal.show({
-            entityId: activity.id.toString(),
-            entityTypeFullName: this._entityTypeFullName,
-            entityTypeDescription: activity.name
-        });
+        this.progressUpdateLogModal.show(activity.id);
+        // this.entityTypeHistoryModal.show({
+        //     entityId: activity.id.toString(),
+        //     entityTypeFullName: this._entityTypeFullName,
+        //     entityTypeDescription: activity.name
+        // });
     }
 
 }

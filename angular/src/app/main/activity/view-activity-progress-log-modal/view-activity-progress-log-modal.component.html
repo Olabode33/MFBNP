@@ -1,0 +1,47 @@
+<div bsModal #createOrEditModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="createOrEditModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">
+                    <span>Activity Progress Update Log</span>
+                </h4>
+                <button type="button" class="close" (click)="close()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div *ngIf="active" class="modal-body">
+                <div class="table-responsive">
+                    <table class="display table table-striped table-bordered table-hover dt-responsive">
+                        <thead>
+                            <tr>
+                                <th>{{"Date" | localize}}</th>
+                                <th>Created at</th>
+                                <th>Original Value</th>
+                                <th>New Value</th>
+                                <th>{{"DataSource" | localize}}</th>
+                                <th>{{"AdditionalNote" | localize}}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let log of activityLog;">
+                                <td><strong>{{log.lastUpdated | momentFormat: 'DD-MMM-YYYY hh:mm:ss'}}</strong></td>
+                                <td>{{log.lastUpdatedBy }}</td>
+                                <td>{{log.originalValue}}</td>
+                                <td>{{log.completionLevel}}</td>
+                                <td>{{log.dataSource}}</td>
+                                <td>
+                                    <div [innerHTML]="log.notes"></div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" (click)="close()">{{l("Close")}}</button>
+            </div>
+        </div>
+
+    </div>
+</div>

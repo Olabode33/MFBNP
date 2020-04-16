@@ -24,6 +24,7 @@ namespace PMSDemo.PerformanceActivities
     {
         private readonly IRepository<PerformanceActivity> _performanceActivityRepository;
         private readonly IRepository<ActivityAttachment> _activityAttachmentRepository;
+        private readonly IRepository<ActivityUpdateLog> _activityProgressLogRepository;
         private readonly IRepository<User, long> _lookup_userRepository;
         private readonly IRepository<OrganizationUnit, long> _lookup_organizationUnitRepository; 
         private readonly IRepository<PriorityArea> _lookup_priorityAreaRepository; 
@@ -32,6 +33,7 @@ namespace PMSDemo.PerformanceActivities
         public PerformanceActivitiesAppService(
             IRepository<PerformanceActivity> performanceActivityRepository,
             IRepository<ActivityAttachment> activityAttachmentRepository,
+            IRepository<ActivityUpdateLog> activityProgressLogRepository,
             IRepository<User, long> lookup_userRepository, 
             IRepository<OrganizationUnit, long> lookup_organizationUnitRepository,
             IRepository<PriorityArea> lookup_priorityAreaRepository,
@@ -39,6 +41,7 @@ namespace PMSDemo.PerformanceActivities
         {
             _performanceActivityRepository = performanceActivityRepository;
             _activityAttachmentRepository = activityAttachmentRepository;
+            _activityProgressLogRepository = activityProgressLogRepository;
             _lookup_userRepository = lookup_userRepository;
             _lookup_organizationUnitRepository = lookup_organizationUnitRepository;
             _lookup_priorityAreaRepository = lookup_priorityAreaRepository;
@@ -151,6 +154,8 @@ namespace PMSDemo.PerformanceActivities
             activity.CompletionLevel = (activity.CompletionLevel + input.Activity.CompletionLevel) > 100 ? 100 : activity.CompletionLevel + input.Activity.CompletionLevel;
             activity.Note = input.Activity.Note;
             activity.DataSource = input.Activity.DataSource;
+
+            await SaveProgressLog(input.Activity, activity);
             await _performanceActivityRepository.UpdateAsync(activity);
             await SaveAttachment(activity.Id, input.Attachments);
         }
@@ -179,6 +184,40 @@ namespace PMSDemo.PerformanceActivities
                                         .ToListAsync();
 
             return attachments;
+        }
+
+        protected async Task SaveProgressLog(CreateOrEditPerformanceActivityDto input, PerformanceActivity activity)
+        {
+            await _activityProgressLogRepository.InsertAsync(new ActivityUpdateLog
+            {
+                PerformanceActivityId = (int)input.Id,
+                CompletionLevel = input.CompletionLevel,
+                OriginalValue = (int)activity.CompletionLevel,
+                DataSource = input.DataSource,
+                Notes = input.Note,
+            });
+        }
+
+        public async Task<List<ActivityProgressLogDto>> GetTargetUpdateLog(EntityDto input)
+        {
+            var filteredLog = _activityProgressLogRepository.GetAll().Where(x => x.PerformanceActivityId == input.Id);
+
+            var logs = from o in filteredLog
+                       join u in _lookup_userRepository.GetAll() on o.CreatorUserId equals u.Id into u1
+                       from u2 in u1.DefaultIfEmpty()
+
+                       select new ActivityProgressLogDto()
+                       {
+                           CompletionLevel = o.CompletionLevel,
+                           OriginalValue = o.OriginalValue,
+                           Notes = o.Notes,
+                           PerformanceActivityId = o.Id,
+                           DataSource = o.DataSource,
+                           LastUpdated = o.CreationTime,
+                           LastUpdatedBy = u2 != null ? u2.FullName : ""
+                       };
+
+            return await logs.OrderByDescending(x => x.LastUpdated).ToListAsync();
         }
 
     }

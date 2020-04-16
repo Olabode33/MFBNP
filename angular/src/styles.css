@@ -163,9 +163,9 @@ ngx-spinner .loading-text{
 
 /** Custom Styles **/
 body {
-    /* background-image: url(/assets/common/images/bg/bg-app-3.jpg) !important;
+    background-image: url(/assets/common/images/bg/bg-app.png) !important;
     background-repeat: no-repeat;
-    background-size: contain; */
+    background-size: contain;
 }
 
 .form-group label{
@@ -365,4 +365,14 @@ body .ui-tree .ui-tree-container .ui-treenode .ui-treenode-content .ui-treenode-
     font-weight: 400;
     font-size: 0.9rem;
     color: var(--light-color) !important;
+}
+
+.kt-header-menu-mobile .kt-menu__nav > .kt-menu__item.kt-menu__item--open > .kt-menu__heading .kt-menu__link-icon, .kt-header-menu-mobile .kt-menu__nav > .kt-menu__item.kt-menu__item--open > .kt-menu__link .kt-menu__link-icon {
+    color: var(--primary-color) !important;
+}
+
+@media (max-width: 1024px) {
+    .kt-header__brand {
+        display: none !important;
+    }
 }

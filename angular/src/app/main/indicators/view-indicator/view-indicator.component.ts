@@ -48,6 +48,9 @@ export class ViewIndicatorComponent extends AppComponentBase implements OnInit {
 
     _entityTypeFullName = 'PMSDemo.PerformanceIndicators.IndicatorYearlyTarget';
 
+    showAttachmentAccordion = false;
+    showAuditInfoAccordion = false;
+
     constructor(
         injector: Injector,
         private _performanceIndicatorService: PerformanceIndicatorsServiceProxy,
