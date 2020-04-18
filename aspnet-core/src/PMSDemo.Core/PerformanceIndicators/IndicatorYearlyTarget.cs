@@ -19,6 +19,7 @@ namespace PMSDemo.PerformanceIndicators
         public virtual string Actual { get; set; }
         public virtual string DataSource { get; set; }
         public virtual string Note { get; set; }
+        public virtual int PercentageAchieved { get; set; }
 
     }
 }

@@ -31,7 +31,7 @@
                                     defaultTimezoneScope="{{defaultTimezoneScope}}"></timezone-combo>
                             </div>
                         </tab>
-                        <tab *ngIf="true" heading="{{'Appearance' | localize}}" [active]="activeTabIndex == 1">
+                        <tab *ngIf="false" heading="{{'Appearance' | localize}}" [active]="activeTabIndex == 1">
                             <div class="row m-form">
                                 <div class="col-md-6">
                                     <h5>{{"ApplicationLogo" | localize}}</h5>
@@ -467,7 +467,7 @@
                                     [(ngModel)]="settings.billing.taxVatNo" maxlength="32">
                             </div>
                         </tab>
-                        <tab *ngIf="!isMultiTenancyEnabled || true" heading="{{'OtherSettings' | localize}}">
+                        <tab *ngIf="!isMultiTenancyEnabled || false" heading="{{'OtherSettings' | localize}}">
                             <div class="kt-checkbox-list">
                                 <h5>{{"IsQuickThemeSelectEnabled" | localize}}</h5>
                                 <label for="Settings_IsQuickThemeSelectEnabled" class="kt-checkbox">
@@ -477,6 +477,13 @@
                                     {{"IsQuickThemeSelectEnabled" | localize}}
                                     <span></span>
                                 </label>
+                            </div>
+                        </tab>
+                        <tab *ngIf="true" heading="{{'Report Settings' | localize}}">
+                            <div class="form-group">
+                                <label for="ReportURL"> Power BI Report URL </label>
+                                <input id="ReportUrl" type="text" name="reportUrl" class="form-control"
+                                    [(ngModel)]="settings.otherSettings.powerBiReportUrl" >
                             </div>
                         </tab>
                     </tabset>

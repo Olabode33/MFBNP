@@ -6,6 +6,7 @@ import { OrganizationUnitsComponent } from '@app/admin/organization-units/organi
 import { CreateEditPerformanceIndicatorComponent } from './indicators/createEditPerformanceIndicator/createEditPerformanceIndicator.component';
 import { ViewIndicatorComponent } from './indicators/view-indicator/view-indicator.component';
 import { ViewActivityComponent } from './activity/view-activity/view-activity.component';
+import { ViewPriorityAreaComponent } from './priorityAreas/view-priorityArea/view-priorityArea.component';
 
 @NgModule({
     imports: [
@@ -19,6 +20,7 @@ import { ViewActivityComponent } from './activity/view-activity/view-activity.co
                     { path: 'deliverable/view/:indicatorId', component: ViewIndicatorComponent, data: { permission: 'Pages.PerformanceIndicator'}},
                     { path: 'activity/view/:activityId', component: ViewActivityComponent, data: { permission: 'Pages.PerformanceActivity'}},
                     { path: 'priority-areas', component: PriorityAreasComponent, data: { permission: 'Pages.PriorityAreas' }  },
+                    { path: 'priority-areas/view/:priorityAreaId', component: ViewPriorityAreaComponent, data: { permission: 'Pages.PriorityAreas' }  },
                     { path: 'dashboard', component: DashboardComponent, data: { permission: 'Pages.Tenant.Dashboard' } },
                     { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
                     { path: '**', redirectTo: 'dashboard' }

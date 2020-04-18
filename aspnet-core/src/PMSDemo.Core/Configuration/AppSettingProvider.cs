@@ -79,7 +79,8 @@ namespace PMSDemo.Configuration
                 new SettingDefinition(AppSettings.TenantManagement.BillingLegalName, GetFromAppSettings(AppSettings.TenantManagement.BillingLegalName, ""), scopes: SettingScopes.Tenant),
                 new SettingDefinition(AppSettings.TenantManagement.BillingAddress, GetFromAppSettings(AppSettings.TenantManagement.BillingAddress, ""), scopes: SettingScopes.Tenant),
                 new SettingDefinition(AppSettings.TenantManagement.BillingTaxVatNo, GetFromAppSettings(AppSettings.TenantManagement.BillingTaxVatNo, ""), scopes: SettingScopes.Tenant),
-                new SettingDefinition(AppSettings.Email.UseHostDefaultEmailSettings, GetFromAppSettings(AppSettings.Email.UseHostDefaultEmailSettings, PMSDemoConsts.MultiTenancyEnabled? "true":"false"), scopes: SettingScopes.Tenant)
+                new SettingDefinition(AppSettings.Email.UseHostDefaultEmailSettings, GetFromAppSettings(AppSettings.Email.UseHostDefaultEmailSettings, PMSDemoConsts.MultiTenancyEnabled? "true":"false"), scopes: SettingScopes.Tenant),
+                new SettingDefinition(AppSettings.TenantManagement.PowerBiReportUrl, GetFromAppSettings(AppSettings.TenantManagement.PowerBiReportUrl, ""), scopes: SettingScopes.Tenant, isVisibleToClients: true)
             };
         }
 

@@ -9,5 +9,6 @@ namespace PMSDemo.Deliverables.Dtos
 		public CreateOrEditDeliverableDto Deliverable { get; set; }
 		public string PriorityAreaName { get; set; }
 		public string MdaName { get; set; }
+        public double PercentageAchieved { get; set; }
     }
 }

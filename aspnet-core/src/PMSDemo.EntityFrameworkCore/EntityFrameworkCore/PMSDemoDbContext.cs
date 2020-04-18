@@ -63,6 +63,10 @@ namespace PMSDemo.EntityFrameworkCore
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<PerformanceIndicator>().Property(i => i.PercentageAchieved).HasDefaultValue(0);
+            modelBuilder.Entity<IndicatorYearlyTarget>().Property(i => i.PercentageAchieved).HasDefaultValue(0);
+            modelBuilder.Entity<IndicatorUpdateLog>().Property(i => i.PercentageAchieved).HasDefaultValue(0);
+
             modelBuilder.Entity<BinaryObject>(b =>
             {
                 b.HasIndex(e => new { e.TenantId });

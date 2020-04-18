@@ -199,7 +199,8 @@ namespace PMSDemo.Configuration.Tenants
         {
             return new TenantOtherSettingsEditDto()
             {
-                IsQuickThemeSelectEnabled = await SettingManager.GetSettingValueAsync<bool>(AppSettings.UserManagement.IsQuickThemeSelectEnabled)
+                IsQuickThemeSelectEnabled = await SettingManager.GetSettingValueAsync<bool>(AppSettings.UserManagement.IsQuickThemeSelectEnabled),
+                PowerBiReportUrl = await SettingManager.GetSettingValueAsync(AppSettings.TenantManagement.PowerBiReportUrl)
             };
         }
 
@@ -293,6 +294,11 @@ namespace PMSDemo.Configuration.Tenants
                 AppSettings.UserManagement.IsQuickThemeSelectEnabled,
                 input.IsQuickThemeSelectEnabled.ToString().ToLowerInvariant()
             );
+
+            await SettingManager.ChangeSettingForTenantAsync(
+                AbpSession.GetTenantId(),
+                AppSettings.TenantManagement.PowerBiReportUrl,
+                input.PowerBiReportUrl.ToString());
         }
 
         private async Task UpdateBillingSettingsAsync(TenantBillingSettingsEditDto input)

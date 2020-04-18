@@ -21,6 +21,7 @@ import { FileUploadModule as PrimeNgFileUploadModule } from 'primeng/fileupload'
 import { BsDatepickerModule, BsDatepickerConfig, BsDaterangepickerConfig, BsLocaleService } from 'ngx-bootstrap/datepicker';
 import { NgxBootstrapDatePickerConfigService } from 'assets/ngx-bootstrap/ngx-bootstrap-datepicker-config.service';
 import { TreeDragDropService } from 'primeng/api';
+import { ViewPriorityAreaComponent } from './priorityAreas/view-priorityArea/view-priorityArea.component';
 
 NgxBootstrapDatePickerConfigService.registerNgxBootstrapDatePickerLocales();
 
@@ -48,6 +49,7 @@ NgxBootstrapDatePickerConfigService.registerNgxBootstrapDatePickerLocales();
         PopoverModule.forRoot()
     ],
     declarations: [
+        ViewPriorityAreaComponent,
         PriorityAreasComponent,
         CreateOrEditPriorityAreaModalComponent,
         DashboardComponent

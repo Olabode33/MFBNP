@@ -21,5 +21,6 @@ namespace PMSDemo.PerformanceIndicators.Dtos
         public string MeansOfVerification { get; set; }
         public string Note { get; set; }
         public bool CanCascade { get; set; }
+        public int PercentageAchieved { get; set; }
     }
 }

@@ -25,5 +25,6 @@ namespace PMSDemo.PerformanceIndicators
         public virtual string MeansOfVerification { get; set; }
         public virtual string Note { get; set; }
         public virtual bool CanCascade { get; set; }
+        public virtual int PercentageAchieved { get; set; }
     }
 }

@@ -85,10 +85,13 @@
                                     <tr>
                                         <td style="width: 130px"
                                             [hidden]="!(['Pages.Administration.Users.Impersonation', 'Pages.Administration.Users.Edit', 'Pages.Administration.Users.ChangePermissions', 'Pages.Administration.Users.Delete'] | permissionAny)">
-                                            <div class="btn-group dropdown" dropdown container="body">
-                                                <button dropdownToggle class="dropdown-toggle btn btn-sm btn-primary">
-                                                    <i class="fa fa-cog"></i><span class="caret"></span>
-                                                    {{"Actions" | localize}}
+                                            <div class="btn-group m-btn-group m-btn-group--pill" dropdown container="body">
+                                                <button (click)="viewPriorityArea(record.priorityArea.id)" class="btn btn-outline-success btn-sm btn-pill">
+                                                    <i class="fa fa-info-circle" style="font-size: 1.2rem !important;"></i>
+                                                    View 
+                                                </button>
+                                                <button *ngIf="isGranted('Pages.PriorityAreas')" class="dropdown-toggle btn  btn-outline-success btn-sm btn-pill dropdown-toggle-split" dropdownToggle>
+                                                    <span class="caret"></span>
                                                 </button>
                                                 <ul class="dropdown-menu" *dropdownMenu>
                                                     <li>
@@ -101,6 +104,7 @@
                                                     </li>
                                                 </ul>
                                             </div>
+                                            
                                         </td>
                                         <td style="width: 300px">
                                             <span class="ui-column-title"> {{'Name' | localize}}</span>

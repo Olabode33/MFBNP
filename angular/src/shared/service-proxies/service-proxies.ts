@@ -2274,6 +2274,62 @@ export class DeliverablesServiceProxy {
      * @param id (optional) 
      * @return Success
      */
+    getForPriorityArea(id: number | undefined): Observable<ListResultDtoOfGetDeliverableForEditOutput> {
+        let url_ = this.baseUrl + "/api/services/app/Deliverables/GetForPriorityArea?";
+        if (id === null)
+            throw new Error("The parameter 'id' cannot be null.");
+        else if (id !== undefined)
+            url_ += "Id=" + encodeURIComponent("" + id) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetForPriorityArea(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetForPriorityArea(<any>response_);
+                } catch (e) {
+                    return <Observable<ListResultDtoOfGetDeliverableForEditOutput>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<ListResultDtoOfGetDeliverableForEditOutput>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetForPriorityArea(response: HttpResponseBase): Observable<ListResultDtoOfGetDeliverableForEditOutput> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ListResultDtoOfGetDeliverableForEditOutput.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<ListResultDtoOfGetDeliverableForEditOutput>(<any>null);
+    }
+
+    /**
+     * @param id (optional) 
+     * @return Success
+     */
     getDeliverableForEdit(id: number | undefined): Observable<GetDeliverableForEditOutput> {
         let url_ = this.baseUrl + "/api/services/app/Deliverables/GetDeliverableForEdit?";
         if (id === null)
@@ -11690,6 +11746,57 @@ export class TenantDashboardServiceProxy {
     /**
      * @return Success
      */
+    getPowerBiDashboardUrl(): Observable<string> {
+        let url_ = this.baseUrl + "/api/services/app/TenantDashboard/GetPowerBiDashboardUrl";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetPowerBiDashboardUrl(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetPowerBiDashboardUrl(<any>response_);
+                } catch (e) {
+                    return <Observable<string>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<string>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetPowerBiDashboardUrl(response: HttpResponseBase): Observable<string> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<string>(<any>null);
+    }
+
+    /**
+     * @return Success
+     */
     getMemberActivity(): Observable<GetMemberActivityOutput> {
         let url_ = this.baseUrl + "/api/services/app/TenantDashboard/GetMemberActivity";
         url_ = url_.replace(/[?&]$/, "");
@@ -17664,6 +17771,7 @@ export class GetDeliverableForEditOutput implements IGetDeliverableForEditOutput
     deliverable!: CreateOrEditDeliverableDto;
     priorityAreaName!: string | undefined;
     mdaName!: string | undefined;
+    percentageAchieved!: number;
 
     constructor(data?: IGetDeliverableForEditOutput) {
         if (data) {
@@ -17679,6 +17787,7 @@ export class GetDeliverableForEditOutput implements IGetDeliverableForEditOutput
             this.deliverable = data["deliverable"] ? CreateOrEditDeliverableDto.fromJS(data["deliverable"]) : <any>undefined;
             this.priorityAreaName = data["priorityAreaName"];
             this.mdaName = data["mdaName"];
+            this.percentageAchieved = data["percentageAchieved"];
         }
     }
 
@@ -17694,6 +17803,7 @@ export class GetDeliverableForEditOutput implements IGetDeliverableForEditOutput
         data["deliverable"] = this.deliverable ? this.deliverable.toJSON() : <any>undefined;
         data["priorityAreaName"] = this.priorityAreaName;
         data["mdaName"] = this.mdaName;
+        data["percentageAchieved"] = this.percentageAchieved;
         return data; 
     }
 }
@@ -17702,6 +17812,51 @@ export interface IGetDeliverableForEditOutput {
     deliverable: CreateOrEditDeliverableDto;
     priorityAreaName: string | undefined;
     mdaName: string | undefined;
+    percentageAchieved: number;
+}
+
+export class ListResultDtoOfGetDeliverableForEditOutput implements IListResultDtoOfGetDeliverableForEditOutput {
+    items!: GetDeliverableForEditOutput[] | undefined;
+
+    constructor(data?: IListResultDtoOfGetDeliverableForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            if (Array.isArray(data["items"])) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(GetDeliverableForEditOutput.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ListResultDtoOfGetDeliverableForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new ListResultDtoOfGetDeliverableForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IListResultDtoOfGetDeliverableForEditOutput {
+    items: GetDeliverableForEditOutput[] | undefined;
 }
 
 export class DateToStringOutput implements IDateToStringOutput {
@@ -23473,6 +23628,7 @@ export class CreateOrEditPerformanceIndicatorDto implements ICreateOrEditPerform
     meansOfVerification!: string | undefined;
     note!: string | undefined;
     canCascade!: boolean;
+    percentageAchieved!: number;
     id!: number | undefined;
 
     constructor(data?: ICreateOrEditPerformanceIndicatorDto) {
@@ -23500,6 +23656,7 @@ export class CreateOrEditPerformanceIndicatorDto implements ICreateOrEditPerform
             this.meansOfVerification = data["meansOfVerification"];
             this.note = data["note"];
             this.canCascade = data["canCascade"];
+            this.percentageAchieved = data["percentageAchieved"];
             this.id = data["id"];
         }
     }
@@ -23527,6 +23684,7 @@ export class CreateOrEditPerformanceIndicatorDto implements ICreateOrEditPerform
         data["meansOfVerification"] = this.meansOfVerification;
         data["note"] = this.note;
         data["canCascade"] = this.canCascade;
+        data["percentageAchieved"] = this.percentageAchieved;
         data["id"] = this.id;
         return data; 
     }
@@ -23547,6 +23705,7 @@ export interface ICreateOrEditPerformanceIndicatorDto {
     meansOfVerification: string | undefined;
     note: string | undefined;
     canCascade: boolean;
+    percentageAchieved: number;
     id: number | undefined;
 }
 
@@ -23561,6 +23720,7 @@ export class IndicatorYearlyTargetDto implements IIndicatorYearlyTargetDto {
     dataSource!: string | undefined;
     note!: string | undefined;
     lastUpdated!: moment.Moment | undefined;
+    percentageAchieved!: number;
     id!: number;
 
     constructor(data?: IIndicatorYearlyTargetDto) {
@@ -23584,6 +23744,7 @@ export class IndicatorYearlyTargetDto implements IIndicatorYearlyTargetDto {
             this.dataSource = data["dataSource"];
             this.note = data["note"];
             this.lastUpdated = data["lastUpdated"] ? moment(data["lastUpdated"].toString()) : <any>undefined;
+            this.percentageAchieved = data["percentageAchieved"];
             this.id = data["id"];
         }
     }
@@ -23607,6 +23768,7 @@ export class IndicatorYearlyTargetDto implements IIndicatorYearlyTargetDto {
         data["dataSource"] = this.dataSource;
         data["note"] = this.note;
         data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : <any>undefined;
+        data["percentageAchieved"] = this.percentageAchieved;
         data["id"] = this.id;
         return data; 
     }
@@ -23623,6 +23785,7 @@ export interface IIndicatorYearlyTargetDto {
     dataSource: string | undefined;
     note: string | undefined;
     lastUpdated: moment.Moment | undefined;
+    percentageAchieved: number;
     id: number;
 }
 
@@ -27453,6 +27616,7 @@ export interface ITenantBillingSettingsEditDto {
 
 export class TenantOtherSettingsEditDto implements ITenantOtherSettingsEditDto {
     isQuickThemeSelectEnabled!: boolean;
+    powerBiReportUrl!: string | undefined;
 
     constructor(data?: ITenantOtherSettingsEditDto) {
         if (data) {
@@ -27466,6 +27630,7 @@ export class TenantOtherSettingsEditDto implements ITenantOtherSettingsEditDto {
     init(data?: any) {
         if (data) {
             this.isQuickThemeSelectEnabled = data["isQuickThemeSelectEnabled"];
+            this.powerBiReportUrl = data["powerBiReportUrl"];
         }
     }
 
@@ -27479,12 +27644,14 @@ export class TenantOtherSettingsEditDto implements ITenantOtherSettingsEditDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["isQuickThemeSelectEnabled"] = this.isQuickThemeSelectEnabled;
+        data["powerBiReportUrl"] = this.powerBiReportUrl;
         return data; 
     }
 }
 
 export interface ITenantOtherSettingsEditDto {
     isQuickThemeSelectEnabled: boolean;
+    powerBiReportUrl: string | undefined;
 }
 
 export class TenantSettingsEditDto implements ITenantSettingsEditDto {

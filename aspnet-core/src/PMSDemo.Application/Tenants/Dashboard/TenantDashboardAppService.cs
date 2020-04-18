@@ -1,7 +1,9 @@
 ﻿using Abp.Auditing;
 using Abp.Authorization;
 using PMSDemo.Authorization;
+using PMSDemo.Configuration;
 using PMSDemo.Tenants.Dashboard.Dto;
+using System.Threading.Tasks;
 
 namespace PMSDemo.Tenants.Dashboard
 {
@@ -9,6 +11,11 @@ namespace PMSDemo.Tenants.Dashboard
     [AbpAuthorize(AppPermissions.Pages_Tenant_Dashboard)]
     public class TenantDashboardAppService : PMSDemoAppServiceBase, ITenantDashboardAppService
     {
+        public async Task<string> GetPowerBiDashboardUrl()
+        {
+            return await SettingManager.GetSettingValueAsync(AppSettings.TenantManagement.PowerBiReportUrl);
+        }
+
         public GetMemberActivityOutput GetMemberActivity()
         {
             return new GetMemberActivityOutput

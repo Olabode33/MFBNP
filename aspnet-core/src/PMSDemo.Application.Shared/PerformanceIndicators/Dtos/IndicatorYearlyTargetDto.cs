@@ -18,5 +18,6 @@ namespace PMSDemo.PerformanceIndicators.Dtos
         public string DataSource { get; set; }
         public string Note { get; set; }
         public DateTime? LastUpdated { get; set; }
+        public int PercentageAchieved { get; set; }
     }
 }

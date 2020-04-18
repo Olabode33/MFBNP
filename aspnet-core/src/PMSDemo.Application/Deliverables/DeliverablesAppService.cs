@@ -15,6 +15,8 @@ using PMSDemo.Authorization.Users;
 using Abp.Organizations;
 using PMSDemo.Deliverables.Dtos;
 using PMSDemo.PriorityAreas;
+using PMSDemo.PerformanceIndicators;
+using PMSDemo.PerformanceActivities;
 
 namespace PMSDemo.Deliverables
 {
@@ -25,6 +27,8 @@ namespace PMSDemo.Deliverables
         private readonly IRepository<User, long> _lookup_userRepository;
         private readonly IRepository<OrganizationUnit, long> _lookup_organizationUnitRepository; 
         private readonly IRepository<PriorityArea> _lookup_priorityAreaRepository; 
+        private readonly IRepository<PerformanceIndicator> _lookup_indicatorRepository; 
+        private readonly IRepository<PerformanceActivity> _lookup_activityRepository; 
         private readonly OrganizationUnitManager _organizationUnitManager;
 
         public DeliverablesAppService(
@@ -32,13 +36,57 @@ namespace PMSDemo.Deliverables
             IRepository<User, long> lookup_userRepository, 
             IRepository<OrganizationUnit, long> lookup_organizationUnitRepository,
             IRepository<PriorityArea> lookup_priorityAreaRepository,
+            IRepository<PerformanceIndicator> lookup_indicatorRepository,
+            IRepository<PerformanceActivity> lookup_activityRepository,
             OrganizationUnitManager organizationUnitManager)
         {
             _deliverableRepository = deliverableRepository;
             _lookup_userRepository = lookup_userRepository;
             _lookup_organizationUnitRepository = lookup_organizationUnitRepository;
             _lookup_priorityAreaRepository = lookup_priorityAreaRepository;
+            _lookup_indicatorRepository = lookup_indicatorRepository;
+            _lookup_activityRepository = lookup_activityRepository;
             _organizationUnitManager = organizationUnitManager;
+        }
+
+        public async Task<ListResultDto<GetDeliverableForEditOutput>> GetForPriorityArea(EntityDto input)
+        {
+            var filteredDeliverables = _deliverableRepository.GetAll()
+                                                             .Include(x => x.Parent)
+                                                             .Where(x => x.PriorityAreaId == input.Id)
+                                                             .Select( x => new GetDeliverableForEditOutput
+                                                             {
+                                                                 Deliverable = ObjectMapper.Map<CreateOrEditDeliverableDto>(x),
+                                                                 MdaName = x.Parent != null ? x.Parent.DisplayName : ""
+                                                             });
+
+            var deliverables = await filteredDeliverables.ToListAsync();
+            var output = deliverables.Select(x => {
+                x.PercentageAchieved = GetDeliverablePercentageAchieved((long)x.Deliverable.Id);
+                return x;
+            });
+
+            return new ListResultDto<GetDeliverableForEditOutput>()
+            {
+                Items = output.ToList()
+            };
+        }
+
+        private double GetDeliverablePercentageAchieved(long deliverableId)
+        {
+            var indicators = _lookup_indicatorRepository.GetAllList(x => x.OrganizationUnitId == deliverableId);
+            var activities = _lookup_activityRepository.GetAllList(x => x.OrganizationUnitId == deliverableId);
+
+            double indicatorPercentageAchieved = 0;
+            double activitiesPercentageAchieved = 0;
+
+            if (indicators.Count > 0)
+                indicatorPercentageAchieved = indicators.Average(x => x.PercentageAchieved);
+
+            if (activities.Count > 0)
+                activitiesPercentageAchieved = activities.Average(x => x.CompletionLevel == null ? 0.0 : (double)x.CompletionLevel);
+
+            return ((indicatorPercentageAchieved + activitiesPercentageAchieved) / 2.00);
         }
 
         [AbpAuthorize(AppPermissions.Pages_Deliverable_Edit)]

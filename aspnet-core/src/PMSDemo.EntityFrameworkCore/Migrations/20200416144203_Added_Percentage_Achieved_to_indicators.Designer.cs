@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PMSDemo.EntityFrameworkCore;
 
 namespace PMSDemo.Migrations
 {
     [DbContext(typeof(PMSDemoDbContext))]
-    partial class PMSDemoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200416144203_Added_Percentage_Achieved_to_indicators")]
+    partial class Added_Percentage_Achieved_to_indicators
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2270,9 +2272,7 @@ namespace PMSDemo.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PercentageAchieved")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
+                        .HasColumnType("int");
 
                     b.Property<string>("Target")
                         .HasColumnType("nvarchar(max)");
@@ -2338,9 +2338,7 @@ namespace PMSDemo.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PercentageAchieved")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
+                        .HasColumnType("int");
 
                     b.Property<string>("Target")
                         .HasColumnType("nvarchar(max)");
@@ -2415,9 +2413,7 @@ namespace PMSDemo.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<int>("PercentageAchieved")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
+                        .HasColumnType("int");
 
                     b.Property<string>("Target")
                         .HasColumnType("nvarchar(max)");

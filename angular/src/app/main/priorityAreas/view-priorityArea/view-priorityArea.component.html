@@ -1,0 +1,140 @@
+<!-- <customizable-dashboard [dashboardName]="dashboardName"></customizable-dashboard> -->
+
+<div [@routerTransition] id="TenantDashboard">
+
+    <div class="kt-content  kt-grid__item kt-grid__item--fluid kt-grid kt-grid--hor">
+        <div class="kt-subheader kt-grid__item" style="height: 60px;">
+            <div [class]="containerClass">
+                <div class="kt-subheader__main">
+                    <h3 class="kt-subheader__title">
+                        <span>Priority Area</span>
+                    </h3>
+                </div>
+                <div class="kt-subheader__toolbar">
+                    <div class="kt-subheader__wrapper">
+                        <button (click)="goBack()" class="btn btn-outline-primary blue">
+                            <i class="fa fa-reply"></i>
+                            {{l("Back")}}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
+
+            <div class="kt-portlet">
+                <!-- <div class="kt-portlet__head">
+                    <div class="kt-portlet__head-label">
+                        <h3 class="kt-portlet__head-title">
+                            <span></span>
+                        </h3>
+                    </div>
+                </div> -->
+                <div class="kt-portlet__body">
+                    <div class="form-group">
+                        <label for="areaName">{{l("Name")}}</label>
+                        <input type="text" id="performanceIndicator_MDA" class="form-control"
+                            [(ngModel)]="priorityArea.name" name="MDA" readonly disabled />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="areaDescription">{{l("Description")}}</label>
+                        <input type="text" id="areaDescription" class="form-control"
+                            [(ngModel)]="priorityArea.description" name="areaDescription" readonly disabled />
+                    </div>
+
+                    <div class="form-group row">     
+                        <div class="col-md-12">
+                            <label class="" for="Blanc">Percentage Achieved</label>
+                            <div class="progress progress-lg">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{percentageAchieved === 100 ? 'success' : 'warning'}}" 
+                                    role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" [style.width]="percentageAchieved + '%'">
+                                    {{percentageAchieved}}%
+                                </div>
+                            </div>
+                        </div>                  
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-5 col-md-6">
+                    <div class="kt-portlet">
+                        <div class="kt-portlet__head">
+                            <div class="kt-portlet__head-label">
+                                <h3 class="kt-portlet__head-title">
+                                        Deliverables
+                                </h3>
+                            </div>
+                            <div class="kt-portlet__head-toolbar">
+                                
+                            </div>
+                        </div>
+                        <div class="kt-portlet__body">
+                            <div class="form-group">
+                                <select class="form-control m-input" name="mdaFilter" id="mdaFilter"
+                                    [(ngModel)]="selectedMda" (change)="filerByMda()">
+                                    <option [value]="-1">{{l("-- Select MDA --")}}</option>
+                                    <option *ngFor="let mda of mdaList" [value]="mda.value">{{mda.name}}</option>
+                                </select>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <tbody>
+                                        <tr *ngFor="let item of filteredDeliverables">
+                                            <td (click)="deliverableSelect(item.deliverable)">
+                                                {{item.deliverable.displayName}}<br>
+                                                <small class="form-text text-muted">MDA: {{ item.mdaName }}</small>
+                                                <div class="progress progress-sm mt-2">
+                                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{item.percentageAchieved === 100 ? 'success' : 'warning'}}" 
+                                                        role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" [style.width]="item.percentageAchieved + '%'">
+                                                        {{item.percentageAchieved}}%
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-7 col-md-6">
+                    <div class="kt-portlet">
+                        <div class="kt-portlet__head">
+                            <div class="kt-portlet__head-label">
+                                <h3 class="kt-portlet__head-title">
+                                    <span *ngIf="organizationUnit">{{organizationUnit.displayName}}</span>
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="kt-portlet__body">
+                            <tabset class="tab-container">
+                                <tab heading="{{'Indicators' | localize}}" [active]="true">
+                                    <app-PerformanceIndicators #ouIndicators ></app-PerformanceIndicators>
+                                </tab>
+                                <tab heading="{{'Activities' | localize}}">
+                                    <app-performanceActivity #ouActivities ></app-performanceActivity>
+                                </tab>
+                                <tab heading="{{'Others' | localize}}">
+                                    <app-performance-review #ouReviews ></app-performance-review>
+                                </tab>
+                                <tab heading="{{'Members' | localize}}">
+                                    <organization-unit-members #ouMembers ></organization-unit-members>
+                                </tab>
+                                <!-- <tab heading="{{'Roles' | localize}}">
+                                    <organization-unit-roles #ouRoles (rolesAdded)="ouTree.rolesAdded($event)"
+                                        (roleRemoved)="ouTree.roleRemoved($event)"></organization-unit-roles>
+                                </tab> -->
+                            </tabset>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>

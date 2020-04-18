@@ -67,6 +67,7 @@ namespace PMSDemo.Configuration
             public const string BillingLegalName = "App.TenantManagement.BillingLegalName";
             public const string BillingAddress = "App.TenantManagement.BillingAddress";
             public const string BillingTaxVatNo = "App.TenantManagement.BillingTaxVatNo";
+            public const string PowerBiReportUrl = "App.TenantManagement.PowerBiReportUrl";
         }
 
         public static class UserManagement

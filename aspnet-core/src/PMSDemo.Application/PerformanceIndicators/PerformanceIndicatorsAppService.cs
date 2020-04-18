@@ -166,7 +166,8 @@ namespace PMSDemo.PerformanceIndicators
                                                         MeansOfVerification = x.MeansOfVerification,
                                                         Note = x.Note,
                                                         Target = x.Target,
-                                                        Year = x.Year
+                                                        Year = x.Year,
+                                                        PercentageAchieved = x.PercentageAchieved
                                                     })
                                                     .ToListAsync();
             foreach (var target in targets)
@@ -229,17 +230,27 @@ namespace PMSDemo.PerformanceIndicators
             if (indicator.DataType == Enums.DataTypeEnum.Number)
             {
                 target.Actual = (Convert.ToDouble(target.Actual) + Convert.ToDouble(input.Target.Actual)).ToString();
+                target.PercentageAchieved = Convert.ToInt32((Convert.ToDouble(target.Actual) / Convert.ToDouble(target.Target)) * 100);
+            }
+            if (indicator.DataType == Enums.DataTypeEnum.DateTime)
+            {
+                target.Actual = input.Target.Actual;
+                target.PercentageAchieved = target.Target.Equals(input.Target.Actual) ? 100 : 0;
             }
             else
             {
                 target.Actual = input.Target.Actual;
+                target.PercentageAchieved = target.Target.Equals(input.Target.Actual) ? 100 : 0;
             }
             target.Note = input.Target.Note;
             target.DataSource = input.Target.DataSource;
 
             await _indicatorYearlyTargetRepository.UpdateAsync(target);
+            CurrentUnitOfWork.SaveChanges();
+
             await SaveAttachment(target.Id, input.Attachments);
             await SaveProgressLog(input.Target);
+            await UpdateIndicatorProgressAchieved(target.IndicatorId);
         }
 
         protected async Task SaveYearlyTargets(int indicatorId, List<IndicatorYearlyTargetDto> input)
@@ -311,7 +322,8 @@ namespace PMSDemo.PerformanceIndicators
                 MeansOfVerification = input.MeansOfVerification,
                 Note = input.Note,
                 Target = input.Target,
-                Year = input.Year
+                Year = input.Year,
+                PercentageAchieved = input.PercentageAchieved
             });
         }
 
@@ -340,6 +352,16 @@ namespace PMSDemo.PerformanceIndicators
                        };
 
             return await logs.OrderByDescending(x => x.LastUpdated).ToListAsync();
+        }
+
+        private async Task UpdateIndicatorProgressAchieved(int indicatorId)
+        {
+            var targetsDto = await GetIndicatorTargets(new EntityDto { Id = indicatorId });
+            var averageProgressAchieved = targetsDto.Average(x => x.Target.PercentageAchieved);
+
+            var indicator = await _performanceIndicatorRepository.FirstOrDefaultAsync(indicatorId);
+            indicator.PercentageAchieved = Convert.ToInt32(averageProgressAchieved);
+            await _performanceIndicatorRepository.UpdateAsync(indicator);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿import { Component, Injector, ViewEncapsulation, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PriorityAreasServiceProxy, PriorityAreaDto  } from '@shared/service-proxies/service-proxies';
 import { NotifyService } from '@abp/notify/notify.service';
 import { AppComponentBase } from '@shared/common/app-component-base';
@@ -36,7 +36,8 @@ export class PriorityAreasComponent extends AppComponentBase {
         private _notifyService: NotifyService,
         private _tokenAuth: TokenAuthServiceProxy,
         private _activatedRoute: ActivatedRoute,
-        private _fileDownloadService: FileDownloadService
+        private _fileDownloadService: FileDownloadService,
+        private _router: Router
     ) {
         super(injector);
     }
@@ -67,6 +68,10 @@ export class PriorityAreasComponent extends AppComponentBase {
 
     createPriorityArea(): void {
         this.createOrEditPriorityAreaModal.show();
+    }
+
+    viewPriorityArea(priorityAreaId: number): void {
+        this._router.navigate(['app/main/priority-areas/view', priorityAreaId]);
     }
 
     deletePriorityArea(priorityArea: PriorityAreaDto): void {
