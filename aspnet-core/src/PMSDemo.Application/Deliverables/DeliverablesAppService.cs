@@ -17,6 +17,8 @@ using PMSDemo.Deliverables.Dtos;
 using PMSDemo.PriorityAreas;
 using PMSDemo.PerformanceIndicators;
 using PMSDemo.PerformanceActivities;
+using PMSDemo.PerformanceIndicators.Dtos;
+using PMSDemo.PerformanceActivities.Dtos;
 
 namespace PMSDemo.Deliverables
 {
@@ -49,7 +51,7 @@ namespace PMSDemo.Deliverables
             _organizationUnitManager = organizationUnitManager;
         }
 
-        public async Task<ListResultDto<GetDeliverableForEditOutput>> GetForPriorityArea(EntityDto input)
+        public async Task<GetDeliverableForViewOutput> GetForPriorityArea(EntityDto input)
         {
             var filteredDeliverables = _deliverableRepository.GetAll()
                                                              .Include(x => x.Parent)
@@ -66,9 +68,22 @@ namespace PMSDemo.Deliverables
                 return x;
             });
 
-            return new ListResultDto<GetDeliverableForEditOutput>()
+            List<GetPerformanceIndicatorForEditOutput> indicators = new List<GetPerformanceIndicatorForEditOutput>();
+            List<GetPerformanceActivityForEditOutput> activites = new List<GetPerformanceActivityForEditOutput>();
+
+            foreach (var item in deliverables)
             {
-                Items = output.ToList()
+                var deliverableIndicators = await GetInidcatorsForDeliverable((long)item.Deliverable.Id);
+                var deliverableActivities = await GetActivitiesForDeliverable((long)item.Deliverable.Id);
+                indicators.AddRange(deliverableIndicators);
+                activites.AddRange(deliverableActivities);
+            }
+
+            return new GetDeliverableForViewOutput()
+            {
+                Deliverables = new ListResultDto<GetDeliverableForEditOutput>() { Items = output.ToList() },
+                Indicators = new ListResultDto<GetPerformanceIndicatorForEditOutput>() { Items = indicators },
+                Activities = new ListResultDto<GetPerformanceActivityForEditOutput>() {  Items = activites }
             };
         }
 
@@ -88,6 +103,55 @@ namespace PMSDemo.Deliverables
 
             return ((indicatorPercentageAchieved + activitiesPercentageAchieved) / 2.00);
         }
+
+        private async Task<List<GetPerformanceIndicatorForEditOutput>> GetInidcatorsForDeliverable(long deliverableId)
+        {
+
+            var filteredIndicator = _lookup_indicatorRepository.GetAll().Where(x => x.OrganizationUnitId == deliverableId);
+
+            var indicators = from o in filteredIndicator
+                             join ou in _lookup_organizationUnitRepository.GetAll() on o.OrganizationUnitId equals ou.Id into ou1
+                             from ou2 in ou1.DefaultIfEmpty()
+
+                             join m in _lookup_organizationUnitRepository.GetAll() on ou2.ParentId equals m.Id into m1
+                             from m2 in m1.DefaultIfEmpty()
+
+                             select new GetPerformanceIndicatorForEditOutput()
+                             {
+                                 PerformanceIndicator = ObjectMapper.Map<CreateOrEditPerformanceIndicatorDto>(o),
+                                 DeliverableName = ou2 == null ? "" : ou2.DisplayName,
+                                 MdaName = m2 == null ? "" : m2.DisplayName,
+                             };
+
+            var totalCount = await indicators.CountAsync();
+
+            return await indicators.ToListAsync();
+        }
+
+        private async Task<List<GetPerformanceActivityForEditOutput>> GetActivitiesForDeliverable(long deliverableId)
+        {
+
+            var filteredIndicator = _lookup_activityRepository.GetAll()
+                                                              .Where(x => x.OrganizationUnitId == deliverableId);
+
+            var activities = from o in filteredIndicator
+                             join ou in _lookup_organizationUnitRepository.GetAll() on o.OrganizationUnitId equals ou.Id into ou1
+                             from ou2 in ou1.DefaultIfEmpty()
+
+                             join m in _lookup_organizationUnitRepository.GetAll() on ou2.ParentId equals m.Id into m1
+                             from m2 in m1.DefaultIfEmpty()
+
+                             select new GetPerformanceActivityForEditOutput()
+                             {
+                                 PerformanceActivity = ObjectMapper.Map<CreateOrEditPerformanceActivityDto>(o),
+                                 DeliverableName = ou2 == null ? "" : ou2.DisplayName,
+                                 MdaName = m2 == null ? "" : m2.DisplayName
+                             };
+
+            return await activities.ToListAsync();
+        }
+
+
 
         [AbpAuthorize(AppPermissions.Pages_Deliverable_Edit)]
         public async Task<GetDeliverableForEditOutput> GetDeliverableForEdit(EntityDto<long> input)

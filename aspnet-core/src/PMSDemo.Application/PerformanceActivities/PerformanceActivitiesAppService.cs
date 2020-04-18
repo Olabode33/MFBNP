@@ -21,21 +21,21 @@ using PMSDemo.Common.Dto;
 namespace PMSDemo.PerformanceActivities
 {
     [AbpAuthorize(AppPermissions.Pages_PerformanceActivity)]
-    public class PerformanceActivitiesAppService : PMSDemoAppServiceBase
+    public class PerformanceActivitiesAppService : PMSDemoAppServiceBase, IPerformanceActivitiesAppService
     {
         private readonly IRepository<PerformanceActivity> _performanceActivityRepository;
         private readonly IRepository<ActivityAttachment> _activityAttachmentRepository;
         private readonly IRepository<ActivityUpdateLog> _activityProgressLogRepository;
         private readonly IRepository<User, long> _lookup_userRepository;
-        private readonly IRepository<OrganizationUnit, long> _lookup_organizationUnitRepository; 
-        private readonly IRepository<PriorityArea> _lookup_priorityAreaRepository; 
+        private readonly IRepository<OrganizationUnit, long> _lookup_organizationUnitRepository;
+        private readonly IRepository<PriorityArea> _lookup_priorityAreaRepository;
         private readonly OrganizationUnitManager _organizationUnitManager;
 
         public PerformanceActivitiesAppService(
             IRepository<PerformanceActivity> performanceActivityRepository,
             IRepository<ActivityAttachment> activityAttachmentRepository,
             IRepository<ActivityUpdateLog> activityProgressLogRepository,
-            IRepository<User, long> lookup_userRepository, 
+            IRepository<User, long> lookup_userRepository,
             IRepository<OrganizationUnit, long> lookup_organizationUnitRepository,
             IRepository<PriorityArea> lookup_priorityAreaRepository,
             OrganizationUnitManager organizationUnitManager)
@@ -61,18 +61,18 @@ namespace PMSDemo.PerformanceActivities
                 .PageBy(input);
 
             var activities = from o in pagedAndFilteredIndicators
-                                join ou in _lookup_organizationUnitRepository.GetAll() on o.OrganizationUnitId equals ou.Id into ou1
-                                from ou2 in ou1.DefaultIfEmpty()
+                             join ou in _lookup_organizationUnitRepository.GetAll() on o.OrganizationUnitId equals ou.Id into ou1
+                             from ou2 in ou1.DefaultIfEmpty()
 
-                                join m in _lookup_organizationUnitRepository.GetAll() on ou2.ParentId equals m.Id into m1
-                                from m2 in m1.DefaultIfEmpty()
+                             join m in _lookup_organizationUnitRepository.GetAll() on ou2.ParentId equals m.Id into m1
+                             from m2 in m1.DefaultIfEmpty()
 
-                                select new GetPerformanceActivityForEditOutput()
-                                {
-                                    PerformanceActivity = ObjectMapper.Map<CreateOrEditPerformanceActivityDto>(o),
-                                    DeliverableName = ou2 == null ? "" : ou2.DisplayName,
-                                    MdaName = m2 == null ? "" : m2.DisplayName
-                                };
+                             select new GetPerformanceActivityForEditOutput()
+                             {
+                                 PerformanceActivity = ObjectMapper.Map<CreateOrEditPerformanceActivityDto>(o),
+                                 DeliverableName = ou2 == null ? "" : ou2.DisplayName,
+                                 MdaName = m2 == null ? "" : m2.DisplayName
+                             };
 
             var totalCount = await filteredIndicator.CountAsync();
 

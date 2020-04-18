@@ -20,21 +20,21 @@ using PMSDemo.Common.Dto;
 namespace PMSDemo.PerformanceIndicators
 {
     [AbpAuthorize(AppPermissions.Pages_PerformanceIndicator)]
-    public class PerformanceIndicatorsAppService : PMSDemoAppServiceBase
+    public class PerformanceIndicatorsAppService : PMSDemoAppServiceBase, IPerformanceIndicatorsAppService
     {
         private readonly IRepository<PerformanceIndicator> _performanceIndicatorRepository;
         private readonly IRepository<IndicatorAttachment> _indicatorAttachmentRepository;
         private readonly IRepository<User, long> _lookup_userRepository;
-        private readonly IRepository<OrganizationUnit, long> _lookup_organizationUnitRepository; 
-        private readonly IRepository<PriorityArea> _lookup_priorityAreaRepository; 
-        private readonly IRepository<IndicatorYearlyTarget> _indicatorYearlyTargetRepository; 
-        private readonly IRepository<IndicatorUpdateLog> _indicatorUpdateLogRepository; 
+        private readonly IRepository<OrganizationUnit, long> _lookup_organizationUnitRepository;
+        private readonly IRepository<PriorityArea> _lookup_priorityAreaRepository;
+        private readonly IRepository<IndicatorYearlyTarget> _indicatorYearlyTargetRepository;
+        private readonly IRepository<IndicatorUpdateLog> _indicatorUpdateLogRepository;
         private readonly OrganizationUnitManager _organizationUnitManager;
 
         public PerformanceIndicatorsAppService(
             IRepository<PerformanceIndicator> performanceIndicatorRepository,
             IRepository<IndicatorAttachment> indicatorAttachmentRepository,
-            IRepository<User, long> lookup_userRepository, 
+            IRepository<User, long> lookup_userRepository,
             IRepository<OrganizationUnit, long> lookup_organizationUnitRepository,
             IRepository<PriorityArea> lookup_priorityAreaRepository,
             IRepository<IndicatorYearlyTarget> indicatorYearlyTargetRepository,
@@ -80,19 +80,19 @@ namespace PMSDemo.PerformanceIndicators
                 .PageBy(input);
 
             var indicators = from o in pagedAndFilteredIndicators
-                                join ou in _lookup_organizationUnitRepository.GetAll() on o.OrganizationUnitId equals ou.Id into ou1
-                                from ou2 in ou1.DefaultIfEmpty()
+                             join ou in _lookup_organizationUnitRepository.GetAll() on o.OrganizationUnitId equals ou.Id into ou1
+                             from ou2 in ou1.DefaultIfEmpty()
 
-                                join m in _lookup_organizationUnitRepository.GetAll() on ou2.ParentId equals m.Id into m1
-                                from m2 in m1.DefaultIfEmpty()
+                             join m in _lookup_organizationUnitRepository.GetAll() on ou2.ParentId equals m.Id into m1
+                             from m2 in m1.DefaultIfEmpty()
 
-                                select new GetPerformanceIndicatorForEditOutput()
-                                {
-                                    PerformanceIndicator = ObjectMapper.Map<CreateOrEditPerformanceIndicatorDto>(o),
-                                    DeliverableName = ou2 == null ? "" : ou2.DisplayName,
-                                    MdaName = m2 == null ? "" : m2.DisplayName,
-                                    Inherited = o.OrganizationUnitId == input.OrganizationUnitId ? false : true
-                                };
+                             select new GetPerformanceIndicatorForEditOutput()
+                             {
+                                 PerformanceIndicator = ObjectMapper.Map<CreateOrEditPerformanceIndicatorDto>(o),
+                                 DeliverableName = ou2 == null ? "" : ou2.DisplayName,
+                                 MdaName = m2 == null ? "" : m2.DisplayName,
+                                 Inherited = o.OrganizationUnitId == input.OrganizationUnitId ? false : true
+                             };
 
             //var lists = await indicators.ToListAsync();
             //lists = lists.Where(x => units.Any(e => e.Id == x.PerformanceIndicator.OrganizationUnitId))
@@ -261,7 +261,7 @@ namespace PMSDemo.PerformanceIndicators
                 if (target != null)
                 {
                     ObjectMapper.Map(item, target);
-                } 
+                }
                 else
                 {
                     var newIndicator = ObjectMapper.Map<IndicatorYearlyTarget>(item);
@@ -282,7 +282,7 @@ namespace PMSDemo.PerformanceIndicators
                 }
             }
         }
- 
+
         [AbpAuthorize(AppPermissions.Pages_PerformanceIndicator_Delete)]
         public async Task Delete(EntityDto input)
         {
