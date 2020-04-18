@@ -1744,6 +1744,61 @@ export class CommonLookupServiceProxy {
         }
         return _observableOf<NameValueOfInt32[]>(<any>null);
     }
+
+    /**
+     * @return Success
+     */
+    getAllMdas(): Observable<NameValueOfInt64[]> {
+        let url_ = this.baseUrl + "/api/services/app/CommonLookup/GetAllMdas";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAllMdas(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAllMdas(<any>response_);
+                } catch (e) {
+                    return <Observable<NameValueOfInt64[]>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<NameValueOfInt64[]>><any>_observableThrow(response_);
+        }));
+    }
+
+    protected processGetAllMdas(response: HttpResponseBase): Observable<NameValueOfInt64[]> {
+        const status = response.status;
+        const responseBlob = 
+            response instanceof HttpResponse ? response.body : 
+            (<any>response).error instanceof Blob ? (<any>response).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }};
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(NameValueOfInt64.fromJS(item));
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<NameValueOfInt64[]>(<any>null);
+    }
 }
 
 @Injectable()
@@ -2274,7 +2329,7 @@ export class DeliverablesServiceProxy {
      * @param id (optional) 
      * @return Success
      */
-    getForPriorityArea(id: number | undefined): Observable<ListResultDtoOfGetDeliverableForEditOutput> {
+    getForPriorityArea(id: number | undefined): Observable<GetDeliverableForViewOutput> {
         let url_ = this.baseUrl + "/api/services/app/Deliverables/GetForPriorityArea?";
         if (id === null)
             throw new Error("The parameter 'id' cannot be null.");
@@ -2297,14 +2352,14 @@ export class DeliverablesServiceProxy {
                 try {
                     return this.processGetForPriorityArea(<any>response_);
                 } catch (e) {
-                    return <Observable<ListResultDtoOfGetDeliverableForEditOutput>><any>_observableThrow(e);
+                    return <Observable<GetDeliverableForViewOutput>><any>_observableThrow(e);
                 }
             } else
-                return <Observable<ListResultDtoOfGetDeliverableForEditOutput>><any>_observableThrow(response_);
+                return <Observable<GetDeliverableForViewOutput>><any>_observableThrow(response_);
         }));
     }
 
-    protected processGetForPriorityArea(response: HttpResponseBase): Observable<ListResultDtoOfGetDeliverableForEditOutput> {
+    protected processGetForPriorityArea(response: HttpResponseBase): Observable<GetDeliverableForViewOutput> {
         const status = response.status;
         const responseBlob = 
             response instanceof HttpResponse ? response.body : 
@@ -2315,7 +2370,7 @@ export class DeliverablesServiceProxy {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ListResultDtoOfGetDeliverableForEditOutput.fromJS(resultData200);
+            result200 = GetDeliverableForViewOutput.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -2323,7 +2378,7 @@ export class DeliverablesServiceProxy {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
         }
-        return _observableOf<ListResultDtoOfGetDeliverableForEditOutput>(<any>null);
+        return _observableOf<GetDeliverableForViewOutput>(<any>null);
     }
 
     /**
@@ -17183,6 +17238,46 @@ export interface INameValueOfInt32 {
     value: number;
 }
 
+export class NameValueOfInt64 implements INameValueOfInt64 {
+    name!: string | undefined;
+    value!: number;
+
+    constructor(data?: INameValueOfInt64) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.name = data["name"];
+            this.value = data["value"];
+        }
+    }
+
+    static fromJS(data: any): NameValueOfInt64 {
+        data = typeof data === 'object' ? data : {};
+        let result = new NameValueOfInt64();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["value"] = this.value;
+        return data; 
+    }
+}
+
+export interface INameValueOfInt64 {
+    name: string | undefined;
+    value: number;
+}
+
 export class Widget implements IWidget {
     widgetId!: string | undefined;
     height!: number;
@@ -17857,6 +17952,894 @@ export class ListResultDtoOfGetDeliverableForEditOutput implements IListResultDt
 
 export interface IListResultDtoOfGetDeliverableForEditOutput {
     items: GetDeliverableForEditOutput[] | undefined;
+}
+
+export enum DataTypeEnum {
+    Number = 0,
+    DateTime = 1,
+    Boolean = 2,
+}
+
+export enum UnitsEnum {
+    None = 0,
+    Count = 1,
+    Percentage = 2,
+    Money = 3,
+}
+
+export enum ComparisonMethodEnum {
+    GreaterThanOrEqual = 0,
+    LessThanOrEqual = 1,
+}
+
+export class CreateOrEditPerformanceIndicatorDto implements ICreateOrEditPerformanceIndicatorDto {
+    organizationUnitId!: number;
+    name!: string | undefined;
+    description!: string | undefined;
+    baselineValue!: string | undefined;
+    baselineComment!: string | undefined;
+    year!: number;
+    target!: string | undefined;
+    actual!: string | undefined;
+    dataType!: DataTypeEnum;
+    unit!: UnitsEnum;
+    comparisonMethod!: ComparisonMethodEnum;
+    meansOfVerification!: string | undefined;
+    note!: string | undefined;
+    canCascade!: boolean;
+    percentageAchieved!: number;
+    id!: number | undefined;
+
+    constructor(data?: ICreateOrEditPerformanceIndicatorDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.organizationUnitId = data["organizationUnitId"];
+            this.name = data["name"];
+            this.description = data["description"];
+            this.baselineValue = data["baselineValue"];
+            this.baselineComment = data["baselineComment"];
+            this.year = data["year"];
+            this.target = data["target"];
+            this.actual = data["actual"];
+            this.dataType = data["dataType"];
+            this.unit = data["unit"];
+            this.comparisonMethod = data["comparisonMethod"];
+            this.meansOfVerification = data["meansOfVerification"];
+            this.note = data["note"];
+            this.canCascade = data["canCascade"];
+            this.percentageAchieved = data["percentageAchieved"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): CreateOrEditPerformanceIndicatorDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrEditPerformanceIndicatorDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["organizationUnitId"] = this.organizationUnitId;
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["baselineValue"] = this.baselineValue;
+        data["baselineComment"] = this.baselineComment;
+        data["year"] = this.year;
+        data["target"] = this.target;
+        data["actual"] = this.actual;
+        data["dataType"] = this.dataType;
+        data["unit"] = this.unit;
+        data["comparisonMethod"] = this.comparisonMethod;
+        data["meansOfVerification"] = this.meansOfVerification;
+        data["note"] = this.note;
+        data["canCascade"] = this.canCascade;
+        data["percentageAchieved"] = this.percentageAchieved;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface ICreateOrEditPerformanceIndicatorDto {
+    organizationUnitId: number;
+    name: string | undefined;
+    description: string | undefined;
+    baselineValue: string | undefined;
+    baselineComment: string | undefined;
+    year: number;
+    target: string | undefined;
+    actual: string | undefined;
+    dataType: DataTypeEnum;
+    unit: UnitsEnum;
+    comparisonMethod: ComparisonMethodEnum;
+    meansOfVerification: string | undefined;
+    note: string | undefined;
+    canCascade: boolean;
+    percentageAchieved: number;
+    id: number | undefined;
+}
+
+export class IndicatorYearlyTargetDto implements IIndicatorYearlyTargetDto {
+    indicatorId!: number;
+    year!: number;
+    description!: string | undefined;
+    comparisonMethod!: ComparisonMethodEnum;
+    meansOfVerification!: string | undefined;
+    target!: string | undefined;
+    actual!: string | undefined;
+    dataSource!: string | undefined;
+    note!: string | undefined;
+    lastUpdated!: moment.Moment | undefined;
+    percentageAchieved!: number;
+    id!: number;
+
+    constructor(data?: IIndicatorYearlyTargetDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.indicatorId = data["indicatorId"];
+            this.year = data["year"];
+            this.description = data["description"];
+            this.comparisonMethod = data["comparisonMethod"];
+            this.meansOfVerification = data["meansOfVerification"];
+            this.target = data["target"];
+            this.actual = data["actual"];
+            this.dataSource = data["dataSource"];
+            this.note = data["note"];
+            this.lastUpdated = data["lastUpdated"] ? moment(data["lastUpdated"].toString()) : <any>undefined;
+            this.percentageAchieved = data["percentageAchieved"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): IndicatorYearlyTargetDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new IndicatorYearlyTargetDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["indicatorId"] = this.indicatorId;
+        data["year"] = this.year;
+        data["description"] = this.description;
+        data["comparisonMethod"] = this.comparisonMethod;
+        data["meansOfVerification"] = this.meansOfVerification;
+        data["target"] = this.target;
+        data["actual"] = this.actual;
+        data["dataSource"] = this.dataSource;
+        data["note"] = this.note;
+        data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : <any>undefined;
+        data["percentageAchieved"] = this.percentageAchieved;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IIndicatorYearlyTargetDto {
+    indicatorId: number;
+    year: number;
+    description: string | undefined;
+    comparisonMethod: ComparisonMethodEnum;
+    meansOfVerification: string | undefined;
+    target: string | undefined;
+    actual: string | undefined;
+    dataSource: string | undefined;
+    note: string | undefined;
+    lastUpdated: moment.Moment | undefined;
+    percentageAchieved: number;
+    id: number;
+}
+
+export class IndicatorAttachmentDto implements IIndicatorAttachmentDto {
+    indicatorTargetId!: number;
+    fileName!: string | undefined;
+    documentId!: string | undefined;
+    fileFormat!: string | undefined;
+    id!: number;
+
+    constructor(data?: IIndicatorAttachmentDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.indicatorTargetId = data["indicatorTargetId"];
+            this.fileName = data["fileName"];
+            this.documentId = data["documentId"];
+            this.fileFormat = data["fileFormat"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): IndicatorAttachmentDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new IndicatorAttachmentDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["indicatorTargetId"] = this.indicatorTargetId;
+        data["fileName"] = this.fileName;
+        data["documentId"] = this.documentId;
+        data["fileFormat"] = this.fileFormat;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IIndicatorAttachmentDto {
+    indicatorTargetId: number;
+    fileName: string | undefined;
+    documentId: string | undefined;
+    fileFormat: string | undefined;
+    id: number;
+}
+
+export class UpdateTargetDto implements IUpdateTargetDto {
+    target!: IndicatorYearlyTargetDto;
+    attachments!: IndicatorAttachmentDto[] | undefined;
+
+    constructor(data?: IUpdateTargetDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.target = data["target"] ? IndicatorYearlyTargetDto.fromJS(data["target"]) : <any>undefined;
+            if (Array.isArray(data["attachments"])) {
+                this.attachments = [] as any;
+                for (let item of data["attachments"])
+                    this.attachments!.push(IndicatorAttachmentDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): UpdateTargetDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateTargetDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["target"] = this.target ? this.target.toJSON() : <any>undefined;
+        if (Array.isArray(this.attachments)) {
+            data["attachments"] = [];
+            for (let item of this.attachments)
+                data["attachments"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IUpdateTargetDto {
+    target: IndicatorYearlyTargetDto;
+    attachments: IndicatorAttachmentDto[] | undefined;
+}
+
+export class AuditInfoDto implements IAuditInfoDto {
+    createdBy!: string | undefined;
+    createdDate!: moment.Moment;
+    lastUpdatedBy!: string | undefined;
+    lastUpdatedDate!: moment.Moment | undefined;
+
+    constructor(data?: IAuditInfoDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.createdBy = data["createdBy"];
+            this.createdDate = data["createdDate"] ? moment(data["createdDate"].toString()) : <any>undefined;
+            this.lastUpdatedBy = data["lastUpdatedBy"];
+            this.lastUpdatedDate = data["lastUpdatedDate"] ? moment(data["lastUpdatedDate"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): AuditInfoDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AuditInfoDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["createdBy"] = this.createdBy;
+        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
+        data["lastUpdatedBy"] = this.lastUpdatedBy;
+        data["lastUpdatedDate"] = this.lastUpdatedDate ? this.lastUpdatedDate.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IAuditInfoDto {
+    createdBy: string | undefined;
+    createdDate: moment.Moment;
+    lastUpdatedBy: string | undefined;
+    lastUpdatedDate: moment.Moment | undefined;
+}
+
+export class GetPerformanceIndicatorForEditOutput implements IGetPerformanceIndicatorForEditOutput {
+    performanceIndicator!: CreateOrEditPerformanceIndicatorDto;
+    deliverableName!: string | undefined;
+    mdaName!: string | undefined;
+    inherited!: boolean;
+    targets!: UpdateTargetDto[] | undefined;
+    auditInfo!: AuditInfoDto;
+
+    constructor(data?: IGetPerformanceIndicatorForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.performanceIndicator = data["performanceIndicator"] ? CreateOrEditPerformanceIndicatorDto.fromJS(data["performanceIndicator"]) : <any>undefined;
+            this.deliverableName = data["deliverableName"];
+            this.mdaName = data["mdaName"];
+            this.inherited = data["inherited"];
+            if (Array.isArray(data["targets"])) {
+                this.targets = [] as any;
+                for (let item of data["targets"])
+                    this.targets!.push(UpdateTargetDto.fromJS(item));
+            }
+            this.auditInfo = data["auditInfo"] ? AuditInfoDto.fromJS(data["auditInfo"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetPerformanceIndicatorForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetPerformanceIndicatorForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["performanceIndicator"] = this.performanceIndicator ? this.performanceIndicator.toJSON() : <any>undefined;
+        data["deliverableName"] = this.deliverableName;
+        data["mdaName"] = this.mdaName;
+        data["inherited"] = this.inherited;
+        if (Array.isArray(this.targets)) {
+            data["targets"] = [];
+            for (let item of this.targets)
+                data["targets"].push(item.toJSON());
+        }
+        data["auditInfo"] = this.auditInfo ? this.auditInfo.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IGetPerformanceIndicatorForEditOutput {
+    performanceIndicator: CreateOrEditPerformanceIndicatorDto;
+    deliverableName: string | undefined;
+    mdaName: string | undefined;
+    inherited: boolean;
+    targets: UpdateTargetDto[] | undefined;
+    auditInfo: AuditInfoDto;
+}
+
+export class ListResultDtoOfGetPerformanceIndicatorForEditOutput implements IListResultDtoOfGetPerformanceIndicatorForEditOutput {
+    items!: GetPerformanceIndicatorForEditOutput[] | undefined;
+
+    constructor(data?: IListResultDtoOfGetPerformanceIndicatorForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            if (Array.isArray(data["items"])) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(GetPerformanceIndicatorForEditOutput.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ListResultDtoOfGetPerformanceIndicatorForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new ListResultDtoOfGetPerformanceIndicatorForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IListResultDtoOfGetPerformanceIndicatorForEditOutput {
+    items: GetPerformanceIndicatorForEditOutput[] | undefined;
+}
+
+export enum CompletionStatusEnum {
+    NotStarted = 0,
+    InProgress = 1,
+    Completed = 2,
+}
+
+export class CreateOrEditPerformanceActivityDto implements ICreateOrEditPerformanceActivityDto {
+    organizationUnitId!: number;
+    name!: string | undefined;
+    description!: string | undefined;
+    milestoneAchieved!: string | undefined;
+    plannedStartDate!: moment.Moment | undefined;
+    actualStartDate!: moment.Moment | undefined;
+    plannedCompletionDate!: moment.Moment | undefined;
+    actualCompletionDate!: moment.Moment | undefined;
+    completionStatus!: CompletionStatusEnum;
+    note!: string | undefined;
+    canCascade!: boolean;
+    dataSource!: string | undefined;
+    completionLevel!: number | undefined;
+    id!: number | undefined;
+
+    constructor(data?: ICreateOrEditPerformanceActivityDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.organizationUnitId = data["organizationUnitId"];
+            this.name = data["name"];
+            this.description = data["description"];
+            this.milestoneAchieved = data["milestoneAchieved"];
+            this.plannedStartDate = data["plannedStartDate"] ? moment(data["plannedStartDate"].toString()) : <any>undefined;
+            this.actualStartDate = data["actualStartDate"] ? moment(data["actualStartDate"].toString()) : <any>undefined;
+            this.plannedCompletionDate = data["plannedCompletionDate"] ? moment(data["plannedCompletionDate"].toString()) : <any>undefined;
+            this.actualCompletionDate = data["actualCompletionDate"] ? moment(data["actualCompletionDate"].toString()) : <any>undefined;
+            this.completionStatus = data["completionStatus"];
+            this.note = data["note"];
+            this.canCascade = data["canCascade"];
+            this.dataSource = data["dataSource"];
+            this.completionLevel = data["completionLevel"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): CreateOrEditPerformanceActivityDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrEditPerformanceActivityDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["organizationUnitId"] = this.organizationUnitId;
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["milestoneAchieved"] = this.milestoneAchieved;
+        data["plannedStartDate"] = this.plannedStartDate ? this.plannedStartDate.toISOString() : <any>undefined;
+        data["actualStartDate"] = this.actualStartDate ? this.actualStartDate.toISOString() : <any>undefined;
+        data["plannedCompletionDate"] = this.plannedCompletionDate ? this.plannedCompletionDate.toISOString() : <any>undefined;
+        data["actualCompletionDate"] = this.actualCompletionDate ? this.actualCompletionDate.toISOString() : <any>undefined;
+        data["completionStatus"] = this.completionStatus;
+        data["note"] = this.note;
+        data["canCascade"] = this.canCascade;
+        data["dataSource"] = this.dataSource;
+        data["completionLevel"] = this.completionLevel;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface ICreateOrEditPerformanceActivityDto {
+    organizationUnitId: number;
+    name: string | undefined;
+    description: string | undefined;
+    milestoneAchieved: string | undefined;
+    plannedStartDate: moment.Moment | undefined;
+    actualStartDate: moment.Moment | undefined;
+    plannedCompletionDate: moment.Moment | undefined;
+    actualCompletionDate: moment.Moment | undefined;
+    completionStatus: CompletionStatusEnum;
+    note: string | undefined;
+    canCascade: boolean;
+    dataSource: string | undefined;
+    completionLevel: number | undefined;
+    id: number | undefined;
+}
+
+export class ActivityAttachmentDto implements IActivityAttachmentDto {
+    performanceActivityId!: number;
+    fileName!: string | undefined;
+    documentId!: string | undefined;
+    fileFormat!: string | undefined;
+    id!: number;
+
+    constructor(data?: IActivityAttachmentDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.performanceActivityId = data["performanceActivityId"];
+            this.fileName = data["fileName"];
+            this.documentId = data["documentId"];
+            this.fileFormat = data["fileFormat"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): ActivityAttachmentDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ActivityAttachmentDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["performanceActivityId"] = this.performanceActivityId;
+        data["fileName"] = this.fileName;
+        data["documentId"] = this.documentId;
+        data["fileFormat"] = this.fileFormat;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface IActivityAttachmentDto {
+    performanceActivityId: number;
+    fileName: string | undefined;
+    documentId: string | undefined;
+    fileFormat: string | undefined;
+    id: number;
+}
+
+export class GetPerformanceActivityForEditOutput implements IGetPerformanceActivityForEditOutput {
+    performanceActivity!: CreateOrEditPerformanceActivityDto;
+    deliverableName!: string | undefined;
+    mdaName!: string | undefined;
+    attachments!: ActivityAttachmentDto[] | undefined;
+    auditInfo!: AuditInfoDto;
+
+    constructor(data?: IGetPerformanceActivityForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.performanceActivity = data["performanceActivity"] ? CreateOrEditPerformanceActivityDto.fromJS(data["performanceActivity"]) : <any>undefined;
+            this.deliverableName = data["deliverableName"];
+            this.mdaName = data["mdaName"];
+            if (Array.isArray(data["attachments"])) {
+                this.attachments = [] as any;
+                for (let item of data["attachments"])
+                    this.attachments!.push(ActivityAttachmentDto.fromJS(item));
+            }
+            this.auditInfo = data["auditInfo"] ? AuditInfoDto.fromJS(data["auditInfo"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetPerformanceActivityForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetPerformanceActivityForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["performanceActivity"] = this.performanceActivity ? this.performanceActivity.toJSON() : <any>undefined;
+        data["deliverableName"] = this.deliverableName;
+        data["mdaName"] = this.mdaName;
+        if (Array.isArray(this.attachments)) {
+            data["attachments"] = [];
+            for (let item of this.attachments)
+                data["attachments"].push(item.toJSON());
+        }
+        data["auditInfo"] = this.auditInfo ? this.auditInfo.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IGetPerformanceActivityForEditOutput {
+    performanceActivity: CreateOrEditPerformanceActivityDto;
+    deliverableName: string | undefined;
+    mdaName: string | undefined;
+    attachments: ActivityAttachmentDto[] | undefined;
+    auditInfo: AuditInfoDto;
+}
+
+export class ListResultDtoOfGetPerformanceActivityForEditOutput implements IListResultDtoOfGetPerformanceActivityForEditOutput {
+    items!: GetPerformanceActivityForEditOutput[] | undefined;
+
+    constructor(data?: IListResultDtoOfGetPerformanceActivityForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            if (Array.isArray(data["items"])) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(GetPerformanceActivityForEditOutput.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ListResultDtoOfGetPerformanceActivityForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new ListResultDtoOfGetPerformanceActivityForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IListResultDtoOfGetPerformanceActivityForEditOutput {
+    items: GetPerformanceActivityForEditOutput[] | undefined;
+}
+
+export class CreateOrEditPerformanceReviewDto implements ICreateOrEditPerformanceReviewDto {
+    organizationUnitId!: number;
+    reviewComment!: string | undefined;
+    challenges!: string | undefined;
+    recommendation!: string | undefined;
+    id!: number | undefined;
+
+    constructor(data?: ICreateOrEditPerformanceReviewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.organizationUnitId = data["organizationUnitId"];
+            this.reviewComment = data["reviewComment"];
+            this.challenges = data["challenges"];
+            this.recommendation = data["recommendation"];
+            this.id = data["id"];
+        }
+    }
+
+    static fromJS(data: any): CreateOrEditPerformanceReviewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateOrEditPerformanceReviewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["organizationUnitId"] = this.organizationUnitId;
+        data["reviewComment"] = this.reviewComment;
+        data["challenges"] = this.challenges;
+        data["recommendation"] = this.recommendation;
+        data["id"] = this.id;
+        return data; 
+    }
+}
+
+export interface ICreateOrEditPerformanceReviewDto {
+    organizationUnitId: number;
+    reviewComment: string | undefined;
+    challenges: string | undefined;
+    recommendation: string | undefined;
+    id: number | undefined;
+}
+
+export class GetPerformanceReviewForEditOutput implements IGetPerformanceReviewForEditOutput {
+    review!: CreateOrEditPerformanceReviewDto;
+    deliverableName!: string | undefined;
+    mdaName!: string | undefined;
+
+    constructor(data?: IGetPerformanceReviewForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.review = data["review"] ? CreateOrEditPerformanceReviewDto.fromJS(data["review"]) : <any>undefined;
+            this.deliverableName = data["deliverableName"];
+            this.mdaName = data["mdaName"];
+        }
+    }
+
+    static fromJS(data: any): GetPerformanceReviewForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetPerformanceReviewForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["review"] = this.review ? this.review.toJSON() : <any>undefined;
+        data["deliverableName"] = this.deliverableName;
+        data["mdaName"] = this.mdaName;
+        return data; 
+    }
+}
+
+export interface IGetPerformanceReviewForEditOutput {
+    review: CreateOrEditPerformanceReviewDto;
+    deliverableName: string | undefined;
+    mdaName: string | undefined;
+}
+
+export class ListResultDtoOfGetPerformanceReviewForEditOutput implements IListResultDtoOfGetPerformanceReviewForEditOutput {
+    items!: GetPerformanceReviewForEditOutput[] | undefined;
+
+    constructor(data?: IListResultDtoOfGetPerformanceReviewForEditOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            if (Array.isArray(data["items"])) {
+                this.items = [] as any;
+                for (let item of data["items"])
+                    this.items!.push(GetPerformanceReviewForEditOutput.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ListResultDtoOfGetPerformanceReviewForEditOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new ListResultDtoOfGetPerformanceReviewForEditOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IListResultDtoOfGetPerformanceReviewForEditOutput {
+    items: GetPerformanceReviewForEditOutput[] | undefined;
+}
+
+export class GetDeliverableForViewOutput implements IGetDeliverableForViewOutput {
+    deliverables!: ListResultDtoOfGetDeliverableForEditOutput;
+    indicators!: ListResultDtoOfGetPerformanceIndicatorForEditOutput;
+    activities!: ListResultDtoOfGetPerformanceActivityForEditOutput;
+    reviews!: ListResultDtoOfGetPerformanceReviewForEditOutput;
+
+    constructor(data?: IGetDeliverableForViewOutput) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(data?: any) {
+        if (data) {
+            this.deliverables = data["deliverables"] ? ListResultDtoOfGetDeliverableForEditOutput.fromJS(data["deliverables"]) : <any>undefined;
+            this.indicators = data["indicators"] ? ListResultDtoOfGetPerformanceIndicatorForEditOutput.fromJS(data["indicators"]) : <any>undefined;
+            this.activities = data["activities"] ? ListResultDtoOfGetPerformanceActivityForEditOutput.fromJS(data["activities"]) : <any>undefined;
+            this.reviews = data["reviews"] ? ListResultDtoOfGetPerformanceReviewForEditOutput.fromJS(data["reviews"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GetDeliverableForViewOutput {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetDeliverableForViewOutput();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["deliverables"] = this.deliverables ? this.deliverables.toJSON() : <any>undefined;
+        data["indicators"] = this.indicators ? this.indicators.toJSON() : <any>undefined;
+        data["activities"] = this.activities ? this.activities.toJSON() : <any>undefined;
+        data["reviews"] = this.reviews ? this.reviews.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IGetDeliverableForViewOutput {
+    deliverables: ListResultDtoOfGetDeliverableForEditOutput;
+    indicators: ListResultDtoOfGetPerformanceIndicatorForEditOutput;
+    activities: ListResultDtoOfGetPerformanceActivityForEditOutput;
+    reviews: ListResultDtoOfGetPerformanceReviewForEditOutput;
 }
 
 export class DateToStringOutput implements IDateToStringOutput {
@@ -23185,260 +24168,6 @@ export interface IPayPalConfigurationDto {
     demoPassword: string | undefined;
 }
 
-export enum CompletionStatusEnum {
-    NotStarted = 0,
-    InProgress = 1,
-    Completed = 2,
-}
-
-export class CreateOrEditPerformanceActivityDto implements ICreateOrEditPerformanceActivityDto {
-    organizationUnitId!: number;
-    name!: string | undefined;
-    description!: string | undefined;
-    milestoneAchieved!: string | undefined;
-    plannedStartDate!: moment.Moment | undefined;
-    actualStartDate!: moment.Moment | undefined;
-    plannedCompletionDate!: moment.Moment | undefined;
-    actualCompletionDate!: moment.Moment | undefined;
-    completionStatus!: CompletionStatusEnum;
-    note!: string | undefined;
-    canCascade!: boolean;
-    dataSource!: string | undefined;
-    completionLevel!: number | undefined;
-    id!: number | undefined;
-
-    constructor(data?: ICreateOrEditPerformanceActivityDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.organizationUnitId = data["organizationUnitId"];
-            this.name = data["name"];
-            this.description = data["description"];
-            this.milestoneAchieved = data["milestoneAchieved"];
-            this.plannedStartDate = data["plannedStartDate"] ? moment(data["plannedStartDate"].toString()) : <any>undefined;
-            this.actualStartDate = data["actualStartDate"] ? moment(data["actualStartDate"].toString()) : <any>undefined;
-            this.plannedCompletionDate = data["plannedCompletionDate"] ? moment(data["plannedCompletionDate"].toString()) : <any>undefined;
-            this.actualCompletionDate = data["actualCompletionDate"] ? moment(data["actualCompletionDate"].toString()) : <any>undefined;
-            this.completionStatus = data["completionStatus"];
-            this.note = data["note"];
-            this.canCascade = data["canCascade"];
-            this.dataSource = data["dataSource"];
-            this.completionLevel = data["completionLevel"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): CreateOrEditPerformanceActivityDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateOrEditPerformanceActivityDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["organizationUnitId"] = this.organizationUnitId;
-        data["name"] = this.name;
-        data["description"] = this.description;
-        data["milestoneAchieved"] = this.milestoneAchieved;
-        data["plannedStartDate"] = this.plannedStartDate ? this.plannedStartDate.toISOString() : <any>undefined;
-        data["actualStartDate"] = this.actualStartDate ? this.actualStartDate.toISOString() : <any>undefined;
-        data["plannedCompletionDate"] = this.plannedCompletionDate ? this.plannedCompletionDate.toISOString() : <any>undefined;
-        data["actualCompletionDate"] = this.actualCompletionDate ? this.actualCompletionDate.toISOString() : <any>undefined;
-        data["completionStatus"] = this.completionStatus;
-        data["note"] = this.note;
-        data["canCascade"] = this.canCascade;
-        data["dataSource"] = this.dataSource;
-        data["completionLevel"] = this.completionLevel;
-        data["id"] = this.id;
-        return data; 
-    }
-}
-
-export interface ICreateOrEditPerformanceActivityDto {
-    organizationUnitId: number;
-    name: string | undefined;
-    description: string | undefined;
-    milestoneAchieved: string | undefined;
-    plannedStartDate: moment.Moment | undefined;
-    actualStartDate: moment.Moment | undefined;
-    plannedCompletionDate: moment.Moment | undefined;
-    actualCompletionDate: moment.Moment | undefined;
-    completionStatus: CompletionStatusEnum;
-    note: string | undefined;
-    canCascade: boolean;
-    dataSource: string | undefined;
-    completionLevel: number | undefined;
-    id: number | undefined;
-}
-
-export class ActivityAttachmentDto implements IActivityAttachmentDto {
-    performanceActivityId!: number;
-    fileName!: string | undefined;
-    documentId!: string | undefined;
-    fileFormat!: string | undefined;
-    id!: number;
-
-    constructor(data?: IActivityAttachmentDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.performanceActivityId = data["performanceActivityId"];
-            this.fileName = data["fileName"];
-            this.documentId = data["documentId"];
-            this.fileFormat = data["fileFormat"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): ActivityAttachmentDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ActivityAttachmentDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["performanceActivityId"] = this.performanceActivityId;
-        data["fileName"] = this.fileName;
-        data["documentId"] = this.documentId;
-        data["fileFormat"] = this.fileFormat;
-        data["id"] = this.id;
-        return data; 
-    }
-}
-
-export interface IActivityAttachmentDto {
-    performanceActivityId: number;
-    fileName: string | undefined;
-    documentId: string | undefined;
-    fileFormat: string | undefined;
-    id: number;
-}
-
-export class AuditInfoDto implements IAuditInfoDto {
-    createdBy!: string | undefined;
-    createdDate!: moment.Moment;
-    lastUpdatedBy!: string | undefined;
-    lastUpdatedDate!: moment.Moment | undefined;
-
-    constructor(data?: IAuditInfoDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.createdBy = data["createdBy"];
-            this.createdDate = data["createdDate"] ? moment(data["createdDate"].toString()) : <any>undefined;
-            this.lastUpdatedBy = data["lastUpdatedBy"];
-            this.lastUpdatedDate = data["lastUpdatedDate"] ? moment(data["lastUpdatedDate"].toString()) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): AuditInfoDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new AuditInfoDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["createdBy"] = this.createdBy;
-        data["createdDate"] = this.createdDate ? this.createdDate.toISOString() : <any>undefined;
-        data["lastUpdatedBy"] = this.lastUpdatedBy;
-        data["lastUpdatedDate"] = this.lastUpdatedDate ? this.lastUpdatedDate.toISOString() : <any>undefined;
-        return data; 
-    }
-}
-
-export interface IAuditInfoDto {
-    createdBy: string | undefined;
-    createdDate: moment.Moment;
-    lastUpdatedBy: string | undefined;
-    lastUpdatedDate: moment.Moment | undefined;
-}
-
-export class GetPerformanceActivityForEditOutput implements IGetPerformanceActivityForEditOutput {
-    performanceActivity!: CreateOrEditPerformanceActivityDto;
-    deliverableName!: string | undefined;
-    mdaName!: string | undefined;
-    attachments!: ActivityAttachmentDto[] | undefined;
-    auditInfo!: AuditInfoDto;
-
-    constructor(data?: IGetPerformanceActivityForEditOutput) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.performanceActivity = data["performanceActivity"] ? CreateOrEditPerformanceActivityDto.fromJS(data["performanceActivity"]) : <any>undefined;
-            this.deliverableName = data["deliverableName"];
-            this.mdaName = data["mdaName"];
-            if (Array.isArray(data["attachments"])) {
-                this.attachments = [] as any;
-                for (let item of data["attachments"])
-                    this.attachments!.push(ActivityAttachmentDto.fromJS(item));
-            }
-            this.auditInfo = data["auditInfo"] ? AuditInfoDto.fromJS(data["auditInfo"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): GetPerformanceActivityForEditOutput {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetPerformanceActivityForEditOutput();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["performanceActivity"] = this.performanceActivity ? this.performanceActivity.toJSON() : <any>undefined;
-        data["deliverableName"] = this.deliverableName;
-        data["mdaName"] = this.mdaName;
-        if (Array.isArray(this.attachments)) {
-            data["attachments"] = [];
-            for (let item of this.attachments)
-                data["attachments"].push(item.toJSON());
-        }
-        data["auditInfo"] = this.auditInfo ? this.auditInfo.toJSON() : <any>undefined;
-        return data; 
-    }
-}
-
-export interface IGetPerformanceActivityForEditOutput {
-    performanceActivity: CreateOrEditPerformanceActivityDto;
-    deliverableName: string | undefined;
-    mdaName: string | undefined;
-    attachments: ActivityAttachmentDto[] | undefined;
-    auditInfo: AuditInfoDto;
-}
-
 export class PagedResultDtoOfGetPerformanceActivityForEditOutput implements IPagedResultDtoOfGetPerformanceActivityForEditOutput {
     totalCount!: number;
     items!: GetPerformanceActivityForEditOutput[] | undefined;
@@ -23593,364 +24322,6 @@ export interface IActivityProgressLogDto {
     completionLevel: number | undefined;
     lastUpdated: moment.Moment | undefined;
     lastUpdatedBy: string | undefined;
-}
-
-export enum DataTypeEnum {
-    Number = 0,
-    DateTime = 1,
-    Boolean = 2,
-}
-
-export enum UnitsEnum {
-    None = 0,
-    Count = 1,
-    Percentage = 2,
-    Money = 3,
-}
-
-export enum ComparisonMethodEnum {
-    GreaterThanOrEqual = 0,
-    LessThanOrEqual = 1,
-}
-
-export class CreateOrEditPerformanceIndicatorDto implements ICreateOrEditPerformanceIndicatorDto {
-    organizationUnitId!: number;
-    name!: string | undefined;
-    description!: string | undefined;
-    baselineValue!: string | undefined;
-    baselineComment!: string | undefined;
-    year!: number;
-    target!: string | undefined;
-    actual!: string | undefined;
-    dataType!: DataTypeEnum;
-    unit!: UnitsEnum;
-    comparisonMethod!: ComparisonMethodEnum;
-    meansOfVerification!: string | undefined;
-    note!: string | undefined;
-    canCascade!: boolean;
-    percentageAchieved!: number;
-    id!: number | undefined;
-
-    constructor(data?: ICreateOrEditPerformanceIndicatorDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.organizationUnitId = data["organizationUnitId"];
-            this.name = data["name"];
-            this.description = data["description"];
-            this.baselineValue = data["baselineValue"];
-            this.baselineComment = data["baselineComment"];
-            this.year = data["year"];
-            this.target = data["target"];
-            this.actual = data["actual"];
-            this.dataType = data["dataType"];
-            this.unit = data["unit"];
-            this.comparisonMethod = data["comparisonMethod"];
-            this.meansOfVerification = data["meansOfVerification"];
-            this.note = data["note"];
-            this.canCascade = data["canCascade"];
-            this.percentageAchieved = data["percentageAchieved"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): CreateOrEditPerformanceIndicatorDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateOrEditPerformanceIndicatorDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["organizationUnitId"] = this.organizationUnitId;
-        data["name"] = this.name;
-        data["description"] = this.description;
-        data["baselineValue"] = this.baselineValue;
-        data["baselineComment"] = this.baselineComment;
-        data["year"] = this.year;
-        data["target"] = this.target;
-        data["actual"] = this.actual;
-        data["dataType"] = this.dataType;
-        data["unit"] = this.unit;
-        data["comparisonMethod"] = this.comparisonMethod;
-        data["meansOfVerification"] = this.meansOfVerification;
-        data["note"] = this.note;
-        data["canCascade"] = this.canCascade;
-        data["percentageAchieved"] = this.percentageAchieved;
-        data["id"] = this.id;
-        return data; 
-    }
-}
-
-export interface ICreateOrEditPerformanceIndicatorDto {
-    organizationUnitId: number;
-    name: string | undefined;
-    description: string | undefined;
-    baselineValue: string | undefined;
-    baselineComment: string | undefined;
-    year: number;
-    target: string | undefined;
-    actual: string | undefined;
-    dataType: DataTypeEnum;
-    unit: UnitsEnum;
-    comparisonMethod: ComparisonMethodEnum;
-    meansOfVerification: string | undefined;
-    note: string | undefined;
-    canCascade: boolean;
-    percentageAchieved: number;
-    id: number | undefined;
-}
-
-export class IndicatorYearlyTargetDto implements IIndicatorYearlyTargetDto {
-    indicatorId!: number;
-    year!: number;
-    description!: string | undefined;
-    comparisonMethod!: ComparisonMethodEnum;
-    meansOfVerification!: string | undefined;
-    target!: string | undefined;
-    actual!: string | undefined;
-    dataSource!: string | undefined;
-    note!: string | undefined;
-    lastUpdated!: moment.Moment | undefined;
-    percentageAchieved!: number;
-    id!: number;
-
-    constructor(data?: IIndicatorYearlyTargetDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.indicatorId = data["indicatorId"];
-            this.year = data["year"];
-            this.description = data["description"];
-            this.comparisonMethod = data["comparisonMethod"];
-            this.meansOfVerification = data["meansOfVerification"];
-            this.target = data["target"];
-            this.actual = data["actual"];
-            this.dataSource = data["dataSource"];
-            this.note = data["note"];
-            this.lastUpdated = data["lastUpdated"] ? moment(data["lastUpdated"].toString()) : <any>undefined;
-            this.percentageAchieved = data["percentageAchieved"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): IndicatorYearlyTargetDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new IndicatorYearlyTargetDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["indicatorId"] = this.indicatorId;
-        data["year"] = this.year;
-        data["description"] = this.description;
-        data["comparisonMethod"] = this.comparisonMethod;
-        data["meansOfVerification"] = this.meansOfVerification;
-        data["target"] = this.target;
-        data["actual"] = this.actual;
-        data["dataSource"] = this.dataSource;
-        data["note"] = this.note;
-        data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : <any>undefined;
-        data["percentageAchieved"] = this.percentageAchieved;
-        data["id"] = this.id;
-        return data; 
-    }
-}
-
-export interface IIndicatorYearlyTargetDto {
-    indicatorId: number;
-    year: number;
-    description: string | undefined;
-    comparisonMethod: ComparisonMethodEnum;
-    meansOfVerification: string | undefined;
-    target: string | undefined;
-    actual: string | undefined;
-    dataSource: string | undefined;
-    note: string | undefined;
-    lastUpdated: moment.Moment | undefined;
-    percentageAchieved: number;
-    id: number;
-}
-
-export class IndicatorAttachmentDto implements IIndicatorAttachmentDto {
-    indicatorTargetId!: number;
-    fileName!: string | undefined;
-    documentId!: string | undefined;
-    fileFormat!: string | undefined;
-    id!: number;
-
-    constructor(data?: IIndicatorAttachmentDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.indicatorTargetId = data["indicatorTargetId"];
-            this.fileName = data["fileName"];
-            this.documentId = data["documentId"];
-            this.fileFormat = data["fileFormat"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): IndicatorAttachmentDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new IndicatorAttachmentDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["indicatorTargetId"] = this.indicatorTargetId;
-        data["fileName"] = this.fileName;
-        data["documentId"] = this.documentId;
-        data["fileFormat"] = this.fileFormat;
-        data["id"] = this.id;
-        return data; 
-    }
-}
-
-export interface IIndicatorAttachmentDto {
-    indicatorTargetId: number;
-    fileName: string | undefined;
-    documentId: string | undefined;
-    fileFormat: string | undefined;
-    id: number;
-}
-
-export class UpdateTargetDto implements IUpdateTargetDto {
-    target!: IndicatorYearlyTargetDto;
-    attachments!: IndicatorAttachmentDto[] | undefined;
-
-    constructor(data?: IUpdateTargetDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.target = data["target"] ? IndicatorYearlyTargetDto.fromJS(data["target"]) : <any>undefined;
-            if (Array.isArray(data["attachments"])) {
-                this.attachments = [] as any;
-                for (let item of data["attachments"])
-                    this.attachments!.push(IndicatorAttachmentDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): UpdateTargetDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new UpdateTargetDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["target"] = this.target ? this.target.toJSON() : <any>undefined;
-        if (Array.isArray(this.attachments)) {
-            data["attachments"] = [];
-            for (let item of this.attachments)
-                data["attachments"].push(item.toJSON());
-        }
-        return data; 
-    }
-}
-
-export interface IUpdateTargetDto {
-    target: IndicatorYearlyTargetDto;
-    attachments: IndicatorAttachmentDto[] | undefined;
-}
-
-export class GetPerformanceIndicatorForEditOutput implements IGetPerformanceIndicatorForEditOutput {
-    performanceIndicator!: CreateOrEditPerformanceIndicatorDto;
-    deliverableName!: string | undefined;
-    mdaName!: string | undefined;
-    inherited!: boolean;
-    targets!: UpdateTargetDto[] | undefined;
-    auditInfo!: AuditInfoDto;
-
-    constructor(data?: IGetPerformanceIndicatorForEditOutput) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.performanceIndicator = data["performanceIndicator"] ? CreateOrEditPerformanceIndicatorDto.fromJS(data["performanceIndicator"]) : <any>undefined;
-            this.deliverableName = data["deliverableName"];
-            this.mdaName = data["mdaName"];
-            this.inherited = data["inherited"];
-            if (Array.isArray(data["targets"])) {
-                this.targets = [] as any;
-                for (let item of data["targets"])
-                    this.targets!.push(UpdateTargetDto.fromJS(item));
-            }
-            this.auditInfo = data["auditInfo"] ? AuditInfoDto.fromJS(data["auditInfo"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): GetPerformanceIndicatorForEditOutput {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetPerformanceIndicatorForEditOutput();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["performanceIndicator"] = this.performanceIndicator ? this.performanceIndicator.toJSON() : <any>undefined;
-        data["deliverableName"] = this.deliverableName;
-        data["mdaName"] = this.mdaName;
-        data["inherited"] = this.inherited;
-        if (Array.isArray(this.targets)) {
-            data["targets"] = [];
-            for (let item of this.targets)
-                data["targets"].push(item.toJSON());
-        }
-        data["auditInfo"] = this.auditInfo ? this.auditInfo.toJSON() : <any>undefined;
-        return data; 
-    }
-}
-
-export interface IGetPerformanceIndicatorForEditOutput {
-    performanceIndicator: CreateOrEditPerformanceIndicatorDto;
-    deliverableName: string | undefined;
-    mdaName: string | undefined;
-    inherited: boolean;
-    targets: UpdateTargetDto[] | undefined;
-    auditInfo: AuditInfoDto;
 }
 
 export class PagedResultDtoOfGetPerformanceIndicatorForEditOutput implements IPagedResultDtoOfGetPerformanceIndicatorForEditOutput {
@@ -24127,102 +24498,6 @@ export interface ITargetProgressLogDto {
     note: string | undefined;
     lastUpdated: moment.Moment | undefined;
     lastUpdatedBy: string | undefined;
-}
-
-export class CreateOrEditPerformanceReviewDto implements ICreateOrEditPerformanceReviewDto {
-    organizationUnitId!: number;
-    reviewComment!: string | undefined;
-    challenges!: string | undefined;
-    recommendation!: string | undefined;
-    id!: number | undefined;
-
-    constructor(data?: ICreateOrEditPerformanceReviewDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.organizationUnitId = data["organizationUnitId"];
-            this.reviewComment = data["reviewComment"];
-            this.challenges = data["challenges"];
-            this.recommendation = data["recommendation"];
-            this.id = data["id"];
-        }
-    }
-
-    static fromJS(data: any): CreateOrEditPerformanceReviewDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateOrEditPerformanceReviewDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["organizationUnitId"] = this.organizationUnitId;
-        data["reviewComment"] = this.reviewComment;
-        data["challenges"] = this.challenges;
-        data["recommendation"] = this.recommendation;
-        data["id"] = this.id;
-        return data; 
-    }
-}
-
-export interface ICreateOrEditPerformanceReviewDto {
-    organizationUnitId: number;
-    reviewComment: string | undefined;
-    challenges: string | undefined;
-    recommendation: string | undefined;
-    id: number | undefined;
-}
-
-export class GetPerformanceReviewForEditOutput implements IGetPerformanceReviewForEditOutput {
-    review!: CreateOrEditPerformanceReviewDto;
-    deliverableName!: string | undefined;
-    mdaName!: string | undefined;
-
-    constructor(data?: IGetPerformanceReviewForEditOutput) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(data?: any) {
-        if (data) {
-            this.review = data["review"] ? CreateOrEditPerformanceReviewDto.fromJS(data["review"]) : <any>undefined;
-            this.deliverableName = data["deliverableName"];
-            this.mdaName = data["mdaName"];
-        }
-    }
-
-    static fromJS(data: any): GetPerformanceReviewForEditOutput {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetPerformanceReviewForEditOutput();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["review"] = this.review ? this.review.toJSON() : <any>undefined;
-        data["deliverableName"] = this.deliverableName;
-        data["mdaName"] = this.mdaName;
-        return data; 
-    }
-}
-
-export interface IGetPerformanceReviewForEditOutput {
-    review: CreateOrEditPerformanceReviewDto;
-    deliverableName: string | undefined;
-    mdaName: string | undefined;
 }
 
 export class PagedResultDtoOfGetPerformanceReviewForEditOutput implements IPagedResultDtoOfGetPerformanceReviewForEditOutput {

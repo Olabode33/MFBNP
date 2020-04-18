@@ -4,6 +4,5 @@
     {
 		public PriorityAreaDto PriorityArea { get; set; }
 
-
     }
 }

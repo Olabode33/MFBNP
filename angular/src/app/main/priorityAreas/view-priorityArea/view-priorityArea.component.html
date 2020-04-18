@@ -7,8 +7,12 @@
             <div [class]="containerClass">
                 <div class="kt-subheader__main">
                     <h3 class="kt-subheader__title">
-                        <span>Priority Area</span>
+                        <span>Priority Area </span>
                     </h3>
+                    <span class="kt-subheader__separator kt-subheader__separator--v"></span>
+                    <span class="kt-subheader__desc">
+                        Status Report
+                    </span>
                 </div>
                 <div class="kt-subheader__toolbar">
                     <div class="kt-subheader__wrapper">
@@ -45,7 +49,7 @@
                     </div>
 
                     <div class="form-group row">     
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <label class="" for="Blanc">Percentage Achieved</label>
                             <div class="progress progress-lg">
                                 <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{percentageAchieved === 100 ? 'success' : 'warning'}}" 
@@ -53,11 +57,22 @@
                                     {{percentageAchieved}}%
                                 </div>
                             </div>
-                        </div>                  
+                        </div>   
+                        <div class="col-md-6">
+                            <label for="ReportDate">Report as at</label>
+                            <input type="text" id="ReportDate" class="form-control"
+                                [value]="reportDate | momentFormat:'DD-MMM-YYYY hh:mm:ss'" name="ReportDate" readonly disabled />
+                        </div>               
                     </div>
                 </div>
             </div>
 
+            <div *ngIf="loading" class="progress progress-lg mt-2">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" 
+                    role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                    Loading...
+                </div>
+            </div>
             <div class="row">
                 <div class="col-lg-5 col-md-6">
                     <div class="kt-portlet">
@@ -73,9 +88,10 @@
                         </div>
                         <div class="kt-portlet__body">
                             <div class="form-group">
+                                <label>Select MDA</label>
                                 <select class="form-control m-input" name="mdaFilter" id="mdaFilter"
                                     [(ngModel)]="selectedMda" (change)="filerByMda()">
-                                    <option [value]="-1">{{l("-- Select MDA --")}}</option>
+                                    <option [value]="-1">All MDAs</option>
                                     <option *ngFor="let mda of mdaList" [value]="mda.value">{{mda.name}}</option>
                                 </select>
                             </div>
@@ -83,7 +99,7 @@
                                 <table class="table table-hover">
                                     <tbody>
                                         <tr *ngFor="let item of filteredDeliverables">
-                                            <td (click)="deliverableSelect(item.deliverable)">
+                                            <td (click)="selectedDeliverableId = item.deliverable.id; filterByDeliverable()">
                                                 {{item.deliverable.displayName}}<br>
                                                 <small class="form-text text-muted">MDA: {{ item.mdaName }}</small>
                                                 <div class="progress progress-sm mt-2">
@@ -99,6 +115,31 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="kt-portlet">
+                        <div class="kt-portlet__head">
+                            <div class="kt-portlet__head-label">
+                                <h3 class="kt-portlet__head-title">
+                                    <span>Reviews</span>
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="kt-portlet__body">
+                            
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <tbody>
+                                        <tr *ngFor="let review of filteredReviews">
+                                            <td >
+                                                <span [innerHTML]="review.review.reviewComment"></span>
+                                                <small class="form-text text-muted">Deliverable: {{ review.deliverableName }}</small>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="col-lg-7 col-md-6">
@@ -106,29 +147,69 @@
                         <div class="kt-portlet__head">
                             <div class="kt-portlet__head-label">
                                 <h3 class="kt-portlet__head-title">
-                                    <span *ngIf="organizationUnit">{{organizationUnit.displayName}}</span>
+                                    <span>Indictors</span>
                                 </h3>
                             </div>
                         </div>
                         <div class="kt-portlet__body">
-                            <tabset class="tab-container">
-                                <tab heading="{{'Indicators' | localize}}" [active]="true">
-                                    <app-PerformanceIndicators #ouIndicators ></app-PerformanceIndicators>
-                                </tab>
-                                <tab heading="{{'Activities' | localize}}">
-                                    <app-performanceActivity #ouActivities ></app-performanceActivity>
-                                </tab>
-                                <tab heading="{{'Others' | localize}}">
-                                    <app-performance-review #ouReviews ></app-performance-review>
-                                </tab>
-                                <tab heading="{{'Members' | localize}}">
-                                    <organization-unit-members #ouMembers ></organization-unit-members>
-                                </tab>
-                                <!-- <tab heading="{{'Roles' | localize}}">
-                                    <organization-unit-roles #ouRoles (rolesAdded)="ouTree.rolesAdded($event)"
-                                        (roleRemoved)="ouTree.roleRemoved($event)"></organization-unit-roles>
-                                </tab> -->
-                            </tabset>
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <label>Select a Deliverable</label>
+                                    <select class="form-control m-input" name="deliverableFilter" id="deliverableFilter"
+                                        [(ngModel)]="selectedDeliverableId" (change)="filterByDeliverable()">
+                                        <option [value]="-1">{{l("All deliverables")}}</option>
+                                        <option *ngFor="let deliverable of deliverables" [value]="deliverable.deliverable.id">{{ deliverable.deliverable.displayName }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <tbody>
+                                        <tr *ngFor="let indicator of filteredIndicators">
+                                            <td >
+                                                {{indicator.performanceIndicator.name}}<br>
+                                                <small class="form-text text-muted">Deliverable: {{ indicator.deliverableName }}</small>
+                                                <div class="progress progress-sm mt-2">
+                                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{ indicator.performanceIndicator.percentageAchieved === 100 ? 'success' : 'warning'}}" 
+                                                        role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" [style.width]="indicator.performanceIndicator.percentageAchieved + '%'">
+                                                        {{ indicator.performanceIndicator.percentageAchieved }}%
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="kt-portlet">
+                        <div class="kt-portlet__head">
+                            <div class="kt-portlet__head-label">
+                                <h3 class="kt-portlet__head-title">
+                                    <span>Activities</span>
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="kt-portlet__body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <tbody>
+                                        <tr *ngFor="let activty of filteredActivities">
+                                            <td >
+                                                {{ activty.performanceActivity.name }}<br>
+                                                <small class="form-text text-muted">Deliverable: {{ activty.deliverableName }}</small>
+                                                <div class="progress progress-sm mt-2">
+                                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{ activty.performanceActivity.completionLevel === 100 ? 'success' : 'warning'}}" 
+                                                        role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" [style.width]="activty.performanceActivity.completionLevel + '%'">
+                                                        {{ activty.performanceActivity.completionLevel }}%
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

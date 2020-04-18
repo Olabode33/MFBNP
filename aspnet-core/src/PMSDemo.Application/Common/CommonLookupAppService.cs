@@ -8,6 +8,7 @@ using Abp.Collections.Extensions;
 using Abp.Domain.Repositories;
 using Abp.Extensions;
 using Abp.Linq.Extensions;
+using Abp.Organizations;
 using Microsoft.EntityFrameworkCore;
 using PMSDemo.Common.Dto;
 using PMSDemo.Editions;
@@ -21,13 +22,16 @@ namespace PMSDemo.Common
     {
         private readonly EditionManager _editionManager;
         private readonly IRepository<PriorityArea> _priorityAreaRepository;
+        private readonly IRepository<OrganizationUnit, long> _organizationUnitRepository;
 
         public CommonLookupAppService(
             EditionManager editionManager,
-            IRepository<PriorityArea> priorityAreaRepository)
+            IRepository<PriorityArea> priorityAreaRepository,
+            IRepository<OrganizationUnit, long> organizationUnitRepository)
         {
             _editionManager = editionManager;
             _priorityAreaRepository = priorityAreaRepository;
+            _organizationUnitRepository = organizationUnitRepository;
         }
 
         public async Task<ListResultDto<SubscribableEditionComboboxItemDto>> GetEditionsForCombobox(bool onlyFreeItems = false)
@@ -95,6 +99,16 @@ namespace PMSDemo.Common
                 Name = x.Name,
                 Value = x.Id
             }).ToListAsync();
+        }
+
+        public async Task<List<NameValue<long>>> GetAllMdas()
+        {
+            return await _organizationUnitRepository.GetAll()
+                .Where(ou => ou.ParentId == null)
+                .Select(x => new NameValue<long>{ 
+                    Name = x.DisplayName,
+                    Value = x.Id
+                }).ToListAsync();
         }
     }
 }

@@ -12,5 +12,6 @@ namespace PMSDemo.Deliverables.Dtos
         public ListResultDto<GetDeliverableForEditOutput> Deliverables { get; set; }
         public ListResultDto<GetPerformanceIndicatorForEditOutput> Indicators { get; set; }
         public ListResultDto<GetPerformanceActivityForEditOutput> Activities { get; set; }
+        public ListResultDto<GetPerformanceReviewForEditOutput> Reviews { get; set; }
     }
 }

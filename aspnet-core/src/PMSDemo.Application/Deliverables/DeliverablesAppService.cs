@@ -31,6 +31,7 @@ namespace PMSDemo.Deliverables
         private readonly IRepository<PriorityArea> _lookup_priorityAreaRepository; 
         private readonly IRepository<PerformanceIndicator> _lookup_indicatorRepository; 
         private readonly IRepository<PerformanceActivity> _lookup_activityRepository; 
+        private readonly IRepository<PerformanceReview> _lookup_reviewRepository; 
         private readonly OrganizationUnitManager _organizationUnitManager;
 
         public DeliverablesAppService(
@@ -40,6 +41,7 @@ namespace PMSDemo.Deliverables
             IRepository<PriorityArea> lookup_priorityAreaRepository,
             IRepository<PerformanceIndicator> lookup_indicatorRepository,
             IRepository<PerformanceActivity> lookup_activityRepository,
+            IRepository<PerformanceReview> lookup_reviewRepository,
             OrganizationUnitManager organizationUnitManager)
         {
             _deliverableRepository = deliverableRepository;
@@ -48,6 +50,7 @@ namespace PMSDemo.Deliverables
             _lookup_priorityAreaRepository = lookup_priorityAreaRepository;
             _lookup_indicatorRepository = lookup_indicatorRepository;
             _lookup_activityRepository = lookup_activityRepository;
+            _lookup_reviewRepository = lookup_reviewRepository;
             _organizationUnitManager = organizationUnitManager;
         }
 
@@ -62,7 +65,8 @@ namespace PMSDemo.Deliverables
                                                                  MdaName = x.Parent != null ? x.Parent.DisplayName : ""
                                                              });
 
-            var deliverables = await filteredDeliverables.ToListAsync();
+            var deliverables = await filteredDeliverables.OrderBy(x => x.MdaName).ToListAsync();
+
             var output = deliverables.Select(x => {
                 x.PercentageAchieved = GetDeliverablePercentageAchieved((long)x.Deliverable.Id);
                 return x;
@@ -70,20 +74,24 @@ namespace PMSDemo.Deliverables
 
             List<GetPerformanceIndicatorForEditOutput> indicators = new List<GetPerformanceIndicatorForEditOutput>();
             List<GetPerformanceActivityForEditOutput> activites = new List<GetPerformanceActivityForEditOutput>();
+            List<GetPerformanceReviewForEditOutput> reviews = new List<GetPerformanceReviewForEditOutput>();
 
             foreach (var item in deliverables)
             {
                 var deliverableIndicators = await GetInidcatorsForDeliverable((long)item.Deliverable.Id);
                 var deliverableActivities = await GetActivitiesForDeliverable((long)item.Deliverable.Id);
+                var deliverableReviews = await GetReviewsForDeliverable((long)item.Deliverable.Id);
                 indicators.AddRange(deliverableIndicators);
                 activites.AddRange(deliverableActivities);
+                reviews.AddRange(deliverableReviews);
             }
 
             return new GetDeliverableForViewOutput()
             {
                 Deliverables = new ListResultDto<GetDeliverableForEditOutput>() { Items = output.ToList() },
                 Indicators = new ListResultDto<GetPerformanceIndicatorForEditOutput>() { Items = indicators },
-                Activities = new ListResultDto<GetPerformanceActivityForEditOutput>() {  Items = activites }
+                Activities = new ListResultDto<GetPerformanceActivityForEditOutput>() { Items = activites },
+                Reviews = new ListResultDto<GetPerformanceReviewForEditOutput>() { Items = reviews }
             };
         }
 
@@ -151,6 +159,28 @@ namespace PMSDemo.Deliverables
             return await activities.ToListAsync();
         }
 
+        private async Task<List<GetPerformanceReviewForEditOutput>> GetReviewsForDeliverable(long deliverableId)
+        {
+
+            var filteredReviews = _lookup_reviewRepository.GetAll()
+                                        .Where(x => x.OrganizationUnitId == deliverableId);
+
+            var reviews = from o in filteredReviews
+                          join ou in _lookup_organizationUnitRepository.GetAll() on o.OrganizationUnitId equals ou.Id into ou1
+                          from ou2 in ou1.DefaultIfEmpty()
+
+                          join m in _lookup_organizationUnitRepository.GetAll() on ou2.ParentId equals m.Id into m1
+                          from m2 in m1.DefaultIfEmpty()
+
+                          select new GetPerformanceReviewForEditOutput()
+                          {
+                              Review = ObjectMapper.Map<CreateOrEditPerformanceReviewDto>(o),
+                              DeliverableName = ou2 == null ? "" : ou2.DisplayName,
+                              MdaName = m2 == null ? "" : m2.DisplayName
+                          };
+
+            return await reviews.ToListAsync();
+        }
 
 
         [AbpAuthorize(AppPermissions.Pages_Deliverable_Edit)]
