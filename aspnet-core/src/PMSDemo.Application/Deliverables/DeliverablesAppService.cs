@@ -19,6 +19,8 @@ using PMSDemo.PerformanceIndicators;
 using PMSDemo.PerformanceActivities;
 using PMSDemo.PerformanceIndicators.Dtos;
 using PMSDemo.PerformanceActivities.Dtos;
+using PMSDemo.Deliverables.Exporting;
+using PMSDemo.Deliverables.Dtos.Exporting;
 
 namespace PMSDemo.Deliverables
 {
@@ -33,6 +35,7 @@ namespace PMSDemo.Deliverables
         private readonly IRepository<PerformanceActivity> _lookup_activityRepository; 
         private readonly IRepository<PerformanceReview> _lookup_reviewRepository; 
         private readonly OrganizationUnitManager _organizationUnitManager;
+        private readonly IDeliverableExcelExporter _deliverableExcelExporter;
 
         public DeliverablesAppService(
             IRepository<Deliverable, long> deliverableRepository, 
@@ -42,7 +45,8 @@ namespace PMSDemo.Deliverables
             IRepository<PerformanceIndicator> lookup_indicatorRepository,
             IRepository<PerformanceActivity> lookup_activityRepository,
             IRepository<PerformanceReview> lookup_reviewRepository,
-            OrganizationUnitManager organizationUnitManager)
+            OrganizationUnitManager organizationUnitManager,
+            IDeliverableExcelExporter deliverableExcelExporter)
         {
             _deliverableRepository = deliverableRepository;
             _lookup_userRepository = lookup_userRepository;
@@ -52,6 +56,7 @@ namespace PMSDemo.Deliverables
             _lookup_activityRepository = lookup_activityRepository;
             _lookup_reviewRepository = lookup_reviewRepository;
             _organizationUnitManager = organizationUnitManager;
+            _deliverableExcelExporter = deliverableExcelExporter;
         }
 
         public async Task<GetDeliverableForViewOutput> GetForPriorityArea(EntityDto input)
@@ -72,26 +77,45 @@ namespace PMSDemo.Deliverables
                 return x;
             });
 
-            List<GetPerformanceIndicatorForEditOutput> indicators = new List<GetPerformanceIndicatorForEditOutput>();
-            List<GetPerformanceActivityForEditOutput> activites = new List<GetPerformanceActivityForEditOutput>();
-            List<GetPerformanceReviewForEditOutput> reviews = new List<GetPerformanceReviewForEditOutput>();
-
-            foreach (var item in deliverables)
-            {
-                var deliverableIndicators = await GetInidcatorsForDeliverable((long)item.Deliverable.Id);
-                var deliverableActivities = await GetActivitiesForDeliverable((long)item.Deliverable.Id);
-                var deliverableReviews = await GetReviewsForDeliverable((long)item.Deliverable.Id);
-                indicators.AddRange(deliverableIndicators);
-                activites.AddRange(deliverableActivities);
-                reviews.AddRange(deliverableReviews);
-            }
+            var indicatorsActivitiesReviews = await GetIndicatorActivitiesReviewsForDeliverables(deliverables);
 
             return new GetDeliverableForViewOutput()
             {
                 Deliverables = new ListResultDto<GetDeliverableForEditOutput>() { Items = output.ToList() },
-                Indicators = new ListResultDto<GetPerformanceIndicatorForEditOutput>() { Items = indicators },
-                Activities = new ListResultDto<GetPerformanceActivityForEditOutput>() { Items = activites },
-                Reviews = new ListResultDto<GetPerformanceReviewForEditOutput>() { Items = reviews }
+                Indicators = new ListResultDto<GetPerformanceIndicatorForEditOutput>() { Items = indicatorsActivitiesReviews.Indicators },
+                Activities = new ListResultDto<GetPerformanceActivityForEditOutput>() { Items = indicatorsActivitiesReviews.Activities },
+                Reviews = new ListResultDto<GetPerformanceReviewForEditOutput>() { Items = indicatorsActivitiesReviews.Reviews }
+            };
+        }
+
+        public async Task<GetDeliverableForViewOutput> GetForMda(EntityDto input)
+        {
+            var filteredDeliverables = _deliverableRepository.GetAll()
+                                                             .Include(x => x.Parent)
+                                                             .Include(x => x.PriorityAreaFk)
+                                                             .Where(x => x.ParentId == input.Id)
+                                                             .Select(x => new GetDeliverableForEditOutput
+                                                             {
+                                                                 Deliverable = ObjectMapper.Map<CreateOrEditDeliverableDto>(x),
+                                                                 MdaName = x.Parent != null ? x.Parent.DisplayName : "",
+                                                                 PriorityAreaName = x.PriorityAreaFk != null ? x.PriorityAreaFk.Name : ""
+                                                             });
+
+            var deliverables = await filteredDeliverables.ToListAsync();
+
+            var output = deliverables.Select(x => {
+                x.PercentageAchieved = GetDeliverablePercentageAchieved((long)x.Deliverable.Id);
+                return x;
+            });
+
+            var indicatorsActivitiesReviews = await GetIndicatorActivitiesReviewsForDeliverables(deliverables);
+
+            return new GetDeliverableForViewOutput()
+            {
+                Deliverables = new ListResultDto<GetDeliverableForEditOutput>() { Items = output.ToList() },
+                Indicators = new ListResultDto<GetPerformanceIndicatorForEditOutput>() { Items = indicatorsActivitiesReviews.Indicators },
+                Activities = new ListResultDto<GetPerformanceActivityForEditOutput>() { Items = indicatorsActivitiesReviews.Activities },
+                Reviews = new ListResultDto<GetPerformanceReviewForEditOutput>() { Items = indicatorsActivitiesReviews.Reviews }
             };
         }
 
@@ -110,6 +134,50 @@ namespace PMSDemo.Deliverables
                 activitiesPercentageAchieved = activities.Average(x => x.CompletionLevel == null ? 0.0 : (double)x.CompletionLevel);
 
             return ((indicatorPercentageAchieved + activitiesPercentageAchieved) / 2.00);
+        }
+
+        private async Task<DeliverableIndicatorActivitiesReviews> GetIndicatorActivitiesReviewsForDeliverables(List<GetDeliverableForEditOutput> deliverables)
+        {
+            List<GetPerformanceIndicatorForEditOutput> indicators = new List<GetPerformanceIndicatorForEditOutput>();
+            List<GetPerformanceActivityForEditOutput> activites = new List<GetPerformanceActivityForEditOutput>();
+            List<GetPerformanceReviewForEditOutput> reviews = new List<GetPerformanceReviewForEditOutput>();
+
+            foreach (var item in deliverables)
+            {
+                var indicatorActivitiesReviews = await GetIndicatorActivitiesReviewsForDeliverable((long)item.Deliverable.Id);
+
+                indicators.AddRange(indicatorActivitiesReviews.Indicators);
+                activites.AddRange(indicatorActivitiesReviews.Activities);
+                reviews.AddRange(indicatorActivitiesReviews.Reviews);
+            }
+
+            return new DeliverableIndicatorActivitiesReviews
+            {
+                Indicators = indicators,
+                Activities = activites,
+                Reviews = reviews
+            };
+        }
+
+        private async Task<DeliverableIndicatorActivitiesReviews> GetIndicatorActivitiesReviewsForDeliverable(long deliverableId)
+        {
+            List<GetPerformanceIndicatorForEditOutput> indicators = new List<GetPerformanceIndicatorForEditOutput>();
+            List<GetPerformanceActivityForEditOutput> activites = new List<GetPerformanceActivityForEditOutput>();
+            List<GetPerformanceReviewForEditOutput> reviews = new List<GetPerformanceReviewForEditOutput>();
+
+            var deliverableIndicators = await GetInidcatorsForDeliverable(deliverableId);
+            var deliverableActivities = await GetActivitiesForDeliverable(deliverableId);
+            var deliverableReviews = await GetReviewsForDeliverable(deliverableId);
+            indicators.AddRange(deliverableIndicators);
+            activites.AddRange(deliverableActivities);
+            reviews.AddRange(deliverableReviews);
+
+            return new DeliverableIndicatorActivitiesReviews
+            {
+                Indicators = indicators,
+                Activities = activites,
+                Reviews = reviews
+            };
         }
 
         private async Task<List<GetPerformanceIndicatorForEditOutput>> GetInidcatorsForDeliverable(long deliverableId)
@@ -182,6 +250,41 @@ namespace PMSDemo.Deliverables
             return await reviews.ToListAsync();
         }
 
+        public async Task<FileDto> GetMdaDeliverablesToExcel(EntityDto<long> input)
+        {
+            var filteredDeliverables = _deliverableRepository.GetAll()
+                                                             .Include(x => x.Parent)
+                                                             .Where(x => x.ParentId == input.Id)
+                                                             .Select(x => new GetDeliverableForEditOutput
+                                                             {
+                                                                 Deliverable = ObjectMapper.Map<CreateOrEditDeliverableDto>(x),
+                                                                 MdaName = x.Parent != null ? x.Parent.DisplayName : "",
+                                                                 
+                                                             });
+
+            var deliverables = await filteredDeliverables.ToListAsync();
+
+            List<DeliverableExportDto> output = new List<DeliverableExportDto>();
+
+            foreach (var item in deliverables)
+            {
+                DeliverableExportDto exportDto = new DeliverableExportDto();
+                exportDto.Deliverable = item;
+
+                var indicatorsActivitiesReviews = await GetIndicatorActivitiesReviewsForDeliverable((long)item.Deliverable.Id);
+                exportDto.Indicators = indicatorsActivitiesReviews.Indicators;
+                exportDto.Activities = indicatorsActivitiesReviews.Activities;
+                exportDto.Reviews = indicatorsActivitiesReviews.Reviews;
+
+                output.Add(exportDto);
+            }
+
+            return _deliverableExcelExporter.ExportToFile(new MdaDeliverableExportDto
+            {
+                deliverables = output,
+                MdaName = deliverables.Count > 0 ? deliverables[0].MdaName : ""
+            });
+        }
 
         [AbpAuthorize(AppPermissions.Pages_Deliverable_Edit)]
         public async Task<GetDeliverableForEditOutput> GetDeliverableForEdit(EntityDto<long> input)

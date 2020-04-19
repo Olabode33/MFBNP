@@ -37,6 +37,40 @@ namespace PMSDemo.Agencies
             _organizationUnitManager = organizationUnitManager;
         }
 
+        public async Task<PagedResultDto<GetMdaForEditOutput>> GetAll(GetAllMdaInput input)
+        {
+
+            var filteredMda = _mdaRepository.GetAll()
+                .WhereIf(!string.IsNullOrWhiteSpace(input.Filter), e => false || e.DisplayName.Contains(input.Filter));
+
+            var pagedAndFilteredmda = filteredMda
+                .OrderBy(input.Sorting ?? "id asc")
+                .PageBy(input);
+
+            var priorityAreas = from m in filteredMda
+                                join u in _lookup_userRepository.GetAll() on m.ResponsiblePersonId equals u.Id into u1
+                                from u2 in u1.DefaultIfEmpty()
+
+                                select new GetMdaForEditOutput()
+                                {
+                                    Mda = new CreateOrEditMdaDto()
+                                    {
+                                        DisplayName = m.DisplayName,
+                                        Id = m.Id,
+                                        ResponsiblePersonId = m.ResponsiblePersonId,
+                                        Role = m.Role
+                                    },
+                                    ResponsiblePersonName = u2 != null ? u2.FullName : ""
+                                };
+
+            var totalCount = await filteredMda.CountAsync();
+
+            return new PagedResultDto<GetMdaForEditOutput>(
+                totalCount,
+                await priorityAreas.ToListAsync()
+            );
+        }
+
         [AbpAuthorize(AppPermissions.Pages_MDA_Edit)]
         public async Task<GetMdaForEditOutput> GetMdaForEdit(EntityDto<long> input)
         {
