@@ -20,7 +20,7 @@
                                 <th>Original Value</th>
                                 <th>New Value</th>
                                 <th>{{"DataSource" | localize}}</th>
-                                <th>{{"AdditionalNote" | localize}}</th>
+                                <th>{{"LastUpdatedBy" | localize}}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -30,9 +30,8 @@
                                 <td>{{log.originalValue}}</td>
                                 <td>{{log.completionLevel}}</td>
                                 <td>{{log.dataSource}}</td>
-                                <td>
-                                    <div [innerHTML]="log.notes"></div>
-                                </td>
+                                <td>{{log.lastUpdatedBy}}</td>
+
                             </tr>
                         </tbody>
                     </table>

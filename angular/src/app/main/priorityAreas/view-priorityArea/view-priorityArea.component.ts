@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation, Injector, ChangeDetectorRef, Output, EventEmitter, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Injector, ChangeDetectorRef, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { DeliverablesServiceProxy, GetDeliverableForEditOutput, CreateOrEditDeliverableDto, PriorityAreasServiceProxy, GetPriorityAreaForEditOutput, CreateOrEditPriorityAreaDto, GetPerformanceIndicatorForEditOutput, GetPerformanceReviewForEditOutput, GetPerformanceActivityForEditOutput, CommonLookupServiceProxy, NameValueOfInt64 } from '@shared/service-proxies/service-proxies';
@@ -12,6 +12,8 @@ import { PerformanceActivityComponent } from '@app/main/activity/performanceActi
 import { PerformanceReviewComponent } from '@app/main/deliverables/reviews/performance-review/performance-review.component';
 import { OrganizationTreeComponent } from '@app/admin/organization-units/organization-tree.component';
 import * as moment from 'moment';
+import * as jsPDF from 'jspdf';
+import { cloneDeep } from 'lodash';
 
 @Component({
     selector: 'app-view-priorityArea',
@@ -28,6 +30,9 @@ export class ViewPriorityAreaComponent extends AppComponentBase implements OnIni
     @ViewChild('ouIndicators', { static: true }) ouIndicators: PerformanceIndicatorsComponent;
     @ViewChild('ouActivities', { static: true }) ouActivities: PerformanceActivityComponent;
     @ViewChild('ouReviews', { static: true }) ouReviews: PerformanceReviewComponent;
+
+    @ViewChild('content', { static: true }) content: ElementRef;
+
     organizationUnit: IBasicOrganizationUnitInfo = null;
 
     loading = false;
@@ -56,7 +61,7 @@ export class ViewPriorityAreaComponent extends AppComponentBase implements OnIni
         private _changeDetector: ChangeDetectorRef,
         private _activatedRoute: ActivatedRoute,
         private _router: Router,
-        private _location: Location
+        private _location: Location,
     ) {
         super(injector);
         _commonLookupServiceProxy.getAllMdas().subscribe(result => {
@@ -173,4 +178,31 @@ export class ViewPriorityAreaComponent extends AppComponentBase implements OnIni
         this._location.back();
     }
 
+    print() {
+        let doc = new jsPDF();
+        let specialElementHandlers = {
+            '#editor': function(element, renderer) {
+                return true;
+            }
+        };
+
+        let content = this.content.nativeElement.innerHTML;
+
+        content = this.cleanupDisplayLabels(content);
+
+        doc.fromHTML(content, 10, 10, {
+            'width': 180,
+            'elementHandlers': specialElementHandlers
+        });
+
+        doc.save('Status Report ('+ this.reportDate.format("ddd, MMM DD, YYYY hh:mm a") +')');
+
+    }
+
+    cleanupDisplayLabels(content) {
+        content = content.replace("Priority Area", "");
+        content = content.replace("Select MDA", "");
+        content = content.replace("Select a Deliverable", "");
+        return content;
+    }
 }
