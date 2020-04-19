@@ -17,3 +17,5 @@ aspnet-core/DeleteBinsAndObjs.bat
 aspnet-core/src/PMSDemo.Web.Host/healthchecksdb
 aspnet-core/src/PMSDemo.Web.Public/healthchecksdb
 aspnet-core/src/PMSDemo.Web.Mvc/healthchecksdb
+
+.vscode/

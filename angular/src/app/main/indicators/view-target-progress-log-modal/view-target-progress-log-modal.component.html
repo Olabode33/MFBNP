@@ -20,7 +20,7 @@
                                 <th>{{"IndicatorTargetValue" | localize}}</th>
                                 <th>{{"IndicatorActualValue" | localize}}</th>
                                 <th>{{"DataSource" | localize}}</th>
-                                <th>{{"AdditionalNote" | localize}}</th>
+                                <th>{{"LastUpdatedBy" | localize}}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -30,9 +30,7 @@
                                 <td>{{log.target}}</td>
                                 <td>{{log.actual}}</td>
                                 <td>{{log.dataSource}}</td>
-                                <td>
-                                    <div [innerHTML]="log.note"></div>
-                                </td>
+                                <td>{{log.lastUpdatedBy }}</td>
                             </tr>
                         </tbody>
                     </table>
