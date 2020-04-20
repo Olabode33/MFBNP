@@ -9,6 +9,8 @@ import { AppConsts } from '@shared/AppConsts';
 import { Location } from '@angular/common';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
 import { ActivatedRoute, Router, Params } from '@angular/router';
+import { UpdateActivityProgressModalComponent } from '../update-activity-progress-modal/update-activity-progress-modal.component';
+import { ViewActivityProgressLogModalComponent } from '../view-activity-progress-log-modal/view-activity-progress-log-modal.component';
 
 @Component({
     selector: 'app-view-activity',
@@ -21,6 +23,8 @@ export class ViewActivityComponent extends AppComponentBase implements OnInit {
 
     organizationUnitId: number;
 
+    @ViewChild('updateActivityModal', { static: true }) updateActivityModal: UpdateActivityProgressModalComponent;
+    @ViewChild('progressUpdateLogModal', {static: true}) progressUpdateLogModal: ViewActivityProgressLogModalComponent;
     @ViewChild('dataTable', { static: true }) dataTable: Table;
     @ViewChild('paginator', { static: true }) paginator: Paginator;
 
@@ -80,6 +84,23 @@ export class ViewActivityComponent extends AppComponentBase implements OnInit {
             });
     }
 
+    updateProgress(): void {
+        if (this.performanceActivity) {
+            this.updateActivityModal.show(this.performanceActivity.id);
+        }
+    }
+
+    showHistory(): void {
+        if (this.performanceActivity) {
+            this.progressUpdateLogModal.show(this.performanceActivity.id);
+        }
+        // this.entityTypeHistoryModal.show({
+        //     entityId: activity.id.toString(),
+        //     entityTypeFullName: this._entityTypeFullName,
+        //     entityTypeDescription: activity.name
+        // });
+    }
+
     downloadResourceFile(attachment: ActivityAttachmentDto): string {
         return AppConsts.remoteServiceBaseUrl +
             '/File/DownloadBinaryFile?id=' +
@@ -94,5 +115,7 @@ export class ViewActivityComponent extends AppComponentBase implements OnInit {
         this.active = false;
         this._location.back();
     }
+
+
 
 }

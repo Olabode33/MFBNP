@@ -143,7 +143,7 @@ namespace PMSDemo.Authorization.Users
                 })
                 .ToArrayAsync();
 
-            var allOrganizationUnits = await _organizationUnitRepository.GetAllListAsync();
+            var allOrganizationUnits = await _organizationUnitRepository.GetAllListAsync(x => x.ParentId == null);
 
             var output = new GetUserForEditOutput
             {
