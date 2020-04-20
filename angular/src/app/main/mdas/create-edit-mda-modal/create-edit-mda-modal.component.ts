@@ -69,6 +69,11 @@ export class CreateEditMdaModalComponent extends AppComponentBase implements OnI
                 this._changeDetector.detectChanges();
             });
         } else {
+            this.mda.id = null;
+            this.responsiblePersonId = null;
+            this.responsibleUserName = '';
+            this.role = '';
+
             this.active = true;
             this.modal.show();
             this._changeDetector.detectChanges();
