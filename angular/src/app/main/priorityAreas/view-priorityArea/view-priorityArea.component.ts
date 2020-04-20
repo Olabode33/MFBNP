@@ -14,6 +14,7 @@ import { OrganizationTreeComponent } from '@app/admin/organization-units/organiz
 import * as moment from 'moment';
 import * as jsPDF from 'jspdf';
 import { cloneDeep } from 'lodash';
+import { FileDownloadService } from '@shared/utils/file-download.service';
 
 @Component({
     selector: 'app-view-priorityArea',
@@ -58,6 +59,7 @@ export class ViewPriorityAreaComponent extends AppComponentBase implements OnIni
         private _deliverablesServiceProxy: DeliverablesServiceProxy,
         private _priorityAreasServiceProxy: PriorityAreasServiceProxy,
         private _commonLookupServiceProxy: CommonLookupServiceProxy,
+        private _fileDownloadService: FileDownloadService,
         private _changeDetector: ChangeDetectorRef,
         private _activatedRoute: ActivatedRoute,
         private _router: Router,
@@ -146,7 +148,7 @@ export class ViewPriorityAreaComponent extends AppComponentBase implements OnIni
     }
 
     filterByDeliverable(): void {
-        if (this.selectedDeliverableId === -1) {
+        if (this.selectedDeliverableId == -1) {
             this.filteredIndicators = this.indicators;
             this.filteredActivities = this.activities;
             this.filteredReviews = this.reviews;
@@ -205,4 +207,13 @@ export class ViewPriorityAreaComponent extends AppComponentBase implements OnIni
         content = content.replace("Select a Deliverable", "");
         return content;
     }
+
+    exportToExcel(mdaId: number): void {
+        this._deliverablesServiceProxy.getMdaDeliverablesToExcel(mdaId)
+            .subscribe(result => {
+                this._fileDownloadService.downloadTempFile(result);
+            });
+    }
+
+
 }

@@ -16,6 +16,10 @@
                 </div>
                 <div class="kt-subheader__toolbar">
                     <div class="kt-subheader__wrapper">
+                        <button (click)="print()" class="btn btn-outline-primary blue">
+                            <i class="fa fa-print"></i>
+                            {{l("Print")}}
+                        </button>
                         <button (click)="goBack()" class="btn btn-outline-primary blue">
                             <i class="fa fa-reply"></i>
                             {{l("Back")}}
@@ -99,7 +103,7 @@
                             <div class="table-responsive">
                                 <div class="table table-hover">
                                         <span *ngFor="let item of filteredDeliverables">
-                                            <span (click)="selectedDeliverableId = item.deliverable.id; filterByDeliverable()">
+                                            <span (click)="selectedDeliverableId = item.deliverable.id; filterByDeliverable(); exportToExcel(item.deliverable.mdaId)">
                                                 {{item.deliverable.displayName}}<br>
                                                 <small class="form-text text-muted">MDA: {{ item.mdaName }}</small>
                                                 <div class="progress progress-sm mt-2">

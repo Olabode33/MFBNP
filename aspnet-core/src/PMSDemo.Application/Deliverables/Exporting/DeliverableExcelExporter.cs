@@ -221,7 +221,7 @@ namespace PMSDemo.Deliverables.Exporting
                     var activityHeaderRow = sheet.CreateRow(rowIndex); rowIndex++;
                     activityHeaderRow.CreateCell(0, CellType.String).SetCellValue("Activity Name");
                     activityHeaderRow.CreateCell(1, CellType.String).SetCellValue("Milestone Achieved");
-                    activityHeaderRow.CreateCell(2, CellType.String).SetCellValue("Status of Completion");
+                    activityHeaderRow.CreateCell(2, CellType.String).SetCellValue("Status of Completion (%)");
                     activityHeaderRow.CreateCell(3, CellType.String).SetCellValue("Planned Start Date");
                     activityHeaderRow.CreateCell(4, CellType.String).SetCellValue("Actual Start Date");
                     activityHeaderRow.CreateCell(5, CellType.String).SetCellValue("Planned Completion Date");
@@ -240,12 +240,12 @@ namespace PMSDemo.Deliverables.Exporting
                         var activityBodyRow = sheet.CreateRow(rowIndex);
                         activityBodyRow.CreateCell(0, CellType.String).SetCellValue(item.PerformanceActivity.Name);
                         activityBodyRow.CreateCell(1, CellType.String).SetCellValue(item.PerformanceActivity.MilestoneAchieved);
-                        activityBodyRow.CreateCell(2, CellType.String).SetCellValue(item.PerformanceActivity.CompletionLevel.ToString() + item.PerformanceActivity.CompletionLevel == null ? "" : "%");
+                        activityBodyRow.CreateCell(2, CellType.String).SetCellValue(item.PerformanceActivity.CompletionLevel.ToString());
                         activityBodyRow.CreateCell(3, CellType.String).SetCellValue(DateFormat(item.PerformanceActivity.PlannedStartDate));
                         activityBodyRow.CreateCell(4, CellType.String).SetCellValue(DateFormat(item.PerformanceActivity.PlannedCompletionDate));
                         activityBodyRow.CreateCell(5, CellType.String).SetCellValue(DateFormat(item.PerformanceActivity.ActualStartDate));
                         activityBodyRow.CreateCell(6, CellType.String).SetCellValue(DateFormat(item.PerformanceActivity.ActualCompletionDate));
-                        activityBodyRow.CreateCell(7, CellType.String).SetCellValue(item.PerformanceActivity.Note);
+                        activityBodyRow.CreateCell(7, CellType.String).SetCellValue(StripHTML(item.PerformanceActivity.Note));
 
                         rowIndex++;
                         for (int i = 0; i < 8; i++)
@@ -306,6 +306,43 @@ namespace PMSDemo.Deliverables.Exporting
 
                     rowIndex++;
                     #endregion
+
+                    #region body
+                    foreach (var item in deliverable.Reviews)
+                    {
+                        var othersBodyRow = sheet.CreateRow(rowIndex);
+                        var othersBodyCellA = othersBodyRow.CreateCell(0, CellType.String);
+                        othersBodyCellA.SetCellValue(StripHTML(item.Review.ReviewComment));
+                        othersBodyCellA.CellStyle = infoBodyStyle;
+                        var othersBodyCellB = othersBodyRow.CreateCell(1);
+                        othersBodyCellB.CellStyle = infoBodyStyle;
+                        var commentBodyRange = new NPOI.SS.Util.CellRangeAddress(rowIndex, rowIndex, 0, 1);
+                        sheet.AddMergedRegion(commentBodyRange);
+
+                        var othersBodyCellD = othersBodyRow.CreateCell(2, CellType.String);
+                        othersBodyCellD.SetCellValue(StripHTML(item.Review.Challenges));
+                        othersBodyCellD.CellStyle = infoBodyStyle;
+                        var othersBodyCellE = othersBodyRow.CreateCell(3);
+                        othersBodyCellE.CellStyle = infoBodyStyle;
+                        var othersBodyCellF = othersBodyRow.CreateCell(4);
+                        othersBodyCellF.CellStyle = infoBodyStyle;
+                        var challengesBodyRange = new NPOI.SS.Util.CellRangeAddress(rowIndex, rowIndex, 2, 4);
+                        sheet.AddMergedRegion(challengesBodyRange);
+
+                        var othersBodyCellG = othersBodyRow.CreateCell(5, CellType.String);
+                        othersBodyCellG.SetCellValue(StripHTML(item.Review.Recommendation));
+                        othersBodyCellG.CellStyle = infoBodyStyle;
+                        var othersBodyCellH = othersBodyRow.CreateCell(6);
+                        othersBodyCellH.CellStyle = infoBodyStyle;
+                        var othersBodyCellC = othersBodyRow.CreateCell(7);
+                        othersBodyCellC.CellStyle = infoBodyStyle;
+                        var recommendationsBodyRange = new NPOI.SS.Util.CellRangeAddress(rowIndex, rowIndex, 5, 7);
+                        sheet.AddMergedRegion(recommendationsBodyRange);
+
+                        rowIndex++;
+                    }
+
+                    #endregion body
                     #endregion
                 });
         }
@@ -313,6 +350,9 @@ namespace PMSDemo.Deliverables.Exporting
 
         public string StripHTML(string input)
         {
+            if (input == null)
+                return "";
+
             return Regex.Replace(input, "<.*?>", String.Empty);
         }
 
