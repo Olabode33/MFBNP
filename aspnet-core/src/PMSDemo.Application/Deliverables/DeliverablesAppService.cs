@@ -31,7 +31,8 @@ namespace PMSDemo.Deliverables
         private readonly IRepository<User, long> _lookup_userRepository;
         private readonly IRepository<OrganizationUnit, long> _lookup_organizationUnitRepository; 
         private readonly IRepository<PriorityArea> _lookup_priorityAreaRepository; 
-        private readonly IRepository<PerformanceIndicator> _lookup_indicatorRepository; 
+        private readonly IRepository<PerformanceIndicator> _lookup_indicatorRepository;
+        private readonly IRepository<IndicatorYearlyTarget> _lookup_targetRepository;
         private readonly IRepository<PerformanceActivity> _lookup_activityRepository; 
         private readonly IRepository<PerformanceReview> _lookup_reviewRepository; 
         private readonly OrganizationUnitManager _organizationUnitManager;
@@ -44,7 +45,8 @@ namespace PMSDemo.Deliverables
             IRepository<PriorityArea> lookup_priorityAreaRepository,
             IRepository<PerformanceIndicator> lookup_indicatorRepository,
             IRepository<PerformanceActivity> lookup_activityRepository,
-            IRepository<PerformanceReview> lookup_reviewRepository,
+            IRepository<PerformanceReview> lookup_reviewRepository, 
+            IRepository<IndicatorYearlyTarget> lookup_targetRepository,
             OrganizationUnitManager organizationUnitManager,
             IDeliverableExcelExporter deliverableExcelExporter)
         {
@@ -55,6 +57,7 @@ namespace PMSDemo.Deliverables
             _lookup_indicatorRepository = lookup_indicatorRepository;
             _lookup_activityRepository = lookup_activityRepository;
             _lookup_reviewRepository = lookup_reviewRepository;
+            _lookup_targetRepository = lookup_targetRepository;
             _organizationUnitManager = organizationUnitManager;
             _deliverableExcelExporter = deliverableExcelExporter;
         }
@@ -201,8 +204,50 @@ namespace PMSDemo.Deliverables
 
             var totalCount = await indicators.CountAsync();
 
-            return await indicators.ToListAsync();
+            var deliverableIndicators = await indicators.ToListAsync();
+
+            foreach (var item in deliverableIndicators)
+            {
+                item.Targets = await GetIndicatorTargets((long)item.PerformanceIndicator.Id);
+            }
+
+
+            return deliverableIndicators;
         }
+
+        private async Task<List<UpdateTargetDto>> GetIndicatorTargets(long indicatorId)
+        {
+            List<UpdateTargetDto> output = new List<UpdateTargetDto>();
+
+            var targets = await _lookup_targetRepository.GetAll()
+                                                    .Where(x => x.IndicatorId == indicatorId)
+                                                    .Select(x => new IndicatorYearlyTargetDto
+                                                    {
+                                                        Actual = x.Actual,
+                                                        ComparisonMethod = x.ComparisonMethod,
+                                                        DataSource = x.DataSource,
+                                                        Description = x.Description,
+                                                        Id = x.Id,
+                                                        IndicatorId = x.IndicatorId,
+                                                        LastUpdated = x.LastModificationTime,
+                                                        MeansOfVerification = x.MeansOfVerification,
+                                                        Note = x.Note,
+                                                        Target = x.Target,
+                                                        Year = x.Year,
+                                                        PercentageAchieved = x.PercentageAchieved
+                                                    })
+                                                    .ToListAsync();
+            foreach (var target in targets)
+            {
+                UpdateTargetDto updateTarget = new UpdateTargetDto();
+                updateTarget.Target = target;
+
+                output.Add(updateTarget);
+            }
+
+            return output;
+        }
+
 
         private async Task<List<GetPerformanceActivityForEditOutput>> GetActivitiesForDeliverable(long deliverableId)
         {
@@ -254,12 +299,13 @@ namespace PMSDemo.Deliverables
         {
             var filteredDeliverables = _deliverableRepository.GetAll()
                                                              .Include(x => x.Parent)
+                                                             .Include(x => x.PriorityAreaFk)
                                                              .Where(x => x.ParentId == input.Id)
                                                              .Select(x => new GetDeliverableForEditOutput
                                                              {
                                                                  Deliverable = ObjectMapper.Map<CreateOrEditDeliverableDto>(x),
                                                                  MdaName = x.Parent != null ? x.Parent.DisplayName : "",
-                                                                 
+                                                                 PriorityAreaName = x.PriorityAreaFk != null ? x.PriorityAreaFk.Name : ""
                                                              });
 
             var deliverables = await filteredDeliverables.ToListAsync();
@@ -285,6 +331,44 @@ namespace PMSDemo.Deliverables
                 MdaName = deliverables.Count > 0 ? deliverables[0].MdaName : ""
             });
         }
+
+        public async Task<FileDto> GetDeliverableToExcel(EntityDto<long> input)
+        {
+            var filteredDeliverables = _deliverableRepository.GetAll()
+                                                             .Include(x => x.Parent)
+                                                             .Include(x => x.PriorityAreaFk)
+                                                             .Where(x => x.Id == input.Id)
+                                                             .Select(x => new GetDeliverableForEditOutput
+                                                             {
+                                                                 Deliverable = ObjectMapper.Map<CreateOrEditDeliverableDto>(x),
+                                                                 MdaName = x.Parent != null ? x.Parent.DisplayName : "",
+                                                                 PriorityAreaName = x.PriorityAreaFk != null ? x.PriorityAreaFk.Name : ""
+                                                             });
+
+            var deliverables = await filteredDeliverables.ToListAsync();
+
+            List<DeliverableExportDto> output = new List<DeliverableExportDto>();
+
+            foreach (var item in deliverables)
+            {
+                DeliverableExportDto exportDto = new DeliverableExportDto();
+                exportDto.Deliverable = item;
+
+                var indicatorsActivitiesReviews = await GetIndicatorActivitiesReviewsForDeliverable((long)item.Deliverable.Id);
+                exportDto.Indicators = indicatorsActivitiesReviews.Indicators;
+                exportDto.Activities = indicatorsActivitiesReviews.Activities;
+                exportDto.Reviews = indicatorsActivitiesReviews.Reviews;
+
+                output.Add(exportDto);
+            }
+
+            return _deliverableExcelExporter.ExportToFile(new MdaDeliverableExportDto
+            {
+                deliverables = output,
+                MdaName = deliverables.Count > 0 ? deliverables[0].MdaName : ""
+            });
+        }
+
 
         [AbpAuthorize(AppPermissions.Pages_Deliverable_Edit)]
         public async Task<GetDeliverableForEditOutput> GetDeliverableForEdit(EntityDto<long> input)

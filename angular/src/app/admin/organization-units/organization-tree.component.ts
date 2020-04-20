@@ -5,7 +5,7 @@ import { HtmlHelper } from '@shared/helpers/HtmlHelper';
 import { ListResultDtoOfOrganizationUnitDto, MoveOrganizationUnitInput, OrganizationUnitDto, OrganizationUnitServiceProxy, MdasServiceProxy, DeliverablesServiceProxy } from '@shared/service-proxies/service-proxies';
 import * as _ from 'lodash';
 import { Observable } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, finalize } from 'rxjs/operators';
 import { IBasicOrganizationUnitInfo } from './basic-organization-unit-info';
 import { CreateOrEditUnitModalComponent } from './create-or-edit-unit-modal.component';
 import { IUserWithOrganizationUnit } from './user-with-organization-unit';
@@ -19,6 +19,7 @@ import { ArrayToTreeConverterService } from '@shared/utils/array-to-tree-convert
 import { TreeDataHelperService } from '@shared/utils/tree-data-helper.service';
 import { EntityTypeHistoryModalComponent } from '@app/shared/common/entityHistory/entity-type-history-modal.component';
 import { CreateEditMdaModalComponent } from '@app/main/mdas/create-edit-mda-modal/create-edit-mda-modal.component';
+import { FileDownloadService } from '@shared/utils/file-download.service';
 
 export interface IOrganizationUnitOnTree extends IBasicOrganizationUnitInfo {
     id: number;
@@ -51,13 +52,16 @@ export class OrganizationTreeComponent extends AppComponentBase implements OnIni
 
     _entityTypeFullName = 'Abp.Organizations.OrganizationUnit';
 
+    generatingReport = false;
+
     constructor(
         injector: Injector,
         private _organizationUnitService: OrganizationUnitServiceProxy,
         private _mdaServiceProxy: MdasServiceProxy,
         private _deliverableServiceProxy: DeliverablesServiceProxy,
         private _arrayToTreeConverterService: ArrayToTreeConverterService,
-        private _treeDataHelperService: TreeDataHelperService
+        private _treeDataHelperService: TreeDataHelperService,
+        private _fileDownloadService: FileDownloadService,
     ) {
         super(injector);
     }
@@ -223,6 +227,15 @@ export class OrganizationTreeComponent extends AppComponentBase implements OnIni
                     );
                 }
             },
+            {
+                label: 'Generate Status Report',
+                command: () => {
+                    this.exportToExcel(
+                        this.selectedOu.data.id,
+                        this.selectedOu.data.parentId
+                    );
+                }
+            }
             // {
             //     label: this.l('Delete'),
             //     disabled: !canManageOrganizationTree,
@@ -385,5 +398,23 @@ export class OrganizationTreeComponent extends AppComponentBase implements OnIni
         let item = this._treeDataHelperService.findNode(this.treeData, { data: { id: ouId } });
         item.data.roleCount += incrementAmount;
         item.roleCount = item.data.roleCount;
+    }
+
+    exportToExcel(ouId: number, parentId?: number): void {
+        if (!parentId) {
+            this.generatingReport = true;
+            this._deliverableServiceProxy.getMdaDeliverablesToExcel(ouId)
+            .pipe(finalize(() => this.generatingReport = false))
+            .subscribe(result => {
+                this._fileDownloadService.downloadTempFile(result);
+            });
+        } else {
+            this.generatingReport = true;
+            this._deliverableServiceProxy.getDeliverableToExcel(ouId)
+            .pipe(finalize(() => this.generatingReport = false))
+            .subscribe(result => {
+                this._fileDownloadService.downloadTempFile(result);
+            });
+        }
     }
 }
