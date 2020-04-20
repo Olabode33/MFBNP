@@ -57,7 +57,7 @@ export class CreateEditMdaModalComponent extends AppComponentBase implements OnI
         document.getElementById('mdaDisplayName').focus();
     }
 
-    show(mdaUnit: IMdaOnEdit): void {
+    show(mdaUnit?: IMdaOnEdit): void {
         this.mda = mdaUnit;
         if (mdaUnit.id) {
             this._mdaServiceProxy.getMdaForEdit(mdaUnit.id).subscribe(result => {

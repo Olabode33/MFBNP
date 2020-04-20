@@ -480,6 +480,7 @@
     <text name="Ok">Ok</text>
     <text name="Permission">Permission</text>
     <text name="Role">Role</text>
+    <text name="Responsible">Responsible</text>
     <text name="Security">Security</text>
     <text name="PasswordComplexity">Password complexity</text>
     <text name="UseDefaultSettings">Use default settings</text>

@@ -7,6 +7,7 @@ import { CreateEditPerformanceIndicatorComponent } from './indicators/createEdit
 import { ViewIndicatorComponent } from './indicators/view-indicator/view-indicator.component';
 import { ViewActivityComponent } from './activity/view-activity/view-activity.component';
 import { ViewPriorityAreaComponent } from './priorityAreas/view-priorityArea/view-priorityArea.component';
+import { MDAComponent } from './mdas/mdas/mda.component';
 
 @NgModule({
     imports: [
@@ -19,6 +20,7 @@ import { ViewPriorityAreaComponent } from './priorityAreas/view-priorityArea/vie
                     { path: 'deliverable/edit/:unitId/:indicatorId', component: CreateEditPerformanceIndicatorComponent, data: { permission: 'Pages.PerformanceIndicator.Edit'}},
                     { path: 'deliverable/view/:indicatorId', component: ViewIndicatorComponent, data: { permission: 'Pages.PerformanceIndicator'}},
                     { path: 'activity/view/:activityId', component: ViewActivityComponent, data: { permission: 'Pages.PerformanceActivity'}},
+                    { path: 'mda', component: MDAComponent, data: { permission: 'Pages.MDA' }  },
                     { path: 'priority-areas', component: PriorityAreasComponent, data: { permission: 'Pages.PriorityAreas' }  },
                     { path: 'priority-areas/view/:priorityAreaId', component: ViewPriorityAreaComponent, data: { permission: 'Pages.PriorityAreas' }  },
                     { path: 'dashboard', component: DashboardComponent, data: { permission: 'Pages.Tenant.Dashboard' } },
