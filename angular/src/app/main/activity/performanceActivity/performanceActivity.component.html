@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-12">
-        <button *ngIf="('Pages.PerformanceIndicator.Create' | permission) && organizationUnit" (click)="openAddModal()" class="btn btn-primary float-right mb-3">
+        <button *ngIf="('Pages.PerformanceActivity.Create' | permission) && organizationUnit" (click)="openAddModal()" class="btn btn-primary float-right mb-3">
             <i class="fa fa-plus"></i> {{"AddActivity" | localize}}
         </button>
     </div>
@@ -17,8 +17,7 @@
                          [responsive]="primengTableHelper.isResponsive">
                     <ng-template pTemplate="header">
                         <tr>
-                            <th style="width: 35%"
-                                [hidden]="!('Pages.PerformanceIndicator.Create' | permission)">{{'Actions' | localize}}</th>
+                            <th style="width: 35%">{{'Actions' | localize}}</th>
                             <th pSortableColumn="name">
                                 {{'Activity' | localize}}
                                 <p-sortIcon field="name"></p-sortIcon>
@@ -31,27 +30,27 @@
                     </ng-template>
                     <ng-template pTemplate="body" let-record="$implicit">
                         <tr>
-                            <td [hidden]="!('Pages.PerformanceIndicator' | permission)">
+                            <td>
                                 <div class="btn-group m-btn-group m-btn-group--pill" dropdown container="body">
                                     <button (click)="viewActivity(record.performanceActivity.id)" class="btn btn-outline-success btn-sm btn-pill">
                                         <i class="fa fa-info-circle" style="font-size: 1.2rem !important;"></i>
                                         View 
                                     </button>
-                                    <button *ngIf="isGranted('Pages.PerformanceIndicator')" class="dropdown-toggle btn  btn-outline-success btn-sm btn-pill dropdown-toggle-split" dropdownToggle>
+                                    <button class="dropdown-toggle btn  btn-outline-success btn-sm btn-pill dropdown-toggle-split" dropdownToggle>
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu" *dropdownMenu>
-                                        <li *ngIf="isGranted('Pages.PerformanceIndicator.Update')">
+                                        <li *ngIf="isGranted('Pages.PerformanceActivity.Update')">
                                             <a href="javascript:;" (click)="updateProgress(record.performanceActivity.id)">
                                                 Update Progress
                                             </a>
                                         </li>
-                                        <li *ngIf="isGranted('Pages.PerformanceIndicator.Edit')">
+                                        <li *ngIf="isGranted('Pages.PerformanceActivity.Edit')">
                                             <a href="javascript:;" (click)="editActivity(record.performanceActivity.id)">
                                                 Edit
                                             </a>
                                         </li>
-                                        <li *ngIf="isGranted('Pages.PerformanceIndicator.Delete')">
+                                        <li *ngIf="isGranted('Pages.PerformanceActivity.Delete')">
                                             <a href="javascript:;" (click)="deleteActivity(record.performanceActivity)">
                                                 Delete
                                             </a>

@@ -14,6 +14,8 @@ using Microsoft.EntityFrameworkCore;
 using PMSDemo.Authorization.Roles;
 using PMSDemo.PerformanceIndicators;
 using PMSDemo.PerformanceActivities;
+using PMSDemo.Authorization.Users;
+using System.Collections.Generic;
 
 namespace PMSDemo.Organizations
 {
@@ -27,12 +29,14 @@ namespace PMSDemo.Organizations
         private readonly IRepository<PerformanceIndicator> _unitIndicatorsRepository;
         private readonly IRepository<PerformanceActivity> _unitActivitiesRepository;
         private readonly RoleManager _roleManager;
+        private readonly UserManager _userManager;
 
         public OrganizationUnitAppService(
             OrganizationUnitManager organizationUnitManager,
             IRepository<OrganizationUnit, long> organizationUnitRepository,
             IRepository<UserOrganizationUnit, long> userOrganizationUnitRepository,
             RoleManager roleManager,
+            UserManager userManager,
             IRepository<OrganizationUnitRole, long> organizationUnitRoleRepository,
             IRepository<PerformanceIndicator> unitIndicatorsRepository,
             IRepository<PerformanceActivity> unitActivitiesRepository)
@@ -41,6 +45,7 @@ namespace PMSDemo.Organizations
             _organizationUnitRepository = organizationUnitRepository;
             _userOrganizationUnitRepository = userOrganizationUnitRepository;
             _roleManager = roleManager;
+            _userManager = userManager;
             _organizationUnitRoleRepository = organizationUnitRoleRepository;
             _unitIndicatorsRepository = unitIndicatorsRepository;
             _unitActivitiesRepository = unitActivitiesRepository;
@@ -48,7 +53,23 @@ namespace PMSDemo.Organizations
 
         public async Task<ListResultDto<OrganizationUnitDto>> GetOrganizationUnits()
         {
+            var user = await _userManager.GetUserByIdAsync((long)AbpSession.UserId);
+            var userOus = await _userManager.GetOrganizationUnitsAsync(user);
+            var userOuCodes = userOus.Select(ou => ou.Code);
+
+            List<OrganizationUnit> ous = new List<OrganizationUnit>();
+
             var organizationUnits = await _organizationUnitRepository.GetAllListAsync();
+
+            if (userOus.Count > 0)
+            {
+                ous = organizationUnits.Where(ou => userOuCodes.Any(code => ou.Code.StartsWith(code))).ToList();
+            }
+            else
+            {
+                ous = organizationUnits;
+            }
+
 
             var organizationUnitMemberCounts = await _userOrganizationUnitRepository.GetAll()
                 .GroupBy(x => x.OrganizationUnitId)
@@ -91,7 +112,7 @@ namespace PMSDemo.Organizations
                 }).ToDictionaryAsync(x => x.organizationUnitId, y => y.count);
 
             return new ListResultDto<OrganizationUnitDto>(
-                organizationUnits.Select(ou =>
+                ous.Select(ou =>
                 {
                     var organizationUnitDto = ObjectMapper.Map<OrganizationUnitDto>(ou);
                     organizationUnitDto.MemberCount = organizationUnitMemberCounts.ContainsKey(ou.Id) ? organizationUnitMemberCounts[ou.Id] : 0;

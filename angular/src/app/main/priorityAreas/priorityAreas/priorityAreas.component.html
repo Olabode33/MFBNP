@@ -72,8 +72,7 @@
                                 [resizableColumns]="primengTableHelper.resizableColumns">
                                 <ng-template pTemplate="header">
                                     <tr>
-                                        <th style="width: 130px"
-                                            [hidden]="!isGrantedAny('Pages.PriorityAreas.Edit', 'Pages.PriorityAreas.Delete')">
+                                        <th style="width: 130px">
                                             {{'Actions' | localize}}</th>
                                         <th style="width: 300px" pSortableColumn="name">
                                             {{'Name' | localize}}
@@ -83,14 +82,14 @@
                                 </ng-template>
                                 <ng-template pTemplate="body" let-record="$implicit">
                                     <tr>
-                                        <td style="width: 130px"
-                                            [hidden]="!(['Pages.Administration.Users.Impersonation', 'Pages.Administration.Users.Edit', 'Pages.Administration.Users.ChangePermissions', 'Pages.Administration.Users.Delete'] | permissionAny)">
+                                        <td style="width: 130px" >
                                             <div class="btn-group m-btn-group m-btn-group--pill" dropdown container="body">
                                                 <button (click)="viewPriorityArea(record.priorityArea.id)" class="btn btn-outline-success btn-sm btn-pill">
                                                     <i class="fa fa-info-circle" style="font-size: 1.2rem !important;"></i>
                                                     View 
                                                 </button>
-                                                <button *ngIf="isGranted('Pages.PriorityAreas')" class="dropdown-toggle btn  btn-outline-success btn-sm btn-pill dropdown-toggle-split" dropdownToggle>
+                                                <button [hidden]="!isGrantedAny('Pages.PriorityAreas.Edit', 'Pages.PriorityAreas.Delete')"
+                                                    class="dropdown-toggle btn  btn-outline-success btn-sm btn-pill dropdown-toggle-split" dropdownToggle>
                                                     <span class="caret"></span>
                                                 </button>
                                                 <ul class="dropdown-menu" *dropdownMenu>
