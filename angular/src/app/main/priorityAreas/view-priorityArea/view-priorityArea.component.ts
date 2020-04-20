@@ -181,32 +181,34 @@ export class ViewPriorityAreaComponent extends AppComponentBase implements OnIni
     }
 
     print() {
-        let doc = new jsPDF();
-        let specialElementHandlers = {
-            '#editor': function(element, renderer) {
-                return true;
-            }
-        };
+        // let doc = new jsPDF();
+        // let specialElementHandlers = {
+        //     '#editor': function(element, renderer) {
+        //         return true;
+        //     }
+        // };
 
-        let content = this.content.nativeElement.innerHTML;
+        // let content = this.content.nativeElement.innerHTML;
 
-        content = this.cleanupDisplayLabels(content);
+        // content = this.cleanupDisplayLabels(content);
 
-        doc.fromHTML(content, 10, 10, {
-            'width': 180,
-            'elementHandlers': specialElementHandlers
-        });
+        // doc.fromHTML(content, 10, 10, {
+        //     'width': 180,
+        //     'elementHandlers': specialElementHandlers
+        // });
 
-        doc.save('Status Report ('+ this.reportDate.format("ddd, MMM DD, YYYY hh:mm a") +')');
+        // doc.save('Status Report ('+ this.reportDate.format("ddd, MMM DD, YYYY hh:mm a") +')');
+
+        window.print();
 
     }
 
-    cleanupDisplayLabels(content) {
-        content = content.replace("Priority Area", "");
-        content = content.replace("Select MDA", "");
-        content = content.replace("Select a Deliverable", "");
-        return content;
-    }
+    // cleanupDisplayLabels(content) {
+    //     content = content.replace("Priority Area", "");
+    //     content = content.replace("Select MDA", "");
+    //     content = content.replace("Select a Deliverable", "");
+    //     return content;
+    // }
 
     exportToExcel(mdaId: number): void {
         this._deliverablesServiceProxy.getMdaDeliverablesToExcel(mdaId)

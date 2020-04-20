@@ -14,7 +14,7 @@
                         Status Report
                     </span>
                 </div>
-                <div class="kt-subheader__toolbar">
+                <div class="kt-subheader__toolbar no-print">
                     <div class="kt-subheader__wrapper">
                         <button (click)="print()" class="btn btn-outline-primary blue">
                             <i class="fa fa-print"></i>
@@ -49,8 +49,9 @@
 
                     <div class="form-group">
                         <label for="areaDescription">{{l("Description")}}</label>
-                        <div type="text" id="areaDescription" class="form-control form-control-disabled" style="height: 100px;"
-                             name="areaDescription" readonly disabled > {{priorityArea.description}} </div>
+                        <div type="text" id="areaDescription" class="form-control form-control-disabled"
+                            style="height: 100px;" name="areaDescription" readonly disabled>
+                            {{priorityArea.description}} </div>
                     </div>
 
                     <div class="form-group row">
@@ -58,7 +59,8 @@
                             <label class="" for="Blanc">Percentage Achieved</label>
                             <div class="progress progress-lg">
                                 <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{percentageAchieved === 100 ? 'success' : 'warning'}}"
-                                    role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" [style.width]="percentageAchieved + '%'">
+                                    role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"
+                                    [style.width]="percentageAchieved + '%'">
                                     {{percentageAchieved}}%
                                 </div>
                             </div>
@@ -66,15 +68,16 @@
                         <div class="col-md-6">
                             <label for="ReportDate">Report as at</label>
                             <div type="text" id="ReportDate" class="form-control form-control-disabled"
-                                 name="ReportDate" readonly disabled > {{ reportDate | momentFormat:'DD-MMM-YYYY hh:mm'}}</div>
+                                name="ReportDate" readonly disabled> {{ reportDate | momentFormat:'DD-MMM-YYYY hh:mm'}}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div *ngIf="loading" class="progress progress-lg mt-2">
-                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
-                    role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar"
+                    aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
                     Loading...
                 </div>
             </div>
@@ -84,7 +87,7 @@
                         <div class="kt-portlet__head">
                             <div class="kt-portlet__head-label">
                                 <h3 class="kt-portlet__head-title">
-                                        Deliverables
+                                    Deliverables
                                 </h3>
                             </div>
                             <div class="kt-portlet__head-toolbar">
@@ -92,7 +95,7 @@
                             </div>
                         </div>
                         <div class="kt-portlet__body">
-                            <div class="form-group">
+                            <div class="form-group no-print">
                                 <label>Select MDA</label>
                                 <select class="form-control m-input" name="mdaFilter" id="mdaFilter"
                                     [(ngModel)]="selectedMda" (change)="filerByMda()">
@@ -102,19 +105,21 @@
                             </div>
                             <div class="table-responsive">
                                 <div class="table table-hover">
-                                        <span *ngFor="let item of filteredDeliverables">
-                                            <span (click)="selectedDeliverableId = item.deliverable.id; filterByDeliverable(); exportToExcel(item.deliverable.mdaId)">
-                                                {{item.deliverable.displayName}}<br>
-                                                <small class="form-text text-muted">MDA: {{ item.mdaName }}</small>
-                                                <div class="progress progress-sm mt-2">
-                                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{item.percentageAchieved === 100 ? 'success' : 'warning'}}"
-                                                        role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" [style.width]="item.percentageAchieved + '%'">
-                                                        {{item.percentageAchieved}}%
-                                                    </div>
+                                    <span *ngFor="let item of filteredDeliverables">
+                                        <span
+                                            (click)="selectedDeliverableId = item.deliverable.id; filterByDeliverable(); exportToExcel(item.deliverable.mdaId)">
+                                            {{item.deliverable.displayName}}<br>
+                                            <small class="form-text text-muted">MDA: {{ item.mdaName }}</small>
+                                            <div class="progress progress-sm mt-2">
+                                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{item.percentageAchieved === 100 ? 'success' : 'warning'}}"
+                                                    role="progressbar" aria-valuenow="65" aria-valuemin="0"
+                                                    aria-valuemax="100" [style.width]="item.percentageAchieved + '%'">
+                                                    {{item.percentageAchieved}}%
                                                 </div>
-                                            </span>
-                                            <div class="kt-separator kt-separator--border-solid"></div>
+                                            </div>
                                         </span>
+                                        <div class="kt-separator kt-separator--border-solid"></div>
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -132,13 +137,14 @@
 
                             <div class="table-responsive">
                                 <div class="table table-hover">
-                                        <div *ngFor="let review of filteredReviews">
-                                            <div >
-                                                <span [innerHTML]="review.review.reviewComment"></span>
-                                                <small class="form-text text-muted">Deliverable: {{ review.deliverableName }}</small>
-                                            </div>
-                                            <div class="kt-separator kt-separator--border-solid"></div>
+                                    <div *ngFor="let review of filteredReviews">
+                                        <div>
+                                            <span [innerHTML]="review.review.reviewComment"></span>
+                                            <small class="form-text text-muted">Deliverable:
+                                                {{ review.deliverableName }}</small>
                                         </div>
+                                        <div class="kt-separator kt-separator--border-solid"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -155,31 +161,36 @@
                             </div>
                         </div>
                         <div class="kt-portlet__body">
-                            <div class="form-group">
+                            <div class="form-group no-print">
                                 <div class="form-group">
                                     <label>Select a Deliverable</label>
                                     <select class="form-control m-input" name="deliverableFilter" id="deliverableFilter"
                                         [(ngModel)]="selectedDeliverableId" (change)="filterByDeliverable()">
                                         <option [value]="-1">{{l("All deliverables")}}</option>
-                                        <option *ngFor="let deliverable of deliverables" [value]="deliverable.deliverable.id">{{ deliverable.deliverable.displayName }}</option>
+                                        <option *ngFor="let deliverable of deliverables"
+                                            [value]="deliverable.deliverable.id">
+                                            {{ deliverable.deliverable.displayName }}</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="table-responsive">
                                 <div class="table table-hover">
-                                        <div *ngFor="let indicator of filteredIndicators">
-                                            <div >
-                                                {{indicator.performanceIndicator.name}}<br>
-                                                <small class="form-text text-muted">Deliverable: {{ indicator.deliverableName }}</small>
-                                                <div class="progress progress-sm mt-2">
-                                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{ indicator.performanceIndicator.percentageAchieved === 100 ? 'success' : 'warning'}}"
-                                                        role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" [style.width]="indicator.performanceIndicator.percentageAchieved + '%'">
-                                                        {{ indicator.performanceIndicator.percentageAchieved }}%
-                                                    </div>
+                                    <div *ngFor="let indicator of filteredIndicators">
+                                        <div>
+                                            {{indicator.performanceIndicator.name}}<br>
+                                            <small class="form-text text-muted">Deliverable:
+                                                {{ indicator.deliverableName }}</small>
+                                            <div class="progress progress-sm mt-2">
+                                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{ indicator.performanceIndicator.percentageAchieved === 100 ? 'success' : 'warning'}}"
+                                                    role="progressbar" aria-valuenow="65" aria-valuemin="0"
+                                                    aria-valuemax="100"
+                                                    [style.width]="indicator.performanceIndicator.percentageAchieved + '%'">
+                                                    {{ indicator.performanceIndicator.percentageAchieved }}%
                                                 </div>
                                             </div>
-                                            <div class="kt-separator kt-separator--border-solid"></div>
                                         </div>
+                                        <div class="kt-separator kt-separator--border-solid"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -196,34 +207,28 @@
                         <div class="kt-portlet__body">
                             <div class="table-responsive">
                                 <div class="table table-hover">
-                                        <div *ngFor="let activty of filteredActivities">
-                                            <div >
-                                                {{ activty.performanceActivity.name }}<br>
-                                                <small class="form-text text-muted">Deliverable: {{ activty.deliverableName }}</small>
-                                                <div class="progress progress-sm mt-2">
-                                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{ activty.performanceActivity.completionLevel === 100 ? 'success' : 'warning'}}"
-                                                        role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" [style.width]="activty.performanceActivity.completionLevel + '%'">
-                                                        {{ activty.performanceActivity.completionLevel }}%
-                                                    </div>
+                                    <div *ngFor="let activty of filteredActivities">
+                                        <div>
+                                            {{ activty.performanceActivity.name }}<br>
+                                            <small class="form-text text-muted">Deliverable:
+                                                {{ activty.deliverableName }}</small>
+                                            <div class="progress progress-sm mt-2">
+                                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-{{ activty.performanceActivity.completionLevel === 100 ? 'success' : 'warning'}}"
+                                                    role="progressbar" aria-valuenow="65" aria-valuemin="0"
+                                                    aria-valuemax="100"
+                                                    [style.width]="activty.performanceActivity.completionLevel + '%'">
+                                                    {{ activty.performanceActivity.completionLevel }}%
                                                 </div>
                                             </div>
-                                            <div class="kt-separator kt-separator--border-solid"></div>
                                         </div>
+                                        <div class="kt-separator kt-separator--border-solid"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="col-12">
-                    <button [disabled]="loading" (click)="print()" class="btn btn-outline-primary blue float-right">
-                        <i class="fa fa-print"></i>
-                        Print Report
-                    </button>
-                </div>
             </div>
-
         </div>
-
     </div>
 </div>

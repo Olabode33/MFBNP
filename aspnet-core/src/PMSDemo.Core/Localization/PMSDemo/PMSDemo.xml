@@ -480,7 +480,7 @@
     <text name="Ok">Ok</text>
     <text name="Permission">Permission</text>
     <text name="Role">Role</text>
-    <text name="Responsible">Responsible</text>
+    <text name="ResponsiblePerson">Responsible Person</text>
     <text name="Security">Security</text>
     <text name="PasswordComplexity">Password complexity</text>
     <text name="UseDefaultSettings">Use default settings</text>
@@ -789,7 +789,7 @@
     <text name="Tax/VatNo">Tax/VatNo</text>
     <text name="Invoice">Invoice</text>
     <text name="TotalAmount">Total Amount</text>
-    <text name="Print">Print</text>
+    <text name="Print">Print Report</text>
     <text name="ShowInvoice">Show Invoice</text>
     <text name="InvoiceInformation">Invoice Information</text>
     <text name="InvoiceNo">Invoice No</text>

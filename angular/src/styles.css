@@ -417,3 +417,11 @@ body .ui-tree .ui-tree-container .ui-treenode .ui-treenode-content .ui-treenode-
         display: none !important;
     }
 }
+
+@media print
+{
+    .no-print, .no-print *
+    {
+        display: none !important;
+    }
+}
