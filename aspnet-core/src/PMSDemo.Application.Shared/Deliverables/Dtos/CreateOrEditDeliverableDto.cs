@@ -15,5 +15,7 @@ namespace PMSDemo.Deliverables.Dtos
         [Required]
         public int PriorityAreaId { get; set; }
 
+        public double? BudgetAmount { get; set; }
+        public double? AmountSpent { get; set; }
     }
 }

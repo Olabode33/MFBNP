@@ -23,5 +23,7 @@ namespace PMSDemo.PerformanceActivities.Dtos
         public bool CanCascade { get; set; }
         public string DataSource { get; set; }
         public int? CompletionLevel { get; set; }
+        public double? BudgetAmount { get; set; }
+        public double? AmountSpent { get; set; }
     }
 }

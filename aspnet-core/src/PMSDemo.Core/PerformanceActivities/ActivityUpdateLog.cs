@@ -19,5 +19,7 @@ namespace PMSDemo.PerformanceActivities
         public virtual string DataSource { get; set; }
         public virtual int OriginalValue { get; set; }
         public virtual int? CompletionLevel { get; set; }
+        public virtual double? BudgetAmount { get; set; }
+        public virtual double? AmountSpent { get; set; }
     }
 }

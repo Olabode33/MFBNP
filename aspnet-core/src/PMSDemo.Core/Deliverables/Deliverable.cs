@@ -15,5 +15,8 @@ namespace PMSDemo.Deliverables
 
         [ForeignKey("PriorityAreaId")]
         public PriorityArea PriorityAreaFk { get; set; }
+
+        public virtual double? BudgetAmount { get; set; }
+        public virtual double? AmountSpent { get; set; }
     }
 }

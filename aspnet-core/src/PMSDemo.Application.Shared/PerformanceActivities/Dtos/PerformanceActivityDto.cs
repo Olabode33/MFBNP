@@ -18,5 +18,7 @@ namespace PMSDemo.PerformanceActivities.Dtos
         public CompletionStatusEnum CompletionStatus { get; set; }
         public string Note { get; set; }
         public bool CanCascade { get; set; }
+        public double? BudgetAmount { get; set; }
+        public double? AmountSpent { get; set; }
     }
 }

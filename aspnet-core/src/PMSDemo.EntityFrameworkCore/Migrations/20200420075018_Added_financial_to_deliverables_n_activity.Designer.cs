@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PMSDemo.EntityFrameworkCore;
 
 namespace PMSDemo.Migrations
 {
     [DbContext(typeof(PMSDemoDbContext))]
-    partial class PMSDemoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200420075018_Added_financial_to_deliverables_n_activity")]
+    partial class Added_financial_to_deliverables_n_activity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

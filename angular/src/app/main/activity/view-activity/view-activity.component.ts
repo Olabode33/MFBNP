@@ -84,6 +84,21 @@ export class ViewActivityComponent extends AppComponentBase implements OnInit {
             });
     }
 
+    reloadPage(): void {
+        this._performanceActivitiesService
+            .getPerformanceActivityForEdit(this.performanceActivity.id)
+            .subscribe(result => {
+                this.performanceActivity = result.performanceActivity;
+                this.attachments = result.attachments;
+                this.mdaName = result.mdaName;
+                this.deliverableName = result.deliverableName;
+                this.auditInfo = result.auditInfo;
+
+                this.active = true;
+                this._changeDetector.detectChanges();
+            });
+    }
+
     updateProgress(): void {
         if (this.performanceActivity) {
             this.updateActivityModal.show(this.performanceActivity.id);

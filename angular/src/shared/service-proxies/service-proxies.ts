@@ -17994,6 +17994,8 @@ export class CreateOrEditDeliverableDto implements ICreateOrEditDeliverableDto {
     description!: string | undefined;
     mdaId!: number;
     priorityAreaId!: number;
+    budgetAmount!: number | undefined;
+    amountSpent!: number | undefined;
     id!: number | undefined;
 
     constructor(data?: ICreateOrEditDeliverableDto) {
@@ -18011,6 +18013,8 @@ export class CreateOrEditDeliverableDto implements ICreateOrEditDeliverableDto {
             this.description = data["description"];
             this.mdaId = data["mdaId"];
             this.priorityAreaId = data["priorityAreaId"];
+            this.budgetAmount = data["budgetAmount"];
+            this.amountSpent = data["amountSpent"];
             this.id = data["id"];
         }
     }
@@ -18028,6 +18032,8 @@ export class CreateOrEditDeliverableDto implements ICreateOrEditDeliverableDto {
         data["description"] = this.description;
         data["mdaId"] = this.mdaId;
         data["priorityAreaId"] = this.priorityAreaId;
+        data["budgetAmount"] = this.budgetAmount;
+        data["amountSpent"] = this.amountSpent;
         data["id"] = this.id;
         return data; 
     }
@@ -18038,6 +18044,8 @@ export interface ICreateOrEditDeliverableDto {
     description: string | undefined;
     mdaId: number;
     priorityAreaId: number;
+    budgetAmount: number | undefined;
+    amountSpent: number | undefined;
     id: number | undefined;
 }
 
@@ -18603,6 +18611,8 @@ export class CreateOrEditPerformanceActivityDto implements ICreateOrEditPerforma
     canCascade!: boolean;
     dataSource!: string | undefined;
     completionLevel!: number | undefined;
+    budgetAmount!: number | undefined;
+    amountSpent!: number | undefined;
     id!: number | undefined;
 
     constructor(data?: ICreateOrEditPerformanceActivityDto) {
@@ -18629,6 +18639,8 @@ export class CreateOrEditPerformanceActivityDto implements ICreateOrEditPerforma
             this.canCascade = data["canCascade"];
             this.dataSource = data["dataSource"];
             this.completionLevel = data["completionLevel"];
+            this.budgetAmount = data["budgetAmount"];
+            this.amountSpent = data["amountSpent"];
             this.id = data["id"];
         }
     }
@@ -18655,6 +18667,8 @@ export class CreateOrEditPerformanceActivityDto implements ICreateOrEditPerforma
         data["canCascade"] = this.canCascade;
         data["dataSource"] = this.dataSource;
         data["completionLevel"] = this.completionLevel;
+        data["budgetAmount"] = this.budgetAmount;
+        data["amountSpent"] = this.amountSpent;
         data["id"] = this.id;
         return data; 
     }
@@ -18674,6 +18688,8 @@ export interface ICreateOrEditPerformanceActivityDto {
     canCascade: boolean;
     dataSource: string | undefined;
     completionLevel: number | undefined;
+    budgetAmount: number | undefined;
+    amountSpent: number | undefined;
     id: number | undefined;
 }
 
@@ -24499,6 +24515,8 @@ export class ActivityProgressLogDto implements IActivityProgressLogDto {
     completionLevel!: number | undefined;
     lastUpdated!: moment.Moment | undefined;
     lastUpdatedBy!: string | undefined;
+    budgetAmount!: number | undefined;
+    amountSpent!: number | undefined;
 
     constructor(data?: IActivityProgressLogDto) {
         if (data) {
@@ -24518,6 +24536,8 @@ export class ActivityProgressLogDto implements IActivityProgressLogDto {
             this.completionLevel = data["completionLevel"];
             this.lastUpdated = data["lastUpdated"] ? moment(data["lastUpdated"].toString()) : <any>undefined;
             this.lastUpdatedBy = data["lastUpdatedBy"];
+            this.budgetAmount = data["budgetAmount"];
+            this.amountSpent = data["amountSpent"];
         }
     }
 
@@ -24537,6 +24557,8 @@ export class ActivityProgressLogDto implements IActivityProgressLogDto {
         data["completionLevel"] = this.completionLevel;
         data["lastUpdated"] = this.lastUpdated ? this.lastUpdated.toISOString() : <any>undefined;
         data["lastUpdatedBy"] = this.lastUpdatedBy;
+        data["budgetAmount"] = this.budgetAmount;
+        data["amountSpent"] = this.amountSpent;
         return data; 
     }
 }
@@ -24549,6 +24571,8 @@ export interface IActivityProgressLogDto {
     completionLevel: number | undefined;
     lastUpdated: moment.Moment | undefined;
     lastUpdatedBy: string | undefined;
+    budgetAmount: number | undefined;
+    amountSpent: number | undefined;
 }
 
 export class PagedResultDtoOfGetPerformanceIndicatorForEditOutput implements IPagedResultDtoOfGetPerformanceIndicatorForEditOutput {

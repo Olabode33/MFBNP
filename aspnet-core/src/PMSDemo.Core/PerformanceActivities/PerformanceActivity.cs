@@ -24,5 +24,7 @@ namespace PMSDemo.PerformanceActivities
         public virtual bool CanCascade { get; set; }
         public virtual string DataSource { get; set; }
         public virtual int? CompletionLevel { get; set; }
+        public virtual double? BudgetAmount { get; set; }
+        public virtual double? AmountSpent { get; set; }
     }
 }

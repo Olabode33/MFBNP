@@ -14,5 +14,7 @@ namespace PMSDemo.PerformanceActivities.Dtos
         public int? CompletionLevel { get; set; }
         public DateTime? LastUpdated { get; set; }
         public string LastUpdatedBy { get; set; }
+        public double? BudgetAmount { get; set; }
+        public double? AmountSpent { get; set; }
     }
 }

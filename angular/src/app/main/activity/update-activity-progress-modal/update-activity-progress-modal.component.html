@@ -26,6 +26,28 @@
 
                     <div class="form-group row">
                         <div class="col-md-6">
+                            <label for="deliverableBudget">{{"Budget" | localize}}</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">NGN</span>								
+                                </div>
+                                <input id="deliverableBudget"  class="form-control" name="deliverableBudget" [(ngModel)]="performanceActivity.budgetAmount" readonly disabled/>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="deliverableBudget">{{"Amount Spent" | localize}}</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">NGN</span>								
+                                </div>
+                                <input id="deliverableBudget"  class="form-control" name="deliverableBudget" [(ngModel)]="performanceActivity.amountSpent" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-6">
                             <label for="performanceActivity_completionLevel">{{l("EnterProgressLevel")}} <span class="kt-font-danger">*</span></label>
                             <div class="input-group">
                                 <input type="number" id="performanceActivity_completionLevel" class="form-control" required min="0" max="100"
