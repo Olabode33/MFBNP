@@ -17,6 +17,7 @@ using PMSDemo.PerformanceActivities.Dtos;
 using PMSDemo.PriorityAreas;
 using PMSDemo.Enums;
 using PMSDemo.Common.Dto;
+using Abp.UI;
 
 namespace PMSDemo.PerformanceActivities
 {
@@ -30,6 +31,7 @@ namespace PMSDemo.PerformanceActivities
         private readonly IRepository<OrganizationUnit, long> _lookup_organizationUnitRepository;
         private readonly IRepository<PriorityArea> _lookup_priorityAreaRepository;
         private readonly OrganizationUnitManager _organizationUnitManager;
+        private readonly UserManager _userManager;
 
         public PerformanceActivitiesAppService(
             IRepository<PerformanceActivity> performanceActivityRepository,
@@ -38,6 +40,7 @@ namespace PMSDemo.PerformanceActivities
             IRepository<User, long> lookup_userRepository,
             IRepository<OrganizationUnit, long> lookup_organizationUnitRepository,
             IRepository<PriorityArea> lookup_priorityAreaRepository,
+            UserManager userManager,
             OrganizationUnitManager organizationUnitManager)
         {
             _performanceActivityRepository = performanceActivityRepository;
@@ -47,6 +50,7 @@ namespace PMSDemo.PerformanceActivities
             _lookup_organizationUnitRepository = lookup_organizationUnitRepository;
             _lookup_priorityAreaRepository = lookup_priorityAreaRepository;
             _organizationUnitManager = organizationUnitManager;
+            _userManager = userManager;
         }
 
         public async Task<PagedResultDto<GetPerformanceActivityForEditOutput>> GetAllForUnit(GetAllPerformanceActivityInput input)
@@ -148,6 +152,16 @@ namespace PMSDemo.PerformanceActivities
         public async Task UpdateProgress(UpdateActivityProgressDto input)
         {
             var activity = await _performanceActivityRepository.FirstOrDefaultAsync((int)input.Activity.Id);
+            var deliverable = await _lookup_organizationUnitRepository.FirstOrDefaultAsync(activity.OrganizationUnitId);
+
+            var user = await _userManager.GetUserByIdAsync((long)AbpSession.UserId);
+            var userOu = await _userManager.GetOrganizationUnitsAsync(user);
+            var userOuCodes = userOu.Select(ou => ou.Code);
+
+            if (!userOuCodes.Any(code => deliverable.Code.StartsWith(code)))
+            {
+                throw new UserFriendlyException(L("ActionOnlyAvailableToMdaMembers"));
+            }
 
             if (input.Activity.CompletionLevel <= 0)
             {
@@ -208,7 +222,7 @@ namespace PMSDemo.PerformanceActivities
             {
                 PerformanceActivityId = (int)input.Id,
                 CompletionLevel = input.CompletionLevel,
-                OriginalValue = (int)activity.CompletionLevel,
+                OriginalValue = activity.CompletionLevel == null ? 0 : (int)activity.CompletionLevel,
                 DataSource = input.DataSource,
                 Notes = input.Note,
             });

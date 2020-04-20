@@ -16,6 +16,7 @@ using Abp.Organizations;
 using PMSDemo.PerformanceIndicators.Dtos;
 using PMSDemo.PriorityAreas;
 using PMSDemo.Common.Dto;
+using Abp.UI;
 
 namespace PMSDemo.PerformanceIndicators
 {
@@ -30,6 +31,7 @@ namespace PMSDemo.PerformanceIndicators
         private readonly IRepository<IndicatorYearlyTarget> _indicatorYearlyTargetRepository;
         private readonly IRepository<IndicatorUpdateLog> _indicatorUpdateLogRepository;
         private readonly OrganizationUnitManager _organizationUnitManager;
+        private readonly UserManager _userManager;
 
         public PerformanceIndicatorsAppService(
             IRepository<PerformanceIndicator> performanceIndicatorRepository,
@@ -39,6 +41,7 @@ namespace PMSDemo.PerformanceIndicators
             IRepository<PriorityArea> lookup_priorityAreaRepository,
             IRepository<IndicatorYearlyTarget> indicatorYearlyTargetRepository,
             IRepository<IndicatorUpdateLog> indicatorUpdateLogRepository,
+            UserManager userManager,
             OrganizationUnitManager organizationUnitManager)
         {
             _performanceIndicatorRepository = performanceIndicatorRepository;
@@ -49,6 +52,7 @@ namespace PMSDemo.PerformanceIndicators
             _organizationUnitManager = organizationUnitManager;
             _indicatorYearlyTargetRepository = indicatorYearlyTargetRepository;
             _indicatorUpdateLogRepository = indicatorUpdateLogRepository;
+            _userManager = userManager;
         }
 
         public async Task<PagedResultDto<GetPerformanceIndicatorForEditOutput>> GetAllForUnit(GetAllPerformanceIndicatorsInput input)
@@ -225,6 +229,16 @@ namespace PMSDemo.PerformanceIndicators
         public async Task UpdateYearTargetProgress(UpdateTargetDto input)
         {
             var indicator = await _performanceIndicatorRepository.FirstOrDefaultAsync((int)input.Target.IndicatorId);
+            var deliverable = await _lookup_organizationUnitRepository.FirstOrDefaultAsync(indicator.OrganizationUnitId);
+
+            var user = await _userManager.GetUserByIdAsync((long)AbpSession.UserId);
+            var userOu = await _userManager.GetOrganizationUnitsAsync(user);
+            var userOuCodes = userOu.Select(ou => ou.Code);
+
+            if (!userOuCodes.Any(code => deliverable.Code.StartsWith(code)))
+            {
+                throw new UserFriendlyException(L("ActionOnlyAvailableToMdaMembers"));
+            }
 
             var target = await _indicatorYearlyTargetRepository.FirstOrDefaultAsync((int)input.Target.Id);
             if (indicator.DataType == Enums.DataTypeEnum.Number)
