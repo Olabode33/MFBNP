@@ -22,6 +22,12 @@
         </div>
         <div [class]="containerClass + ' kt-grid__item kt-grid__item--fluid'">
             <div class="kt-portlet kt-portlet--mobile">
+                <div *ngIf="generatingReport" class="progress progress-lg mt-2">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary"
+                        role="progressbar" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                        Generating Reporting...
+                    </div>
+                </div>
                 <div class="kt-portlet__body">
                     <form class="kt-form" autocomplete="new-password">
                         <div class="kt-form kt-form--label-align-right">
@@ -97,11 +103,11 @@
                                             [hidden]="!(['Pages.Administration.Users.Impersonation', 'Pages.Administration.Users.Edit', 'Pages.Administration.Users.ChangePermissions', 'Pages.Administration.Users.Delete'] | permissionAny)">
                                             <div class="btn-group m-btn-group m-btn-group--pill" dropdown
                                                 container="body">
-                                                <button (click)="viewMDA(record.mda.id)"
+                                                <button (click)="exportToExcel(record.mda.id)"
                                                     class="btn btn-outline-success btn-sm btn-pill">
-                                                    <i class="fa fa-info-circle"
+                                                    <i class="fa fa-file-excel"
                                                         style="font-size: 1.2rem !important;"></i>
-                                                    View
+                                                    Download Report
                                                 </button>
                                                 <button *ngIf="isGranted('Pages.MDA')"
                                                     class="dropdown-toggle btn  btn-outline-success btn-sm btn-pill dropdown-toggle-split"
@@ -121,14 +127,15 @@
                                             </div>
 
                                         </td>
-                                        <td style="width: 25%">
-                                            <span class="ui-column-title"> {{'Responsible' | localize}}</span>
-                                            {{record.responsiblePersonName}}
-                                        </td>
 
                                         <td style="width: 25%">
                                             <span class="ui-column-title"> {{'Name' | localize}}</span>
                                             {{record.mda.displayName}}
+                                        </td>
+
+                                        <td style="width: 25%">
+                                            <span class="ui-column-title"> {{'Responsible' | localize}}</span>
+                                            {{record.responsiblePersonName}}
                                         </td>
 
                                         <td style="width: 25%">

@@ -107,7 +107,7 @@
                                 <div class="table table-hover">
                                     <span *ngFor="let item of filteredDeliverables">
                                         <span
-                                            (click)="selectedDeliverableId = item.deliverable.id; filterByDeliverable(); exportToExcel(item.deliverable.mdaId)">
+                                            (click)="selectedDeliverableId = item.deliverable.id; filterByDeliverable();">
                                             {{item.deliverable.displayName}}<br>
                                             <small class="form-text text-muted">MDA: {{ item.mdaName }}</small>
                                             <div class="progress progress-sm mt-2">

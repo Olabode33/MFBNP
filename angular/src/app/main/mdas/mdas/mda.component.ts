@@ -1,4 +1,4 @@
-﻿import { CreateOrEditMdaDto } from './../../../../shared/service-proxies/service-proxies';
+﻿import { CreateOrEditMdaDto, DeliverablesServiceProxy } from './../../../../shared/service-proxies/service-proxies';
 import { CreateEditMdaModalComponent } from './../create-edit-mda-modal/create-edit-mda-modal.component';
 import { Component, Injector, ViewEncapsulation, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,6 +13,7 @@ import { LazyLoadEvent } from 'primeng/components/common/lazyloadevent';
 import { FileDownloadService } from '@shared/utils/file-download.service';
 import * as _ from 'lodash';
 import * as moment from 'moment';
+import { finalize } from 'rxjs/operators';
 
 @Component({
     templateUrl: './mda.component.html',
@@ -29,11 +30,12 @@ export class MDAComponent extends AppComponentBase {
     filterText = '';
 
 
-
+    generatingReport = false;
 
     constructor(
         injector: Injector,
         private _mdaServiceProxy: MdasServiceProxy,
+        private _deliverableServiceProxy: DeliverablesServiceProxy,
         private _notifyService: NotifyService,
         private _tokenAuth: TokenAuthServiceProxy,
         private _activatedRoute: ActivatedRoute,
@@ -57,6 +59,7 @@ export class MDAComponent extends AppComponentBase {
             this.primengTableHelper.getSkipCount(this.paginator, event),
             this.primengTableHelper.getMaxResultCount(this.paginator, event)
         ).subscribe(result => {
+            console.log(result.items);
             this.primengTableHelper.totalRecordsCount = result.totalCount;
             this.primengTableHelper.records = result.items;
             this.primengTableHelper.hideLoadingIndicator();
@@ -89,5 +92,14 @@ export class MDAComponent extends AppComponentBase {
                 }
             }
         );
+    }
+
+    exportToExcel(mdaId: number): void {
+        this.generatingReport = true;
+        this._deliverableServiceProxy.getMdaDeliverablesToExcel(mdaId)
+            .pipe(finalize(() => this.generatingReport = false))
+            .subscribe(result => {
+                this._fileDownloadService.downloadTempFile(result);
+            });
     }
 }

@@ -81,6 +81,7 @@ export class CreateEditMdaModalComponent extends AppComponentBase implements OnI
         createEditInput.id = this.mda.id;
         createEditInput.displayName = this.mda.displayName;
         createEditInput.responsiblePersonId = this.responsiblePersonId;
+        createEditInput.role = this.role;
 
         this.saving = true;
         this._mdaServiceProxy
