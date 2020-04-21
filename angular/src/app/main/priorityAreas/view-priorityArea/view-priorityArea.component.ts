@@ -49,6 +49,7 @@ export class ViewPriorityAreaComponent extends AppComponentBase implements OnIni
     mdaList: NameValueOfInt64[] = new Array();
     selectedMda = -1;
     selectedDeliverableId = -1;
+    selectDeliverableDefaultLabel = 'All deliverables';
 
     priorityArea: CreateOrEditPriorityAreaDto = new CreateOrEditPriorityAreaDto();
     percentageAchieved = 0;
@@ -140,25 +141,57 @@ export class ViewPriorityAreaComponent extends AppComponentBase implements OnIni
     }
 
     filerByMda(): void {
+        this.selectedDeliverableId = -1;
         if (this.selectedMda == -1) {
-            this.filteredDeliverables = this.deliverables;
+            this.resetAll();
         } else {
             this.filteredDeliverables = this.deliverables.filter(x => x.deliverable.mdaId == this.selectedMda);
+            this.filterAllByMda();
         }
     }
 
     filterByDeliverable(): void {
         if (this.selectedDeliverableId == -1) {
-            this.filteredIndicators = this.indicators;
-            this.filteredActivities = this.activities;
-            this.filteredReviews = this.reviews;
+            if (this.selectedMda != -1) {
+                this.filterAllByMda();
+            } else {
+                this.filteredIndicators = this.indicators;
+                this.filteredActivities = this.activities;
+                this.filteredReviews = this.reviews;
+            }
         } else {
             this.filteredIndicators = this.indicators.filter(x => x.performanceIndicator.organizationUnitId == this.selectedDeliverableId);
             this.filteredActivities = this.activities.filter(x => x.performanceActivity.organizationUnitId == this.selectedDeliverableId);
             this.filteredReviews = this.reviews.filter(x => x.review.organizationUnitId == this.selectedDeliverableId);
         }
-        console.log(this.filteredIndicators);
         this._changeDetector.detectChanges();
+    }
+
+    resetAll(): void {
+        this.filteredDeliverables = this.deliverables;
+        this.filteredIndicators = this.indicators;
+        this.filteredActivities = this.activities;
+        this.filteredReviews = this.reviews;
+        this.selectDeliverableDefaultLabel = 'All deliverables';
+    }
+
+    filterAllByMda(): void {
+        this.filteredIndicators = new Array();
+        this.filteredActivities = new Array();
+        this.filteredReviews = new Array();
+        this.selectDeliverableDefaultLabel = 'All MDA deliverable(s)';
+        this.filteredDeliverables.forEach(deliverable => {
+            this.filterByDeliverableId(deliverable.deliverable.id);
+        });
+    }
+
+    filterByDeliverableId(deliverableId: number): void {
+        let indicators = this.indicators.filter(x => x.performanceIndicator.organizationUnitId == deliverableId);
+        let activities = this.activities.filter(x => x.performanceActivity.organizationUnitId == deliverableId);
+        let reviews = this.reviews.filter(x => x.review.organizationUnitId == deliverableId);
+        this.filteredIndicators.push.apply(this.filteredIndicators, indicators);
+        this.filteredActivities.push.apply(this.filteredActivities, activities);
+        this.filteredReviews.push.apply(this.filteredReviews, reviews);
     }
 
     deliverableSelect(deliverable: CreateOrEditDeliverableDto) {
