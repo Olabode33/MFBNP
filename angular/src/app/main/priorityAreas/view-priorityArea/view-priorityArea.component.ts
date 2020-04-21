@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, Injector, ChangeDetectorRef, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { AppComponentBase } from '@shared/common/app-component-base';
 import { appModuleAnimation } from '@shared/animations/routerTransition';
-import { DeliverablesServiceProxy, GetDeliverableForEditOutput, CreateOrEditDeliverableDto, PriorityAreasServiceProxy, GetPriorityAreaForEditOutput, CreateOrEditPriorityAreaDto, GetPerformanceIndicatorForEditOutput, GetPerformanceReviewForEditOutput, GetPerformanceActivityForEditOutput, CommonLookupServiceProxy, NameValueOfInt64 } from '@shared/service-proxies/service-proxies';
+import { DeliverablesServiceProxy, GetDeliverableForEditOutput, CreateOrEditDeliverableDto, PriorityAreasServiceProxy, GetPriorityAreaForEditOutput, CreateOrEditPriorityAreaDto, GetPerformanceIndicatorForEditOutput, GetPerformanceReviewForEditOutput, GetPerformanceActivityForEditOutput, CommonLookupServiceProxy, NameValueOfInt64, UnitsEnum, DataTypeEnum } from '@shared/service-proxies/service-proxies';
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { finalize, filter } from 'rxjs/operators';
 import { Location } from '@angular/common';
@@ -54,6 +54,9 @@ export class ViewPriorityAreaComponent extends AppComponentBase implements OnIni
     priorityArea: CreateOrEditPriorityAreaDto = new CreateOrEditPriorityAreaDto();
     percentageAchieved = 0;
     reportDate: moment.Moment;
+
+    unitEnum = UnitsEnum;
+    dataTypeEnum = DataTypeEnum;
 
     constructor(
         injector: Injector,

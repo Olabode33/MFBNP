@@ -188,6 +188,17 @@
                                                     {{ indicator.performanceIndicator.percentageAchieved }}%
                                                 </div>
                                             </div>
+                                            <small *ngFor="let target of indicator.targets" class="form-text text-muted">
+                                                Target Value: <span *ngIf="indicator.performanceIndicator.unit == unitEnum.Money">NGN</span>
+                                                        <span *ngIf="indicator.performanceIndicator.dataType == dataTypeEnum.Number">{{target.target.target | number:'1.2-2'}}</span>
+                                                        <span *ngIf="indicator.performanceIndicator.dataType != dataTypeEnum.Number">{{target.target.target}}</span>
+                                                        <span *ngIf="indicator.performanceIndicator.unit == unitEnum.Percentage">%</span> 
+                                                <span class="mx-3">|</span>
+                                                Actual Value: <span *ngIf="indicator.performanceIndicator.unit == unitEnum.Money && target.target.actual">NGN</span> 
+                                                          <span *ngIf="indicator.performanceIndicator.dataType == dataTypeEnum.Number">{{target.target.actual | number:'1.2-2'}}</span>
+                                                          <span *ngIf="indicator.performanceIndicator.dataType != dataTypeEnum.Number">{{target.target.actual}}</span>
+                                                          <span *ngIf="indicator.performanceIndicator.unit == unitEnum.Percentage && target.target.actual">%</span> 
+                                            </small>
                                         </div>
                                         <div class="kt-separator kt-separator--border-solid"></div>
                                     </div>

@@ -15,7 +15,7 @@ import { PerformanceReviewComponent } from '@app/main/deliverables/reviews/perfo
 })
 export class OrganizationUnitsComponent extends AppComponentBase {
 
-    @ViewChild('ouMembers', {static: true}) ouMembers: OrganizationUnitMembersComponent;
+    //@ViewChild('ouMembers', {static: true}) ouMembers: OrganizationUnitMembersComponent;
     //@ViewChild('ouRoles', {static: true}) ouRoles: OrganizationUnitRolesComponent;
     @ViewChild('ouIndicators', {static: true}) ouIndicators: PerformanceIndicatorsComponent;
     @ViewChild('ouActivities', {static: true}) ouActivities: PerformanceActivityComponent;
@@ -31,7 +31,7 @@ export class OrganizationUnitsComponent extends AppComponentBase {
 
     ouSelected(event: any): void {
         this.organizationUnit = event;
-        this.ouMembers.organizationUnit = event;
+        //this.ouMembers.organizationUnit = event;
         //this.ouRoles.organizationUnit = event;
         this.ouIndicators.organizationUnit = event;
         this.ouActivities.organizationUnit = event;
