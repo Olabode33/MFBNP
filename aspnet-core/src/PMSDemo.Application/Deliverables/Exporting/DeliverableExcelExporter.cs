@@ -233,6 +233,23 @@ namespace PMSDemo.Deliverables.Exporting
                 }
                 var indicatorBodyRange = new NPOI.SS.Util.CellRangeAddress(4, rowIndex - 1, 0, 0);
                 sheet.AddMergedRegion(indicatorBodyRange);
+            } 
+            else
+            {
+                var indicatorBodyRow = sheet.CreateRow(rowIndex);
+                indicatorBodyRow.CreateCell(0, CellType.String).SetCellValue(deliverable.Deliverable.Deliverable.DisplayName);
+                indicatorBodyRow.CreateCell(1, CellType.String).SetCellValue("");
+                indicatorBodyRow.CreateCell(2, CellType.String).SetCellValue("");
+                indicatorBodyRow.CreateCell(3, CellType.String).SetCellValue("");
+                indicatorBodyRow.CreateCell(4, CellType.String).SetCellValue("");
+                indicatorBodyRow.CreateCell(5, CellType.String).SetCellValue("");
+                indicatorBodyRow.CreateCell(6, CellType.String).SetCellValue("");
+                indicatorBodyRow.CreateCell(7, CellType.String).SetCellValue("");
+                rowIndex++;
+                for (int i = 0; i < 8; i++)
+                {
+                    indicatorBodyRow.Cells[i].CellStyle = infoBodyStyle;
+                }
             }
             #endregion body
             #endregion Part1
