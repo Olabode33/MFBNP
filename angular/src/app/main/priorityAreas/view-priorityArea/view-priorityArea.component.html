@@ -144,7 +144,7 @@
                         <div class="kt-portlet__head">
                             <div class="kt-portlet__head-label">
                                 <h3 class="kt-portlet__head-title">
-                                    <span>Reviews</span>
+                                    <span>Others</span>
                                 </h3>
                             </div>
                         </div>
@@ -154,7 +154,12 @@
                                 <div class="table table-hover">
                                     <div *ngFor="let review of filteredReviews">
                                         <div>
-                                            <span [innerHTML]="review.review.reviewComment"></span>
+                                            <small class="form-text text-muted">Achievements:</small><br>
+                                            <span [innerHTML]="review.review.reviewComment"></span><br>
+                                            <small class="form-text text-muted">Challenges:</small><br>
+                                            <span [innerHTML]="review.review.challenges"></span><br>
+                                            <small class="form-text text-muted">Recommendations:</small><br>
+                                            <span [innerHTML]="review.review.recommendation"></span><br><br>
                                             <small class="form-text text-muted">Deliverable:
                                                 {{ review.deliverableName }}</small>
                                         </div>
