@@ -117,6 +117,14 @@
                                                     {{item.percentageAchieved}}%
                                                 </div>
                                             </div>
+                                            
+                                            <small class="form-text text-muted">
+                                                Budget Amount: 
+                                                <span *ngIf="item.deliverable.budgetAmount">NGN {{item.deliverable.budgetAmount | number: '1.2-2'}}</span>
+                                                <span class="mx-3">|</span>
+                                                Amount Spent:
+                                                <span *ngIf="item.deliverable.amountSpent">NGN {{item.deliverable.amountSpent | number: '1.2-2'}}</span>
+                                            </small>
                                         </span>
                                         <div class="kt-separator kt-separator--border-solid"></div>
                                     </span>
@@ -231,6 +239,31 @@
                                                     {{ activty.performanceActivity.completionLevel }}%
                                                 </div>
                                             </div>
+                                            <small class="form-text text-muted">
+                                                Budget Amount: 
+                                                <span *ngIf="activty.performanceActivity.budgetAmount">NGN {{activty.performanceActivity.budgetAmount | number: '1.2-2'}}</span>
+                                                <span class="mx-3">|</span>
+                                                Amount Spent:
+                                                <span *ngIf="activty.performanceActivity.amountSpent">NGN {{activty.performanceActivity.amountSpent | number: '1.2-2'}}</span>
+                                            </small>
+                                            <small class="form-text text-muted">
+                                                Planned Start Date: 
+                                                <span *ngIf="activty.performanceActivity.plannedStartDate">{{activty.performanceActivity.plannedStartDate | momentFormat: 'DD-MMM-YYYY'}}</span>
+                                                <span *ngIf="!activty.performanceActivity.plannedStartDate">-</span>
+                                                <span class="mx-3">|</span>
+                                                Actual Start Date: 
+                                                <span *ngIf="activty.performanceActivity.actualStartDate">{{activty.performanceActivity.actualStartDate | momentFormat: 'DD-MMM-YYYY'}}</span>
+                                                <span *ngIf="!activty.performanceActivity.actualStartDate">-</span>
+                                            </small>
+                                            <small class="form-text text-muted">
+                                                Planned Completion Date: 
+                                                <span *ngIf="activty.performanceActivity.plannedCompletionDate">{{activty.performanceActivity.plannedCompletionDate | momentFormat: 'DD-MMM-YYYY'}}</span>
+                                                <span *ngIf="!activty.performanceActivity.plannedCompletionDate">-</span>
+                                                <span class="mx-3">|</span>
+                                                Actual Completion Date: 
+                                                <span *ngIf="activty.performanceActivity.actualCompletionDate">{{activty.performanceActivity.actualCompletionDate | momentFormat: 'DD-MMM-YYYY'}}</span>
+                                                <span *ngIf="!activty.performanceActivity.actualCompletionDate">-</span>
+                                            </small>
                                         </div>
                                         <div class="kt-separator kt-separator--border-solid"></div>
                                     </div>
