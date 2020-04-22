@@ -56,7 +56,7 @@ namespace PMSDemo.PriorityAreas
             );
          }
 		 
-		 [AbpAuthorize(AppPermissions.Pages_PriorityAreas_Edit)]
+
 		 public async Task<GetPriorityAreaForEditOutput> GetPriorityAreaForEdit(EntityDto input)
          {
             var priorityArea = await _priorityAreaRepository.FirstOrDefaultAsync(input.Id);
