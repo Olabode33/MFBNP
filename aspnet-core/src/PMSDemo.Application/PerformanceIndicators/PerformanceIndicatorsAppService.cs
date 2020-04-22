@@ -114,8 +114,6 @@ namespace PMSDemo.PerformanceIndicators
             );
         }
 
-
-        [AbpAuthorize(AppPermissions.Pages_PerformanceIndicator_Edit)]
         public async Task<GetPerformanceIndicatorForEditOutput> GetPerformanceIndicatorForEdit(EntityDto input)
         {
             var indicator = await _performanceIndicatorRepository.FirstOrDefaultAsync(input.Id);

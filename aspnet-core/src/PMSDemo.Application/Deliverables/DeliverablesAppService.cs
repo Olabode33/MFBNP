@@ -369,8 +369,6 @@ namespace PMSDemo.Deliverables
             });
         }
 
-
-        [AbpAuthorize(AppPermissions.Pages_Deliverable_Edit)]
         public async Task<GetDeliverableForEditOutput> GetDeliverableForEdit(EntityDto<long> input)
         {
             var deliverable = await _deliverableRepository.FirstOrDefaultAsync(input.Id);

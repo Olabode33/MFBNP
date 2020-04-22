@@ -71,7 +71,7 @@ namespace PMSDemo.Agencies
             );
         }
 
-        [AbpAuthorize(AppPermissions.Pages_MDA_Edit)]
+        //[AbpAuthorize(AppPermissions.Pages_MDA_Edit)]
         public async Task<GetMdaForEditOutput> GetMdaForEdit(EntityDto<long> input)
         {
             var mda = await _mdaRepository.FirstOrDefaultAsync(input.Id);

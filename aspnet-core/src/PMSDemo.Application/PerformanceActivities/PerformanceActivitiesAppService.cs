@@ -86,8 +86,6 @@ namespace PMSDemo.PerformanceActivities
             );
         }
 
-
-        [AbpAuthorize(AppPermissions.Pages_PerformanceActivity_Edit)]
         public async Task<GetPerformanceActivityForEditOutput> GetPerformanceActivityForEdit(EntityDto input)
         {
             var activity = await _performanceActivityRepository.FirstOrDefaultAsync(input.Id);

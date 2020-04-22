@@ -70,8 +70,6 @@ namespace PMSDemo.Deliverables
             );
         }
 
-
-        [AbpAuthorize(AppPermissions.Pages_Deliverable_Review)]
         public async Task<GetPerformanceReviewForEditOutput> GetPerformanceReviewForEdit(EntityDto input)
         {
             var review = await _performanceReviewRepository.FirstOrDefaultAsync(input.Id);
