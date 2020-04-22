@@ -403,7 +403,9 @@
     <text name="SuccessfullyMoved">Successfully moved.</text>
     <text name="AddedTime">Addition time</text>
     <text name="ManagingMembers">Managing members</text>
-    <text name="ManagingOrganizationTree">Managing deliverable</text>
+    <text name="MdaDeliverables">MDA's deliverables</text>
+    <text name="ManagingMdaDeliverables">View MDA's deliverables</text>
+    <text name="ManagingOrganizationTree">Managing MDA's deliverables</text>
     <text name="LoginForUsers">Login for users</text>
     <text name="LoginAsThisUser">Login as this user</text>
     <text name="BackToMyAccount">Back to my account</text>
