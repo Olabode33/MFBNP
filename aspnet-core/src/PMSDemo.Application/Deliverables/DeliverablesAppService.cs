@@ -332,6 +332,44 @@ namespace PMSDemo.Deliverables
             });
         }
 
+        public async Task<FileDto> GetAllMdasDeliverablesToExcel()
+        {
+            var filteredDeliverables = _deliverableRepository.GetAll()
+                                                             .Include(x => x.Parent)
+                                                             .Include(x => x.PriorityAreaFk)
+                                                             //.Where(x => x.ParentId == input.Id)
+                                                             .Select(x => new GetDeliverableForEditOutput
+                                                             {
+                                                                 Deliverable = ObjectMapper.Map<CreateOrEditDeliverableDto>(x),
+                                                                 MdaName = x.Parent != null ? x.Parent.DisplayName : "",
+                                                                 PriorityAreaName = x.PriorityAreaFk != null ? x.PriorityAreaFk.Name : ""
+                                                             });
+
+            var deliverables = await filteredDeliverables.ToListAsync();
+
+            List<DeliverableExportDto> output = new List<DeliverableExportDto>();
+
+            foreach (var item in deliverables)
+            {
+                DeliverableExportDto exportDto = new DeliverableExportDto();
+                exportDto.Deliverable = item;
+
+                var indicatorsActivitiesReviews = await GetIndicatorActivitiesReviewsForDeliverable((long)item.Deliverable.Id);
+                exportDto.Indicators = indicatorsActivitiesReviews.Indicators;
+                exportDto.Activities = indicatorsActivitiesReviews.Activities;
+                exportDto.Reviews = indicatorsActivitiesReviews.Reviews;
+
+                output.Add(exportDto);
+            }
+
+            return _deliverableExcelExporter.ExportToFile(new MdaDeliverableExportDto
+            {
+                deliverables = output,
+                MdaName = "All_MDAs"
+            });
+        }
+
+
         public async Task<FileDto> GetDeliverableToExcel(EntityDto<long> input)
         {
             var filteredDeliverables = _deliverableRepository.GetAll()

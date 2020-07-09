@@ -169,17 +169,19 @@ namespace PMSDemo.PerformanceActivities
             {
                 if (activity.CompletionLevel == null || activity.CompletionLevel == 0)
                 {
-                    activity.ActualStartDate = DateTime.Now;
+                    //activity.ActualStartDate = input.Activity.ActualStartDate;// == null ? DateTime.Now : input.Activity.ActualStartDate;
                 }
                 activity.CompletionStatus = CompletionStatusEnum.InProgress;
             }
             if (input.Activity.CompletionLevel >= 100)
             {
                 activity.CompletionStatus = CompletionStatusEnum.Completed;
-                activity.ActualCompletionDate = DateTime.Now;
+                //activity.ActualCompletionDate = input.Activity.ActualCompletionDate;// == null ? DateTime.Now : input.Activity.ActualCompletionDate;
             }
 
-            activity.CompletionLevel = (activity.CompletionLevel + input.Activity.CompletionLevel) > 100 ? 100 : activity.CompletionLevel + input.Activity.CompletionLevel;
+            activity.ActualStartDate = input.Activity.ActualStartDate;// == null ? DateTime.Now : input.Activity.ActualStartDate;
+            activity.ActualCompletionDate = input.Activity.ActualCompletionDate;// == null ? DateTime.Now : input.Activity.ActualCompletionDate;
+            activity.CompletionLevel = activity.CompletionLevel == null ? input.Activity.CompletionLevel : (activity.CompletionLevel + input.Activity.CompletionLevel) > 100 ? 100 : activity.CompletionLevel + input.Activity.CompletionLevel;
             activity.Note = input.Activity.Note;
             activity.DataSource = input.Activity.DataSource;
 

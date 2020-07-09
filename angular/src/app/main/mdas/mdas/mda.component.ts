@@ -102,4 +102,13 @@ export class MDAComponent extends AppComponentBase {
                 this._fileDownloadService.downloadTempFile(result);
             });
     }
+
+    exportAllToExcel(): void {
+        this.generatingReport = true;
+        this._deliverableServiceProxy.getAllMdasDeliverablesToExcel()
+            .pipe(finalize(() => this.generatingReport = false))
+            .subscribe(result => {
+                this._fileDownloadService.downloadTempFile(result);
+            });
+    }
 }

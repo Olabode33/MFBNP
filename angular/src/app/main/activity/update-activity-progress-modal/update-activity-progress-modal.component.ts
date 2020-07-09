@@ -7,6 +7,7 @@ import { Table } from 'primeng/table';
 import { Paginator } from 'primeng/paginator';
 import { finalize } from 'rxjs/operators';
 import { AppConsts } from '@shared/AppConsts';
+import * as moment from 'moment';
 
 @Component({
     selector: 'app-update-activity-progress-modal',
@@ -41,6 +42,10 @@ export class UpdateActivityProgressModalComponent extends AppComponentBase {
 
     uploadUrl: string;
     uploadedFiles: any[] = [];
+
+    actualStartDate: Date;
+    actualCompletionDate: Date;
+
     constructor(
         injector: Injector,
         private _performanceActivityService: PerformanceActivitiesServiceProxy,
@@ -58,6 +63,13 @@ export class UpdateActivityProgressModalComponent extends AppComponentBase {
                 this.attachments = result.attachments;
                 this.preCompletionLevel = result.performanceActivity.completionLevel;
 
+                if (result.performanceActivity.actualStartDate) {
+                    this.actualStartDate = result.performanceActivity.actualStartDate.toDate();
+                }
+                if (result.performanceActivity.actualCompletionDate) {
+                    this.actualCompletionDate = result.performanceActivity.actualCompletionDate.toDate();
+                }
+
                 this.active = true;
                 this.modal.show();
                 this._changeDetector.detectChanges();
@@ -72,6 +84,18 @@ export class UpdateActivityProgressModalComponent extends AppComponentBase {
             this.notify.info('Progress level should be between 0% to 100%!');
             this.saving = false;
             return;
+        }
+
+        if (this.actualStartDate) {
+            this.performanceActivity.actualStartDate = moment(this.actualStartDate);
+        } else {
+            this.performanceActivity.actualStartDate = null;
+        }
+
+        if (this.actualCompletionDate) {
+            this.performanceActivity.actualCompletionDate = moment(this.actualCompletionDate);
+        } else {
+            this.performanceActivity.actualCompletionDate = null;
         }
 
         this.updateActivityDto.activity = this.performanceActivity;

@@ -48,6 +48,21 @@
 
                     <div class="form-group row">
                         <div class="col-md-6">
+                            <label for="performanceActivity_PlannedStartDate">{{l("ActualStartDate")}}</label>
+                            <input class="form-control m-input" type="datetime" bsDatepicker
+                                [(ngModel)]="actualStartDate" id="performanceActivity_PlannedStartDate"
+                                name="performanceActivity_PlannedStartDate">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="performanceActivity_PlannedCompletionDate">{{l("ActualCompletionDate")}}</label>
+                            <input class="form-control m-input" type="datetime" bsDatepicker
+                                [(ngModel)]="actualCompletionDate" id="performanceActivity_PlannedCompletionDate"
+                                name="performanceActivity_PlannedCompletionDate">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-6">
                             <label for="performanceActivity_completionLevel">{{l("EnterProgressLevel")}} <span class="kt-font-danger">*</span></label>
                             <div class="input-group">
                                 <input type="number" id="performanceActivity_completionLevel" class="form-control" required min="0" max="100"

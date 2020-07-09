@@ -31,6 +31,8 @@ export class CreateEditActivityModalComponent extends AppComponentBase {
     performanceActivity: CreateOrEditPerformanceActivityDto = new CreateOrEditPerformanceActivityDto();
     plannedStartDate: Date;
     plannedCompletionDate: Date;
+    actualStartDate: Date;
+    actualCompletionDate: Date;
 
     dataTypeEnum = DataTypeEnum;
     unitEnum = UnitsEnum;
@@ -64,6 +66,12 @@ export class CreateEditActivityModalComponent extends AppComponentBase {
                     if (result.performanceActivity.plannedCompletionDate) {
                         this.plannedCompletionDate = result.performanceActivity.plannedCompletionDate.toDate();
                     }
+                    if (result.performanceActivity.actualStartDate) {
+                        this.actualStartDate = result.performanceActivity.actualStartDate.toDate();
+                    }
+                    if (result.performanceActivity.actualCompletionDate) {
+                        this.actualCompletionDate = result.performanceActivity.actualCompletionDate.toDate();
+                    }
                     this.active = true;
                     this.modal.show();
                     this._changeDetector.detectChanges();
@@ -84,6 +92,18 @@ export class CreateEditActivityModalComponent extends AppComponentBase {
             this.performanceActivity.plannedCompletionDate = moment(this.plannedCompletionDate);
         } else {
             this.performanceActivity.plannedCompletionDate = null;
+        }
+
+        if (this.actualStartDate) {
+            this.performanceActivity.actualStartDate = moment(this.actualStartDate);
+        } else {
+            this.performanceActivity.actualStartDate = null;
+        }
+
+        if (this.actualCompletionDate) {
+            this.performanceActivity.actualCompletionDate = moment(this.actualCompletionDate);
+        } else {
+            this.performanceActivity.actualCompletionDate = null;
         }
 
         this._performanceActivityService.createOrEdit(this.performanceActivity)

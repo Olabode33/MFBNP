@@ -49,6 +49,7 @@ namespace PMSDemo.Deliverables.Exporting
             var sheet = excelPackage.CreateSheet("Deliverable-" + deliverableCount.ToString());
             //Samp
             var deliverable = mdaDeliverable;
+            mdaName = mdaDeliverable.Deliverable.MdaName;
 
             //column width
             sheet.SetColumnWidth(0, 10000);
