@@ -279,8 +279,8 @@ namespace PMSDemo.Deliverables.Exporting
             activityHeaderRow.CreateCell(1, CellType.String).SetCellValue("Milestone Achieved");
             activityHeaderRow.CreateCell(2, CellType.String).SetCellValue("Status of Completion (%)");
             activityHeaderRow.CreateCell(3, CellType.String).SetCellValue("Planned Start Date");
-            activityHeaderRow.CreateCell(4, CellType.String).SetCellValue("Actual Start Date");
-            activityHeaderRow.CreateCell(5, CellType.String).SetCellValue("Planned Completion Date");
+            activityHeaderRow.CreateCell(4, CellType.String).SetCellValue("Planned Completion Date");
+            activityHeaderRow.CreateCell(5, CellType.String).SetCellValue("Actual Start Date");
             activityHeaderRow.CreateCell(6, CellType.String).SetCellValue("Actual Completion Date");
             activityHeaderRow.CreateCell(7, CellType.String).SetCellValue("Additional Information");
 
